@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lap.roomplaningsystem.controller.StammdataViewController">
+   <padding>
+      <Insets left="10.0" right="10.0" top="20.0" />
+   </padding>
+   <children>
+      <GridPane>
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.5" minWidth="10.0" prefWidth="213.5" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="403.5" minWidth="10.0" prefWidth="363.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="294.0" minWidth="10.0" prefWidth="56.5" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="145.0" minWidth="6.0" prefWidth="44.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.halignment="RIGHT">
+               <image>
+                  <Image url="@../images/profilicon.png" />
+               </image>
+               <GridPane.margin>
+                  <Insets right="20.0" />
+               </GridPane.margin>
+            </ImageView>
+            <Label onMouseClicked="#onLogoutLabelClicked" text="Logout" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="RIGHT">
+               <font>
+                  <Font name="Century Gothic" size="14.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets right="20.0" />
+               </GridPane.margin>
+            </Label>
+         </children>
+      </GridPane>
+      <Label maxWidth="1.7976931348623157E308" style="-fx-background-color: #4F60801a;" text="Stammdaten ">
+         <font>
+            <Font name="Century Gothic" size="36.0" />
+         </font>
+         <padding>
+            <Insets bottom="20.0" left="20.0" top="20.0" />
+         </padding>
+         <VBox.margin>
+            <Insets top="50.0" />
+         </VBox.margin>
+      </Label>
+      <HBox prefWidth="200.0">
+         <children>
+            <ChoiceBox prefWidth="200.0" style="-fx-background-radius: 12;">
+               <HBox.margin>
+                  <Insets left="5.0" right="5.0" />
+               </HBox.margin>
+            </ChoiceBox>
+         </children>
+         <VBox.margin>
+            <Insets top="30.0" />
+         </VBox.margin>
+      </HBox>
+      <BorderPane prefHeight="400.0" prefWidth="200.0">
+         <center>
+            <TableView prefHeight="393.0" styleClass="table" stylesheets="@../css/style.css" BorderPane.alignment="CENTER">
+               <columns>
+                  <TableColumn prefWidth="37.0" styleClass="tableColumn" text="Nr." />
+                  <TableColumn prefWidth="383.0" styleClass="tableColumn" text="Veranstaltung" />
+                  <TableColumn minWidth="0.0" prefWidth="100.0" styleClass="tableColumn" text="Datum" />
+                  <TableColumn styleClass="tableColumn" text="Beginn" />
+                  <TableColumn styleClass="tableColumn" text="Ende" />
+               </columns>
+            </TableView>
+         </center>
+         <VBox.margin>
+            <Insets top="40.0" />
+         </VBox.margin>
+      </BorderPane>
+   </children>
+</VBox>

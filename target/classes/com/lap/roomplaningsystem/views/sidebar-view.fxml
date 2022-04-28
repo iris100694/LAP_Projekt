@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="300.0" style="-fx-background-color: #4F6080;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lap.roomplaningsystem.controller.SidebarController">
+   <children>
+      <Label text="Raumplanungssystem" textFill="WHITE">
+         <font>
+            <Font name="Century Gothic" size="26.0" />
+         </font>
+      </Label>
+      <VBox prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <Label maxWidth="1.7976931348623157E308" onMouseClicked="#onMouseClickedHome" styleClass="menuItem" text="Home" textFill="WHITE">
+               <padding>
+                  <Insets bottom="15.0" left="20.0" top="15.0" />
+               </padding>
+               <font>
+                  <Font name="Century Gothic" size="16.0" />
+               </font>
+            </Label>
+            <Label maxWidth="1.7976931348623157E308" onMouseClicked="#onMouseClickedRooms" styleClass="menuItem" text="Räume" textFill="WHITE">
+               <padding>
+                  <Insets bottom="15.0" left="20.0" top="15.0" />
+               </padding>
+               <font>
+                  <Font name="Century Gothic" size="16.0" />
+               </font>
+            </Label>
+            <Label maxWidth="1.7976931348623157E308" onMouseClicked="#onMouseClickedEvents" styleClass="menuItem" text="Veranstaltungen" textFill="WHITE">
+               <padding>
+                  <Insets bottom="15.0" left="20.0" top="15.0" />
+               </padding>
+               <font>
+                  <Font name="Century Gothic" size="16.0" />
+               </font>
+            </Label>
+            <Label fx:id="sidebarCreateEventLabel" maxWidth="1.7976931348623157E308" onMouseClicked="#onMouseClickedCreateEvents" styleClass="menuItem" text="Veranstaltungen erfassen" textFill="WHITE" visible="false">
+               <padding>
+                  <Insets bottom="15.0" left="20.0" top="15.0" />
+               </padding>
+               <font>
+                  <Font name="Century Gothic" size="16.0" />
+               </font>
+            </Label>
+            <Label fx:id="sidebarStammdataLabel" maxWidth="1.7976931348623157E308" onMouseClicked="#onMouseClickedStammdata" styleClass="menuItem" text="Stammdaten verwalten" textFill="WHITE" visible="false">
+               <padding>
+                  <Insets bottom="15.0" left="20.0" top="15.0" />
+               </padding>
+               <font>
+                  <Font name="Century Gothic" size="16.0" />
+               </font>
+            </Label>
+         </children>
+         <VBox.margin>
+            <Insets top="70.0" />
+         </VBox.margin>
+      </VBox>
+   </children>
+   <padding>
+      <Insets top="20.0" />
+   </padding>
+</VBox>
