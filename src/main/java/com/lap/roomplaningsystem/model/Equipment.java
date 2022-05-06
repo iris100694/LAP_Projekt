@@ -1,13 +1,28 @@
 package com.lap.roomplaningsystem.model;
 
-public record Equipment (int equipmentID, String description){
-    @Override
-    public int equipmentID() {
+public class Equipment{
+
+    private int equipmentID;
+    private String description;
+
+    public Equipment(int equipmentID, String description) {
+        this.equipmentID = equipmentID;
+        this.description = description;
+    }
+
+    public int getEquipmentID() {
         return equipmentID;
     }
 
-    @Override
-    public String description() {
+    public void setEquipmentID(int equipmentID) {
+        this.equipmentID = equipmentID;
+    }
+
+    public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

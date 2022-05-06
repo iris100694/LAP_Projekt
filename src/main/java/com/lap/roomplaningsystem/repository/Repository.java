@@ -1,9 +1,10 @@
 package com.lap.roomplaningsystem.repository;
 
-import java.sql.Blob;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+import java.sql.*;
+import java.util.ArrayList;
 
 public class Repository {
 
@@ -13,7 +14,7 @@ public class Repository {
     static final String dbUser = "root";
     static final String dbPw = "";
 
-    Connection connect() {
+    protected Connection connect() {
         Connection connection;
         try {
             connection = DriverManager.getConnection(dbPrefix + location, dbUser, dbPw);
@@ -25,7 +26,7 @@ public class Repository {
     }
 
 
-   byte[] createImageByteArray(Blob photo) {
+   protected byte[] createImageByteArray(Blob photo) {
         byte[] image = null;
 
         if(photo != null){
@@ -40,6 +41,41 @@ public class Repository {
         }
 
         return image;
+   }
+
+    public ArrayList<ObservableList<String>> listsForChoiceBox(String query) throws SQLException {
+        ArrayList<ObservableList<String>> list = new ArrayList<>();
+
+
+        Connection connection = connect();
+
+        CallableStatement stmt;
+        ResultSet resultSet;
+        System.out.println(query);
+
+
+        stmt = connection.prepareCall(query);
+
+        stmt.executeQuery();
+        boolean getMoreResults = true;
+
+        while(getMoreResults){
+            ObservableList<String> results = FXCollections.observableArrayList();
+            results.add("");
+            resultSet = stmt.getResultSet();
+
+            while(resultSet.next()){
+                results.add(resultSet.getString("RESULTS"));
+            }
+
+            list.add(results);
+            getMoreResults = stmt.getMoreResults();
+
+
+        }
+
+        return  list;
+
     }
 
 }

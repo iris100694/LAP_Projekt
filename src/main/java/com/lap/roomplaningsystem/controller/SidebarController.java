@@ -1,6 +1,7 @@
 package com.lap.roomplaningsystem.controller;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.app.Constants;
@@ -88,5 +89,8 @@ public class SidebarController extends BaseController{
     }
 
 
-
+    @FXML
+    private void testLogin(MouseEvent mouseEvent) throws SQLException {
+        model.validateLogin("admin", "test");
+    }
 }

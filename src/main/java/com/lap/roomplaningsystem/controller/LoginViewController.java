@@ -1,6 +1,7 @@
 package com.lap.roomplaningsystem.controller;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.app.Constants;
@@ -54,16 +55,24 @@ public class LoginViewController extends BaseController{
 
     private void onKeyPressed(KeyEvent keyEvent){
         if(keyEvent.getCode() == KeyCode.ENTER){
-            checkLogin();
+            try {
+                checkLogin();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @FXML
     void onLoginButtonClicked(MouseEvent event) {
-        checkLogin();
+        try {
+            checkLogin();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void checkLogin(){
+    private void checkLogin() throws SQLException {
         if(!textFieldUsername.getText().isBlank() && !textFieldPassword.getText().isBlank()){
 
             boolean loginResult = model.validateLogin(textFieldUsername.getText(), textFieldPassword.getText());

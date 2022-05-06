@@ -1,20 +1,26 @@
 package com.lap.roomplaningsystem.repository.interfaces;
 
+import com.lap.roomplaningsystem.model.Course;
+import com.lap.roomplaningsystem.model.Event;
 import com.lap.roomplaningsystem.model.User;
+import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository {
+public interface UserRepository extends BaseRepository {
 
-    User checkUsernamePw(String username, String password) throws SQLException;
+    Optional<ObservableList<User>> readAll() throws Exception;
 
-    Optional<User> read(long id) throws SQLException;
+    Optional<User> checkUsernamePw(String username, String password) throws SQLException;
 
-    List<User> readAll() throws SQLException;
+    Optional<User> readUserByID(int id) throws SQLException;
+
+    void add(User user) throws SQLException;
 
     void update(User user) throws SQLException;
 
     void delete(User user) throws SQLException;
+
+
 }

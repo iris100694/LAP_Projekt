@@ -1,4 +1,21 @@
 package com.lap.roomplaningsystem.repository.interfaces;
 
-public interface ProgramRepository {
+import com.lap.roomplaningsystem.model.Event;
+import com.lap.roomplaningsystem.model.Program;
+import com.lap.roomplaningsystem.model.User;
+import javafx.collections.ObservableList;
+
+import java.sql.SQLException;
+import java.util.Optional;
+
+public interface ProgramRepository extends BaseRepository{
+
+    Optional<ObservableList<Program>> readAll() throws Exception;
+
+    void add(Program program) throws SQLException;
+
+    void update(Program program) throws SQLException;
+
+    void delete(Program program) throws SQLException;
+
 }

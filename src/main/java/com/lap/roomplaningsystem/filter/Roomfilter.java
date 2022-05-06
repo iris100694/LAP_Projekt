@@ -1,24 +1,19 @@
 package com.lap.roomplaningsystem.filter;
 
-import com.lap.roomplaningsystem.controller.RoomsViewController;
-import com.lap.roomplaningsystem.model.DatabaseUtility;
-import com.lap.roomplaningsystem.model.Datamodel;
+import com.lap.roomplaningsystem.filterBoxes.FilterBox;
+import com.lap.roomplaningsystem.filterBoxes.FilterCheckBox;
 import com.lap.roomplaningsystem.model.Room;
+import com.lap.roomplaningsystem.repository.JDBC.RoomRepositoryJDBC;
 import javafx.beans.Observable;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.CheckBox;
 import javafx.util.Callback;
 
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.Optional;
 
 public class Roomfilter {
+
+    private FilterCheckBox imageCheckBox;
 
     private String id = "";
     private String description = "";
@@ -27,7 +22,6 @@ public class Roomfilter {
     private String equipment = "";
     private boolean image;
 
-    private FilterCheckBox imageCheckBox;
     ObservableList<FilterBox> filterBoxes= FXCollections.observableArrayList(new Callback<FilterBox, Observable[]>() {
         @Override
         public Observable[] call(FilterBox filterBox) {
@@ -39,9 +33,7 @@ public class Roomfilter {
     public Roomfilter() {
     }
 
-
-
-    public ObservableList<Room> filterValue(String id, String newValue) {
+    public Optional<ObservableList<Room>> filterValue(RoomRepositoryJDBC roomRepositoryJDBC, String id, String newValue) throws Exception {
         switch (id) {
             case "roomID": {setId(newValue); break;}
             case "roomDescription": {setDescription(newValue); break;}
@@ -50,58 +42,42 @@ public class Roomfilter {
             case "roomEquipment": {setEquipment(newValue); break;}
         }
 
-        return requestToDatabaseUtility(createStatement());
+        return roomRepositoryJDBC.filter(roomRepositoryJDBC.createFilterStatement(this.getId(), this.getDescription(), this.getSize(), this.getLocation(), this.getEquipment(), this.isImage()), isBlank(this.getEquipment()));
     }
 
-    public ObservableList<Room> filterValueWithImage(boolean checkImage) {
-
-        image = checkImage;
-
-        return requestToDatabaseUtility(createStatement());
+    public Optional<ObservableList<Room>> getTableByFilterState(RoomRepositoryJDBC roomRepositoryJDBC) throws Exception {
+        return roomRepositoryJDBC.filter(roomRepositoryJDBC.createFilterStatement(this.getId(), this.getDescription(), this.getSize(), this.getLocation(), this.getEquipment(), this.isImage()), isBlank(this.getEquipment()));
     }
 
-    private ObservableList<Room> requestToDatabaseUtility(String stmt) {
-        return isBlank(equipment) ? DatabaseUtility.filterRooms(stmt, false) : DatabaseUtility.filterRooms(stmt, true);
+    public Optional<ObservableList<Room>> filterValueWithImage(RoomRepositoryJDBC roomRepositoryJDBC, boolean checkImage) throws Exception {
+
+        setImage(checkImage);
+
+        return roomRepositoryJDBC.filter(roomRepositoryJDBC.createFilterStatement(this.getId(), this.getDescription(), this.getSize(), this.getLocation(), this.getEquipment(), this.isImage()), isBlank(this.getEquipment()));
     }
 
-
-    private String createStatement() {
-        String stmt = "";
-
-        if (!isBlank(id)) {
-            stmt = stmt + " WHERE rooms.ROOMID = " + id;
-        }
-
-        if (!isBlank(description)) {
-            stmt = isBlank(stmt) ? stmt + " WHERE rooms.DESCRIPTION = \"" + description + "\"" : stmt + " AND rooms.DESCRIPTION = \"" + description + "\"";
-        }
-
-        if (!isBlank(size)) {
-            stmt = isBlank(stmt) ? stmt + " WHERE rooms.MAXPERSONS = " + size : stmt + " AND rooms.MAXPERSONS = " + size;
-        }
-
-        if (!isBlank(location)) {
-            stmt = isBlank(stmt) ? stmt + " WHERE locations.DESCRIPTION = \"" + location + "\"" : stmt + " AND locations.DESCRIPTION = \"" + location + "\"";
-        }
-
-        if (!isBlank(equipment)) {
-            stmt = isBlank(stmt) ? stmt + " WHERE equipment.DESCRIPTION = \"" + equipment + "\"" : stmt + " AND equipment.DESCRIPTION = \"" + equipment + "\"";
-        }
-
-        if(image){
-            stmt = isBlank(stmt) ? stmt + " WHERE rooms.PHOTO IS NOT NULL" : stmt + " AND rooms.PHOTO IS NOT NULL";
-        }
-
-        return stmt;
-    }
-
-
-    private boolean isBlank(String s) {
+    private boolean isBlank(String s){
         return s.equals("");
     }
 
     public void addFilterBox(FilterBox filterBox){
         filterBoxes.add(filterBox);
+    }
+
+    public FilterCheckBox getImageCheckBox() {
+        return imageCheckBox;
+    }
+
+    public void setImageCheckBox(FilterCheckBox imageCheckBox) {
+        this.imageCheckBox = imageCheckBox;
+    }
+
+    public ObservableList<FilterBox> getFilterBoxes() {
+        return filterBoxes;
+    }
+
+    public void setFilterBoxes(ObservableList<FilterBox> filterBoxes) {
+        this.filterBoxes = filterBoxes;
     }
 
     public String getId() {
@@ -144,20 +120,11 @@ public class Roomfilter {
         this.equipment = equipment;
     }
 
-    public ObservableList<FilterBox> getFilterBoxes() {
-        return filterBoxes;
+    public boolean isImage() {
+        return image;
     }
 
-    public void setFilterBoxes(ObservableList<FilterBox> filterBoxes) {
-        this.filterBoxes = filterBoxes;
-    }
-
-
-    public FilterCheckBox getImageCheckBox() {
-        return imageCheckBox;
-    }
-
-    public void setImageCheckBox(FilterCheckBox imageCheckBox) {
-        this.imageCheckBox = imageCheckBox;
+    public void setImage(boolean image) {
+        this.image = image;
     }
 }

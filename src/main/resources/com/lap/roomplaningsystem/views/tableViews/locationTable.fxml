@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+
+<TableView fx:id="locationTableView" prefHeight="393.0" styleClass="table" stylesheets="@../../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lap.roomplaningsystem.controller.tableController.LocationTableController">
+   <columns>
+      <TableColumn fx:id="locationNumberColumn" style="-fx-aligment: LEFT;" styleClass="tableColumn" text="Standort-Nr." />
+      <TableColumn fx:id="locationDescriptionColumn" prefWidth="208.5" styleClass="tableColumn" text="Standortbezeichnung" />
+      <TableColumn fx:id="locationAdressColumn" prefWidth="186.5" styleClass="tableColumn" text="Adresse" />
+      <TableColumn fx:id="locationPostCodeColumn" prefWidth="63.5" styleClass="tableColumn" text="PLZ" />
+      <TableColumn fx:id="locationCityColumn" prefWidth="115.0" styleClass="tableColumn" text="Ort" />
+   </columns>
+</TableView>

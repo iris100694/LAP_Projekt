@@ -16,6 +16,17 @@ public class Location {
         this.city = city;
     }
 
+    @Override
+    public String toString() {
+        return "Location{" +
+                "locationID=" + locationID +
+                ", description='" + description + '\'' +
+                ", adress='" + adress + '\'' +
+                ", postCode='" + postCode + '\'' +
+                ", city='" + city + '\'' +
+                '}';
+    }
+
     public int getLocationID() {
         return locationID;
     }
@@ -55,4 +66,6 @@ public class Location {
     public void setCity(String city) {
         this.city = city;
     }
+
+
 }

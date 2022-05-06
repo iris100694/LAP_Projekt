@@ -2,6 +2,7 @@ package com.lap.roomplaningsystem.model;
 
 public class User {
     private int id;
+    private boolean active;
     private String title;
     private String firstname;
     private String lastname;
@@ -17,8 +18,9 @@ public class User {
     private byte[] photo;
     private boolean photoVisable;
 
-    public User(int id, String title, String firstname, String lastname, String username, String authorization, boolean trainer, String text, boolean textVisable, String phone, boolean phoneVisable, String email, boolean emailVisable, byte[] photo, boolean photoVisable) {
+    public User(int id, boolean active, String title, String firstname, String lastname, String username, String authorization, boolean trainer, String text, boolean textVisable, String phone, boolean phoneVisable, String email, boolean emailVisable, byte[] photo, boolean photoVisable) {
         this.id = id;
+        this.active = active;
         this.title = title;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -174,5 +176,30 @@ public class User {
 
     public void setPhotoVisable(boolean photoVisable) {
         this.photoVisable = photoVisable;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public String printActiveState(){
+        return active? "aktiv" : "inaktiv";
+
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String printAuthorization() {
+        switch (authorization){
+            case "admin" -> {
+                return "Administrator";
+            }
+            case "coach" -> {
+                return "Trainer";
+            }
+        }
+        return null;
     }
 }

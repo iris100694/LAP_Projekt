@@ -31,7 +31,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <TextField promptText="Search" style="-fx-background-radius: 12;" styleClass="inputField">
+            <TextField fx:id="searchField" onKeyTyped="#onSearch" promptText="Search" style="-fx-background-radius: 12;" styleClass="inputField">
                <font>
                   <Font name="Century Gothic" size="14.0" />
                </font>

@@ -2,35 +2,71 @@ package com.lap.roomplaningsystem.model;
 
 import java.sql.Date;
 
-public record Course (int courseID, Program program, String title, int members, Date start, Date end){
+public class Course{
 
-    @Override
-    public int courseID() {
+    private int courseID;
+    private Program program;
+    private String title;
+    private int members;
+    private Date start;
+    private Date end;
+
+    public Course(int courseID, Program program, String title, int members, Date start, Date end) {
+        this.courseID = courseID;
+        this.program = program;
+        this.title = title;
+        this.members = members;
+        this.start = start;
+        this.end = end;
+    }
+
+    public int getCourseID() {
         return courseID;
     }
 
-    @Override
-    public Program program() {
+    public void setCourseID(int courseID) {
+        this.courseID = courseID;
+    }
+
+    public Program getProgram() {
         return program;
     }
 
-    @Override
-    public String title() {
+    public void setProgram(Program program) {
+        this.program = program;
+    }
+
+    public String getTitle() {
         return title;
     }
 
-    @Override
-    public int members() {
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getMembers() {
         return members;
     }
 
-    @Override
-    public Date start() {
+    public void setMembers(int members) {
+        this.members = members;
+    }
+
+    public Date getStart() {
         return start;
     }
 
-    @Override
-    public Date end() {
+    public void setStart(Date start) {
+        this.start = start;
+    }
+
+    public Date getEnd() {
         return end;
     }
+
+    public void setEnd(Date end) {
+        this.end = end;
+    }
+
+
 }

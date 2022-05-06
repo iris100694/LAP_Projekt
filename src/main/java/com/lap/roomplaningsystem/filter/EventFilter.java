@@ -1,14 +1,14 @@
 package com.lap.roomplaningsystem.filter;
 
-import com.lap.roomplaningsystem.model.DatabaseUtility;
+import com.lap.roomplaningsystem.filterBoxes.FilterBox;
 import com.lap.roomplaningsystem.model.Event;
-import com.lap.roomplaningsystem.model.Room;
+import com.lap.roomplaningsystem.repository.JDBC.EventRepositoryJDBC;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
 
-import java.sql.Date;
+import java.util.Optional;
 
 public class EventFilter {
 
@@ -25,7 +25,7 @@ public class EventFilter {
         }
     });
 
-    public ObservableList<Event> filterValue(String id, String newValue) {
+    public Optional<ObservableList<Event>> filterValue(EventRepositoryJDBC eventRepositoryJDBC, String id, String newValue) throws Exception {
 
         switch(id){
             case "eventID": {setId(newValue); break;}
@@ -36,45 +36,25 @@ public class EventFilter {
         }
 
 
-        return requestToDatabaseUtility(createStatement());
+        return eventRepositoryJDBC.filter(eventRepositoryJDBC.createFilterStatement(this.getId(), this.getDescription(), this.getDate(), this.getStart(), this.getEnd()));
     }
 
-    private ObservableList<Event> requestToDatabaseUtility(String stmt) {
-        return DatabaseUtility.filterEvents(stmt);
+    public Optional<ObservableList<Event>> getTableByFilterState(EventRepositoryJDBC eventRepositoryJDBC) throws Exception {
+        return eventRepositoryJDBC.filter(eventRepositoryJDBC.createFilterStatement(this.getId(), this.getDescription(), this.getDate(), this.getStart(), this.getEnd()));
     }
 
-    private String createStatement() {
-        String stmt = "";
-
-        if (!isBlank(id)) {
-            stmt = stmt + "WHERE events.ROOMID = " + id;
-        }
-
-        if (!isBlank(description)) {
-            stmt = isBlank(stmt) ? stmt + "WHERE program.DESCRIPTION = \"" + description + "\"" : stmt + " AND program.DESCRIPTION = \"" + description + "\"";
-        }
-
-        if (!isBlank(date)) {
-            stmt = isBlank(stmt) ? stmt + "WHERE events.START LIKE \"" + date + "%\"" : stmt + " AND events.START LIKE \"" + date + "%\"";
-        }
-
-        if (!isBlank(start)) {
-            stmt = isBlank(stmt) ? stmt + "WHERE events.START LIKE \"%" + start + "\"": stmt + " AND events.START LIKE \"%" + start + "\"";
-        }
-
-        if (!isBlank(end)) {
-            stmt = isBlank(stmt) ? stmt + "WHERE events.END LIKE \"%" + end +"\"": stmt + " AND events.END LIKE \"%" + end + "\"";
-        }
-
-        return stmt;
-    }
-
-    private boolean isBlank(String s){
-        return s.equals("");
-    }
 
     public void addFilterBox(FilterBox filterBox){
         filterBoxes.add(filterBox);
+    }
+
+
+    public ObservableList<FilterBox> getFilterBoxes() {
+        return filterBoxes;
+    }
+
+    public void setFilterBoxes(ObservableList<FilterBox> filterBoxes) {
+        this.filterBoxes = filterBoxes;
     }
 
     public String getId() {
@@ -99,14 +79,6 @@ public class EventFilter {
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public ObservableList<FilterBox> getFilterBoxes() {
-        return filterBoxes;
-    }
-
-    public void setFilterBoxes(ObservableList<FilterBox> filterBoxes) {
-        this.filterBoxes = filterBoxes;
     }
 
     public String getStart() {

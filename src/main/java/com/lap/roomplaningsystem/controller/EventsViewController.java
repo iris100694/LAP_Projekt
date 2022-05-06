@@ -3,37 +3,35 @@ package com.lap.roomplaningsystem.controller;
 import com.lap.roomplaningsystem.RoomplaningsystemApplication;
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.filter.EventFilter;
-import com.lap.roomplaningsystem.filter.FilterBox;
-import com.lap.roomplaningsystem.filter.FilterCheckBox;
-import com.lap.roomplaningsystem.model.DatabaseUtility;
+import com.lap.roomplaningsystem.filterBoxes.FilterBox;
+
+import com.lap.roomplaningsystem.model.Dataholder;
 import com.lap.roomplaningsystem.model.Event;
-import com.lap.roomplaningsystem.model.Room;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+
+
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.util.Callback;
+
+
 
 import java.io.IOException;
-import java.sql.Date;
-import java.time.LocalTime;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class EventsViewController extends BaseController{
     @FXML
@@ -61,22 +59,24 @@ public class EventsViewController extends BaseController{
     @FXML
     private TableColumn<Event, String> eventEndColumn;
 
-    private EventFilter filter = new EventFilter();
-    private final ObjectProperty<Event> selectedEvent = new SimpleObjectProperty<>();
+    private final EventFilter filter = new EventFilter();
+    private ObjectProperty<Event> selectedEvent = new SimpleObjectProperty<>();
+    @FXML
+    private TextField searchField;
 
     @FXML
-    void initialize() {
+    void initialize() throws SQLException {
         if(model.getUser() != null){
             loginLabel.setText("Logout");
             loginLabel.setOnMouseClicked(this::onLogoutLabelClicked);
         }
 
         initFilter();
-        initEventTable(model.getDatamodel().getEvents());
+        initEventTable(model.getDataholder().getEvents());
     }
 
-    private void initFilter() {
-        ArrayList<ObservableList<String>> list = DatabaseUtility.listsForChoiceBox(Constants.CALL_LISTS_FOR_CHOICEBOX_EVENT_FILTER);
+    private void initFilter() throws SQLException {
+        ArrayList<ObservableList<String>> list = Dataholder.eventRepositoryJDBC.listsForChoiceBox(Constants.CALL_LISTS_FOR_CHOICEBOX_EVENT_FILTER);
         ObservableList<String> times = createTimeValues();
 
         filter.addFilterBox(new FilterBox(eventNumberChoiceBox, "Nr." , list.get(0)));
@@ -131,20 +131,26 @@ public class EventsViewController extends BaseController{
 
                         if(!isBlank(box.getValue())){
                             if(!box.getValue().equals(box.getDefaultValue())){
-                                initEventTable(filter.filterValue(box.getChoiceBox().getId(), box.getValue()));
+                                try {
+                                    Optional<ObservableList<Event>> events = filter.filterValue(Dataholder.eventRepositoryJDBC, box.getChoiceBox().getId(), box.getValue());
+                                    initEventTable(events.orElse(null));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                         } else{
-                            initEventTable(filter.filterValue(box.getChoiceBox().getId(), box.getValue()));
-                            box.getChoiceBox().setValue(box.getDefaultValue());
+                            try {
+                                Optional<ObservableList<Event>> events = filter.filterValue(Dataholder.eventRepositoryJDBC, box.getChoiceBox().getId(), box.getValue());
+                                initEventTable(events.orElse(null));
+                                box.getChoiceBox().setValue(box.getDefaultValue());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-
-
                     }
                 }
-
             }
         });
-
     }
 
     private boolean isBlank(String value) {
@@ -157,7 +163,7 @@ public class EventsViewController extends BaseController{
         eventTable.setItems(events);
 
         eventNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("V" + String.valueOf(dataFeatures.getValue().getEventID())));
-        eventTitleColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getCourse().title() + "   " + dataFeatures.getValue().getCourse().program().description()));
+        eventTitleColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getCourse().getTitle() + "   " + dataFeatures.getValue().getCourse().getProgram().getDescription()));
         eventDateColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDate().toString()));
         eventStartColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getStartTime().toString()));
         eventEndColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getEndTime().toString()));
@@ -166,25 +172,14 @@ public class EventsViewController extends BaseController{
 
         selectedEvent.addListener((o, ov, nv) -> {
             try {
-                showEventDetailView(nv);
+                model.setShowEvent(nv);
+                showNewView(Constants.PATH_TO_EVENT_DETAIL_VIEW);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
 
 
-    }
-
-
-    private void showEventDetailView(Event event) throws IOException {
-        model.setShowEvent(event);
-
-        FXMLLoader fxmlLoader = new FXMLLoader(RoomplaningsystemApplication.class.getResource(Constants.PATH_TO_EVENT_DETAIL_VIEW));
-        Parent root = (Parent) fxmlLoader.load();
-        Stage stage = new Stage();
-        stage.setTitle("V" + event.getEventID());
-        stage.setScene(new Scene(root));
-        stage.show();
     }
 
 
@@ -200,9 +195,28 @@ public class EventsViewController extends BaseController{
         loginLabel.setOnMouseClicked(this::onLoginLabelClicked);
     }
 
+    @FXML
+    private void onSearch(KeyEvent keyEvent) throws Exception {
+        String searchFor = searchField.getText();
+        ObservableList<Event> searchResults = FXCollections.observableArrayList();
+        Optional<ObservableList<Event>> events = filter.getTableByFilterState(Dataholder.eventRepositoryJDBC);
 
+        if(events.isPresent()) {
+            if (!searchFor.equals("")) {
+                for (Event e : events.get()) {
+                    if (("V" + String.valueOf(e.getEventID())).toLowerCase().contains(searchFor.toLowerCase()) || e.getCourse().getTitle().toLowerCase().contains(searchFor.toLowerCase()) ||
+                            e.getCourse().getProgram().getDescription().toLowerCase().contains(searchFor.toLowerCase()) || String.valueOf(e.getDate()).toLowerCase().contains(searchFor.toLowerCase()) ||
+                            String.valueOf(e.getStartTime()).toLowerCase().contains(searchFor.toLowerCase()) || String.valueOf(e.getEndTime()).toLowerCase().contains(searchFor.toLowerCase())) {
+                        searchResults.add(e);
+                    }
+                }
 
+                initEventTable(searchResults);
+            } else {
 
-
+                initEventTable(events.get());
+            }
+        }
+    }
 
 }

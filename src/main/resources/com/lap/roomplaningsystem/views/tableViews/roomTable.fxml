@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+
+<TableView fx:id="roomTableView" prefHeight="393.0" styleClass="table" stylesheets="@../../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lap.roomplaningsystem.controller.tableController.RoomTableController">
+   <columns>
+      <TableColumn fx:id="roomNumberColumn" prefWidth="90.0" style="-fx-aligment: LEFT;" styleClass="tableColumn" text="Raum-Nr." />
+      <TableColumn fx:id="roomTitleColumn" prefWidth="295.0" styleClass="tableColumn" text="Raumbezeichnung" />
+      <TableColumn fx:id="roomSizeColumn" prefWidth="90.0" styleClass="tableColumn" text="Größe" />
+      <TableColumn fx:id="roomLocationColumn" prefWidth="200.0" styleClass="tableColumn" text="Standort" />
+   </columns>
+</TableView>
