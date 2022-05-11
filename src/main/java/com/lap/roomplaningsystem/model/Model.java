@@ -1,8 +1,11 @@
 package com.lap.roomplaningsystem.model;
 
 import com.lap.roomplaningsystem.repository.JDBC.*;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
 import java.util.Optional;
@@ -11,6 +14,7 @@ import java.util.Optional;
 public class Model {
     private StringProperty pathToView = new SimpleStringProperty();
     private StringProperty authorization = new SimpleStringProperty("standard");
+
 
     private User user = null;
     private Dataholder dataholder;
@@ -22,7 +26,10 @@ public class Model {
     private Location showLocation;
     private Equipment showEquipment;
     private RoomEquipment showRoomEquipment;
-    private User  showUser;
+    private User showUser;
+
+    private ObservableList<Room> requestResult;
+    private IntegerProperty selectedRequestResult = new SimpleIntegerProperty();
 
     public Model()  {
 
@@ -33,9 +40,10 @@ public class Model {
         }
     }
 
+
     public boolean validateLogin(String username, String password) throws SQLException {
 
-        Optional<User> validUser = dataholder.userRepositoryJDBC.checkUsernamePw(username, password);
+        Optional<User> validUser = Dataholder.userRepositoryJDBC.checkUsernamePw(username, password);
 
         if(validUser.isPresent()){
             setAuthorization(validUser.get().getAuthorization());
@@ -43,6 +51,18 @@ public class Model {
             return true;
         }
         return false;
+    }
+
+    public int getSelectedRequestResult() {
+        return selectedRequestResult.get();
+    }
+
+    public IntegerProperty selectedRequestResultProperty() {
+        return selectedRequestResult;
+    }
+
+    public void setSelectedRequestResult(int selectedRequestResult) {
+        this.selectedRequestResult.set(selectedRequestResult);
     }
 
     public String getPathToView() {
@@ -147,5 +167,13 @@ public class Model {
 
     public void setShowUser(User showUser) {
         this.showUser = showUser;
+    }
+
+    public ObservableList<Room> getRequestResult() {
+        return requestResult;
+    }
+
+    public void setRequestResult(ObservableList<Room> requestResult) {
+        this.requestResult = requestResult;
     }
 }

@@ -6,6 +6,7 @@ import com.lap.roomplaningsystem.filterBoxes.FilterBox;
 import com.lap.roomplaningsystem.filterBoxes.FilterCheckBox;
 import com.lap.roomplaningsystem.filter.Roomfilter;
 import com.lap.roomplaningsystem.model.*;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -175,16 +176,12 @@ public class RoomsViewController extends BaseController{
                 if(nv != null){
                     model.setShowRoom(nv);
                     showNewView(Constants.PATH_TO_ROOM_DETAIL_VIEW);
-                    System.out.println("error on closed");
-                    roomTable.getSelectionModel().getSelectedItem();
-                    roomTable.getSelectionModel().clearSelection();
+//                    Platform.runLater( ()-> {  roomTable.getSelectionModel().clearSelection();  });
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
-
-
     }
 
 

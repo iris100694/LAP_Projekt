@@ -8,6 +8,9 @@ public class Location {
     private String postCode;
     private String city;
 
+    public Location() {
+    }
+
     public Location(int locationID, String description, String adress, String postCode, String city) {
         this.locationID = locationID;
         this.description = description;

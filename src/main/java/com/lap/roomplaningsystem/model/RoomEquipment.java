@@ -11,6 +11,15 @@ public class RoomEquipment {
         this.equipment = equipment;
     }
 
+    @Override
+    public String toString() {
+        return "RoomEquipment{" +
+                "roomEquipmentID=" + roomEquipmentID +
+                ", room=" + room +
+                ", equipment=" + equipment +
+                '}';
+    }
+
     public int getRoomEquipmentID() {
         return roomEquipmentID;
     }

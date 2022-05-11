@@ -1,5 +1,7 @@
 package com.lap.roomplaningsystem.repository;
 
+import com.lap.roomplaningsystem.app.Constants;
+import com.lap.roomplaningsystem.model.Location;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -51,12 +53,12 @@ public class Repository {
 
         CallableStatement stmt;
         ResultSet resultSet;
-        System.out.println(query);
 
 
         stmt = connection.prepareCall(query);
 
         stmt.executeQuery();
+
         boolean getMoreResults = true;
 
         while(getMoreResults){
@@ -77,5 +79,44 @@ public class Repository {
         return  list;
 
     }
+
+
+    public ArrayList<ObservableList<String>> listsForRoomRequest(String query, String location) throws SQLException {
+        ArrayList<ObservableList<String>> list = new ArrayList<>();
+
+        Connection connection = connect();
+
+        CallableStatement stmt;
+        ResultSet resultSet;
+
+
+        stmt = connection.prepareCall(query);
+
+        stmt.setString(1, location);
+
+        stmt.executeQuery();
+
+        boolean getMoreResults = true;
+
+        while(getMoreResults){
+            ObservableList<String> results = FXCollections.observableArrayList();
+            results.add("");
+            resultSet = stmt.getResultSet();
+
+            while(resultSet.next()){
+                results.add(resultSet.getString("RESULTS"));
+            }
+
+            list.add(results);
+            getMoreResults = stmt.getMoreResults();
+
+
+        }
+
+        return  list;
+
+    }
+
+
 
 }

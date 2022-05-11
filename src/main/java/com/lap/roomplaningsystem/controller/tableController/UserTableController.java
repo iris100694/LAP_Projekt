@@ -8,6 +8,7 @@ import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.Room;
 import com.lap.roomplaningsystem.model.User;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -44,7 +45,7 @@ public class UserTableController extends BaseController {
     @FXML
     private TableColumn<User, String> userUsernameColumn;
 
-    private ObjectProperty<User> selectedRoom = new SimpleObjectProperty<>();
+   ;
 
     @FXML
     void initialize() {
@@ -71,12 +72,11 @@ public class UserTableController extends BaseController {
         userStatusColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().printActiveState()));
 
 
-        userTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> selectedRoom.set(nv));
-
-        selectedRoom.addListener((o, ov, nv) -> {
+        userTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
             model.setShowUser(nv);
             try {
                 showNewView(Constants.PATH_TO_USER_DETAIL_VIEW);
+//                Platform.runLater( ()-> {  userTableView.getSelectionModel().clearSelection();  });
             } catch (IOException e) {
                 e.printStackTrace();
             }

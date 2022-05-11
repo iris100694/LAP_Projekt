@@ -20,6 +20,10 @@ public class Course{
         this.end = end;
     }
 
+    public Course() {
+
+    }
+
     public int getCourseID() {
         return courseID;
     }

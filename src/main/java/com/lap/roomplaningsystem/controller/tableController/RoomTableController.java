@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.Room;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -37,7 +38,7 @@ public class RoomTableController extends BaseController {
     @FXML
     private TableColumn<Room, String> roomTitleColumn;
 
-    private ObjectProperty<Room> selectedRoom = new SimpleObjectProperty<>();
+
 
     @FXML
     void initialize() {
@@ -60,12 +61,11 @@ public class RoomTableController extends BaseController {
         roomLocationColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getLocation().getDescription()));
 
 
-        roomTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> selectedRoom.set(nv));
-
-        selectedRoom.addListener((o, ov, nv) -> {
+        roomTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) ->  {
             model.setShowRoom(nv);
             try {
                 showNewView(Constants.PATH_TO_ROOM_DETAIL_VIEW);
+//                Platform.runLater( ()-> {  roomTableView.getSelectionModel().clearSelection();  });
             } catch (IOException e) {
                 e.printStackTrace();
             }

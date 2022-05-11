@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.Event;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -40,7 +41,7 @@ public class EventTableController extends BaseController {
     @FXML
     private TableView<Event> eventTableView;
 
-    private ObjectProperty<Event> selectedEvent = new SimpleObjectProperty<>();
+
 
     @FXML
     void initialize() {
@@ -63,13 +64,12 @@ public class EventTableController extends BaseController {
         eventStartColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getStartTime().toString()));
         eventEndColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getEndTime().toString()));
 
-        eventTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> selectedEvent.set(nv));
-
-        selectedEvent.addListener((o, ov, nv) -> {
+        eventTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) ->  {
             model.setShowEvent(nv);
 
             try {
                 showNewView(Constants.PATH_TO_EVENT_DETAIL_VIEW);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

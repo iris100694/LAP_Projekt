@@ -37,6 +37,10 @@ public class User {
         this.photoVisable = photoVisable;
     }
 
+    public User() {
+
+    }
+
     @Override
     public String toString() {
         return "User{" +

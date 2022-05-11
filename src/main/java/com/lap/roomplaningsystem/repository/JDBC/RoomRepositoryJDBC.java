@@ -9,6 +9,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 
 
@@ -94,6 +96,10 @@ public class RoomRepositoryJDBC extends Repository implements RoomRepository {
     }
 
 
+
+
+
+
     private Optional<ObservableList<Room>> createRooms(ResultSet resultSet) throws Exception{
         ObservableList<Room> observableListRooms = FXCollections.observableArrayList();
 
@@ -115,6 +121,7 @@ public class RoomRepositoryJDBC extends Repository implements RoomRepository {
 
         return Optional.of(observableListRooms);
     }
+
 
 
 }

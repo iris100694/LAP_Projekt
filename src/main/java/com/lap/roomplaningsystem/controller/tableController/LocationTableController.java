@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.Location;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -40,7 +41,7 @@ public class LocationTableController extends BaseController {
     @FXML
     private TableView<Location> locationTableView;
 
-    private ObjectProperty<Location> selectedEvent = new SimpleObjectProperty<>();
+
 
     @FXML
     void initialize() {
@@ -63,12 +64,11 @@ public class LocationTableController extends BaseController {
         locationPostCodeColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getPostCode()));
         locationCityColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getCity()));
 
-        locationTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> selectedEvent.set(nv));
-
-        selectedEvent.addListener((o, ov, nv) -> {
+        locationTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
             model.setShowLocation(nv);
             try {
                 showNewView(Constants.PATH_TO_LOCATION_DETAIL_VIEW);
+                Platform.runLater( ()-> {  locationTableView.getSelectionModel().clearSelection();  });
             } catch (IOException e) {
                 e.printStackTrace();
             }

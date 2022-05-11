@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.Optional;
 
 public class EventRepositoryJDBC extends Repository implements EventRepository {
@@ -125,7 +126,7 @@ public class EventRepositoryJDBC extends Repository implements EventRepository {
                             resultSet.getInt("MEMBERS"),
                             resultSet.getDate("COURSESTART"),
                             resultSet.getDate("COURSEEND")),
-                    coach.orElse(null), resultSet.getDate("START"),
+                    coach.orElse(null), resultSet.getDate("START").toLocalDate(),
                     resultSet.getTime("START"),
                     resultSet.getTime("END"));
 
@@ -135,5 +136,6 @@ public class EventRepositoryJDBC extends Repository implements EventRepository {
         return Optional.of(observableListEvents);
 
     }
+
 
 }

@@ -10,6 +10,10 @@ public class Equipment{
         this.description = description;
     }
 
+    public Equipment() {
+
+    }
+
     public int getEquipmentID() {
         return equipmentID;
     }

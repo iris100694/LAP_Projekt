@@ -72,6 +72,7 @@ public class StammdataViewController extends BaseController{
 
     private void vaildateTable(String newValue) throws IOException {
         switch(newValue){
+            case "Benutzer" -> loadFXMLInBorderPaneCenter(Constants.PATH_TO_USER_TABLE_VIEW);
             case "Räume" -> loadFXMLInBorderPaneCenter(Constants.PATH_TO_ROOM_TABLE_VIEW);
             case "Events" -> loadFXMLInBorderPaneCenter(Constants.PATH_TO_EVENT_TABLE_VIEW);
             case "Kurse" -> loadFXMLInBorderPaneCenter(Constants.PATH_TO_COURSE_TABLE_VIEW);

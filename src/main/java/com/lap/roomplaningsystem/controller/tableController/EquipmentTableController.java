@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.Equipment;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -31,7 +32,7 @@ public class EquipmentTableController extends BaseController {
     @FXML
     private TableColumn<Equipment, String> equipmentNumberColumn;
 
-    private ObjectProperty<Equipment> selectedEvent = new SimpleObjectProperty<>();
+
 
     @FXML
     void initialize() {
@@ -48,12 +49,11 @@ public class EquipmentTableController extends BaseController {
         equipmentNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("A" + String.valueOf(dataFeatures.getValue().getEquipmentID())));
         equipmentDescriptionColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDescription()));
 
-        equipmentTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> selectedEvent.set(nv));
-
-        selectedEvent.addListener((o, ov, nv) -> {
+        equipmentTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) ->  {
             model.setShowEquipment(nv);
             try {
                 showNewView(Constants.PATH_TO_EQUIPMENT_DETAIL_VIEW);
+//                Platform.runLater( ()-> {  equipmentTableView.getSelectionModel().clearSelection();  });
             } catch (IOException e) {
                 e.printStackTrace();
             }

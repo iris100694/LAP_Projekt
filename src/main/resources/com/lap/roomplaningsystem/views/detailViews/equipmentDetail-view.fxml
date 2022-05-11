@@ -74,7 +74,7 @@
             <Insets right="20.0" />
          </GridPane.margin>
       </Button>
-      <Label fx:id="equipmentDetailViewDescriptionLabel" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2">
+      <Label fx:id="equipmentDescriptionLabel" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2">
          <font>
             <Font name="Century Gothic" size="12.0" />
          </font>

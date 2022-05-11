@@ -10,6 +10,7 @@ import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.Course;
 import com.lap.roomplaningsystem.model.Room;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -50,7 +51,7 @@ public class CourseTableController extends BaseController {
     @FXML
     private TableView<Course> courseTableView;
 
-    private ObjectProperty<Course> selectedEvent = new SimpleObjectProperty<>();
+
 
     @FXML
     void initialize() {
@@ -75,12 +76,11 @@ public class CourseTableController extends BaseController {
         courseStartColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<Date>(dataFeatures.getValue().getStart()));
         courseEndColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<Date>(dataFeatures.getValue().getEnd()));
 
-        courseTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> selectedEvent.set(nv));
-
-        selectedEvent.addListener((o, ov, nv) -> {
+        courseTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
             model.setShowCourse(nv);
             try {
                 showNewView(Constants.PATH_TO_COURSE_DETAIL_VIEW);
+//                Platform.runLater( ()-> {  courseTableView.getSelectionModel().clearSelection();  });
             } catch (IOException e) {
                 e.printStackTrace();
             }

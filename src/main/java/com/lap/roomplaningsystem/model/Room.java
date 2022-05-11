@@ -1,7 +1,5 @@
 package com.lap.roomplaningsystem.model;
 
-import javafx.collections.ObservableList;
-
 import java.util.Arrays;
 
 public class Room {

@@ -40,6 +40,10 @@ public class Constants {
     public static final String PATH_TO_ROOMEQUIPMENT_TABLE_VIEW = "/com/lap/roomplaningsystem/views/tableViews/roomEquipmentTable.fxml";
     public static final String PATH_TO_USER_TABLE_VIEW = "/com/lap/roomplaningsystem/views/tableViews/userTable.fxml";
 
+    public static final String PATH_TO_REQUEST_VIEW = "/com/lap/roomplaningsystem/views/request-view.fxml";
+    public static final String PATH_TO_ROOM_REQUEST_RESULT_VIEW = "/com/lap/roomplaningsystem/views/requestResult-view.fxml";
+
+
     public static final String CALL_LISTS_FOR_CHOICEBOX_ROOM_FILTER = "{CALL ListsForChoiceBoxRoomFilter()}";
     public static final String CALL_LISTS_FOR_CHOICEBOX_EVENT_FILTER = "{CALL ListsForChoiceBoxEventFilter()}";
 
@@ -49,5 +53,7 @@ public class Constants {
     public  static final String EVENTS_BASE_FILTER = "SELECT events.EVENTID, events.CREATORID, rooms.ROOMID, rooms.DESCRIPTION AS \"ROOMDESCRIPTION\", locations.LOCATIONID, locations.DESCRIPTION AS \"LOCATIONDESCRIPTION\", locations.ADRESS, locations.POSTCODE, locations.CITY, rooms.MAXPERSONS, rooms.PHOTO, course.COURSEID, program.PROGRAMID, program.DESCRIPTION AS \"PROGRAMDESCRIPTION\", course.TITLE, course.MEMBERS, course.START AS \"COURSESTART\", course.END AS \"COURSEEND\", events.COACHID, events.START, events.END FROM events LEFT JOIN rooms ON events.ROOMID = rooms.ROOMID INNER JOIN locations ON rooms.LOCATIONID = locations.LOCATIONID LEFT JOIN course ON events.COURSEID = course.COURSEID INNER JOIN program ON course.PROGRAMID = program.PROGRAMID ";
 
 
+    public static final String CALL_LISTS_FOR_REQUEST_COMBOBOXES = "{CALL listsForRequest()}";
+   public static final String CALL_LISTS_FOR_REQUEST_ROOMS = "{CALL listsForRequestRooms(?)}";
 
 }

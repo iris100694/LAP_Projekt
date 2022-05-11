@@ -1,6 +1,8 @@
 package com.lap.roomplaningsystem.controller.updateController;
 
 import java.net.URL;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.controller.BaseController;
@@ -18,6 +20,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
+import javafx.util.converter.LocalDateStringConverter;
 
 public class EventOnUpdateController extends BaseController {
 
@@ -87,11 +90,16 @@ public class EventOnUpdateController extends BaseController {
         eventDetailViewLocationComboBox.setItems(model.getDataholder().getLocations());
         eventDetailViewCoachComboBox.setItems(model.getDataholder().getCoaches());
         eventDetailViewCourseComboBox.setItems(model.getDataholder().getCourses());
+        eventDetailViewRoomComboBox.setItems(availableRooms(e.getRoom().getLocation()));
 
         eventDetailViewLocationComboBox.getSelectionModel().select(e.getRoom().getLocation());
         eventDetailViewRoomComboBox.getSelectionModel().select(e.getRoom());
         eventDetailViewCoachComboBox.getSelectionModel().select(e.getCoach());
         eventDetailViewCourseComboBox.getSelectionModel().select(e.getCourse());
+
+        eventDetailViewDatePicker.setValue(e.getDate());
+        eventDetailViewStartInput.setText(e.getStartTime().toString());
+        eventDetailViewEndInput.setText(e.getEndTime().toString());
 
 
         eventDetailViewLocationComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Location>() {
@@ -104,16 +112,6 @@ public class EventOnUpdateController extends BaseController {
             }
         });
 
-    }
-
-    private ObservableList<Room> availableRooms(Location newLocation) {
-        ObservableList<Room> rooms = FXCollections.observableArrayList();
-        for(Room r : model.getDataholder().getRooms()){
-            if(r.getLocation().getLocationID() == newLocation.getLocationID()){
-                rooms.add(r);
-            }
-        }
-        return rooms;
     }
 
 
@@ -167,7 +165,7 @@ public class EventOnUpdateController extends BaseController {
 
             @Override
             public Room fromString(String s) {
-                RoomMatcher roomMatcher = new RoomMatcher();
+                RoomMatcher roomMatcher = new RoomMatcher(eventDetailViewLocationComboBox.getValue());
                 return roomMatcher.matchByString(s, model.getDataholder().getRooms());
             }
         });

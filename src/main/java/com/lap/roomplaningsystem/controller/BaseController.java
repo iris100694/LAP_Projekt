@@ -2,15 +2,20 @@ package com.lap.roomplaningsystem.controller;
 
 import com.lap.roomplaningsystem.RoomplaningsystemApplication;
 import com.lap.roomplaningsystem.app.Constants;
+import com.lap.roomplaningsystem.model.Location;
 import com.lap.roomplaningsystem.model.Model;
 import com.lap.roomplaningsystem.model.Room;
 import com.lap.roomplaningsystem.repository.JDBC.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Time;
+import java.time.LocalTime;
 
 public class BaseController {
     public static Model model = new Model();
@@ -22,5 +27,26 @@ public class BaseController {
         Stage stage = new Stage();
         stage.setScene(new Scene(root));
         stage.showAndWait();
+    }
+
+    protected ObservableList<Room> availableRooms(Location newLocation) {
+        ObservableList<Room> rooms = FXCollections.observableArrayList();
+        for(Room r : model.getDataholder().getRooms()){
+            if(r.getLocation().getLocationID() == newLocation.getLocationID()){
+                rooms.add(r);
+            }
+        }
+        return rooms;
+    }
+
+    protected ObservableList<LocalTime> createTimeList() {
+        ObservableList<LocalTime> timeList = FXCollections.observableArrayList();
+
+        for(int i = 0; i < 24; i++){
+            timeList.add(LocalTime.of(i,0));
+            timeList.add(LocalTime.of(i,30));
+        }
+
+        return timeList;
     }
 }

@@ -8,6 +8,7 @@ import com.lap.roomplaningsystem.filterBoxes.FilterBox;
 import com.lap.roomplaningsystem.model.Dataholder;
 import com.lap.roomplaningsystem.model.Event;
 
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
@@ -168,12 +169,11 @@ public class EventsViewController extends BaseController{
         eventStartColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getStartTime().toString()));
         eventEndColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getEndTime().toString()));
 
-        eventTable.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> selectedEvent.set(nv));
-
-        selectedEvent.addListener((o, ov, nv) -> {
+        eventTable.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) ->  {
             try {
                 model.setShowEvent(nv);
                 showNewView(Constants.PATH_TO_EVENT_DETAIL_VIEW);
+//                Platform.runLater( ()-> {  eventTable.getSelectionModel().clearSelection();  });
             } catch (IOException e) {
                 e.printStackTrace();
             }

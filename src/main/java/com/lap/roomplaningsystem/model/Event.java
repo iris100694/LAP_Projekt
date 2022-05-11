@@ -3,6 +3,7 @@ package com.lap.roomplaningsystem.model;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
 
 public class Event {
     private int eventID;
@@ -10,12 +11,12 @@ public class Event {
     private Room  room;
     private Course course;
     private User coach;
-    private Date date;
+    private LocalDate date;
     private Time startTime;
     private Time endTime;
 
 
-    public Event(int eventID, User creator, Room room, Course course, User coach, Date date, Time start, Time end) {
+    public Event(int eventID, User creator, Room room, Course course, User coach, LocalDate date, Time start, Time end) {
         this.eventID = eventID;
         this.creator = creator;
         this.room = room;
@@ -79,11 +80,11 @@ public class Event {
         this.coach = coach;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.Program;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -31,7 +32,7 @@ public class ProgramTableController extends BaseController {
     @FXML
     private TableView<Program> programTableView;
 
-    private ObjectProperty<Program> selectedEvent = new SimpleObjectProperty<>();
+
 
     @FXML
     void initialize() {
@@ -48,10 +49,9 @@ public class ProgramTableController extends BaseController {
         programNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("P" + String.valueOf(dataFeatures.getValue().getProgramID())));
         programDescriptionColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDescription()));
 
-        programTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> selectedEvent.set(nv));
-
-        selectedEvent.addListener((o, ov, nv) -> {
+        programTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
             model.setShowProgram(nv);
+//            Platform.runLater( ()-> {  programTableView.getSelectionModel().clearSelection();  });
             try {
                 showNewView(Constants.PATH_TO_PROGRAM_DETAIL_VIEW);
             } catch (IOException e) {

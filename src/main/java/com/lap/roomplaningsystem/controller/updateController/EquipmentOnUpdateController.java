@@ -42,7 +42,7 @@ public class EquipmentOnUpdateController extends BaseController {
     private void initView() {
         Equipment equipment = model.getShowEquipment();
 
-        equipmentNumberLabel.setText(String.valueOf(equipment.getEquipmentID()));
+        equipmentNumberLabel.setText("A" + String.valueOf(equipment.getEquipmentID()));
         equipmentDescriptionInput.setText(equipment.getDescription());
     }
 
