@@ -2,6 +2,7 @@ package com.lap.roomplaningsystem.controller.detailController;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.app.Constants;
@@ -43,14 +44,17 @@ public class EquipmentDetailViewController extends BaseController {
         assert editEquipment != null : "fx:id=\"editEquipment\" was not injected: check your FXML file 'equipmentDetailOnUpdate-view.fxml'.";
         assert equipmentDescriptionLabel != null : "fx:id=\"equipmentDescriptionLabel\" was not injected: check your FXML file 'equipmentDetailOnUpdate-view.fxml'.";
         assert equipmentDetailViewNumberLabel != null : "fx:id=\"equipmentDetailViewNumberLabel\" was not injected: check your FXML file 'equipmentDetailOnUpdate-view.fxml'.";
-        initView();
+
+        Optional<Equipment> optionalEquipment = model.getDataholder().getEquipments().stream().filter(equipment -> equipment == model.getSelectedEquipmentProperty()).findAny();
+
+        if(optionalEquipment.isPresent()) {
+            Equipment e = optionalEquipment.get();
+            equipmentDetailViewNumberLabel.setText("A" + String.valueOf(e.getEquipmentID()));
+            equipmentDescriptionLabel.setText(e.getDescription());
+        }
     }
 
-    private void initView() {
-        Equipment equipment = model.getShowEquipment();
-        equipmentDetailViewNumberLabel.setText("A" + String.valueOf(equipment.getEquipmentID()));
-        equipmentDescriptionLabel.setText(equipment.getDescription());
-    }
+
 
     @FXML
     void onEquipmentDeleteButtonClicked(MouseEvent event) {

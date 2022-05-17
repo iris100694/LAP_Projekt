@@ -10,6 +10,7 @@ import com.lap.roomplaningsystem.model.Room;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -48,12 +49,7 @@ public class RoomTableController extends BaseController {
         assert roomTableView != null : "fx:id=\"roomTableView\" was not injected: check your FXML file 'roomTable.fxml'.";
         assert roomTitleColumn != null : "fx:id=\"roomTitleColumn\" was not injected: check your FXML file 'roomTable.fxml'.";
 
-        initRoomTable(model.getDataholder().getRooms());
-    }
-
-    private void initRoomTable(ObservableList<Room> rooms) {
-
-        roomTableView.setItems(rooms);
+        roomTableView.setItems(model.getDataholder().getRooms());
 
         roomNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("R" + String.valueOf(dataFeatures.getValue().getRoomID())));
         roomTitleColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDescription()));
@@ -62,17 +58,20 @@ public class RoomTableController extends BaseController {
 
 
         roomTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) ->  {
-            model.setShowRoom(nv);
+
             try {
-                showNewView(Constants.PATH_TO_ROOM_DETAIL_VIEW);
-//                Platform.runLater( ()-> {  roomTableView.getSelectionModel().clearSelection();  });
+                if(nv != null){
+                    model.setSelectedRoomProperty(nv);
+                    showNewView(Constants.PATH_TO_ROOM_DETAIL_VIEW);
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
 
-
     }
+
 
 }
 

@@ -3,6 +3,7 @@ package com.lap.roomplaningsystem.controller.detailController;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.app.Constants;
@@ -101,31 +102,34 @@ public class UserDetailViewController extends BaseController {
         assert userDetailViewTrainerLabel != null : "fx:id=\"userDetailViewTrainerLabel\" was not injected: check your FXML file 'userDetail-view.fxml'.";
         assert userDetailViewUsernameLabel != null : "fx:id=\"userDetailViewUsernameLabel\" was not injected: check your FXML file 'userDetail-view.fxml'.";
 
-        initView();
-    }
+        Optional<User> optionalUser = model.getDataholder().getUsers().stream().filter(user -> user == model.getSelectedUserProperty()).findAny();
 
-    private void initView() {
-        User u = model.getShowUser();
+        if(optionalUser.isPresent()) {
+            User u = optionalUser.get();
 
-        userDetailViewFirstnameLabel.setText(u.getFirstname());
-        userDetailViewLastnameLabel.setText(u.getLastname());
-        userDetailViewTitleLabel.setText(u.getTitle());
-        userDetailViewActivLabel.setText(u.isActive()? "aktiv" : "inaktiv");
-        userDetailViewAuthorizationLabel.setText(u.getAuthorization() == "admin"? "Administator" : "Trainer");
-        userDetailViewUsernameLabel.setText(u.getUsername());
-        userDetailViewTrainerLabel.setText(u.isTrainer()? "ja" : "nein");
-        userDetailViewTextLabel.setText(u.getText());
-        userDetailViewTextVisableLabel.setText(u.isTextVisable()? "ja" : "nein");
-        userDetailViewPhoneLabel.setText(u.getPhone());
-        userDetailViewPhoneVisableLabel.setText(u.isPhoneVisable()? "ja" : "nein");
-        userDetailViewMailLabel.setText(u.getEmail());
-        userDetailViewMailVisableLabel.setText(u.isEmailVisable()? "ja" : "nein");
-        userDetailViewPhotoVisableLabel.setText(u.isPhotoVisable()? "ja" : "nein");
+            userDetailViewFirstnameLabel.setText(u.getFirstname());
+            userDetailViewLastnameLabel.setText(u.getLastname());
+            userDetailViewTitleLabel.setText(u.getTitle());
+            userDetailViewActivLabel.setText(u.isActive() ? "aktiv" : "inaktiv");
+            userDetailViewAuthorizationLabel.setText(u.getAuthorization() == "admin" ? "Administator" : "Trainer");
+            userDetailViewUsernameLabel.setText(u.getUsername());
+            userDetailViewTrainerLabel.setText(u.isTrainer() ? "ja" : "nein");
+            userDetailViewTextLabel.setText(u.getText());
+            userDetailViewTextVisableLabel.setText(u.isTextVisable() ? "ja" : "nein");
+            userDetailViewPhoneLabel.setText(u.getPhone());
+            userDetailViewPhoneVisableLabel.setText(u.isPhoneVisable() ? "ja" : "nein");
+            userDetailViewMailLabel.setText(u.getEmail());
+            userDetailViewMailVisableLabel.setText(u.isEmailVisable() ? "ja" : "nein");
+            userDetailViewPhotoVisableLabel.setText(u.isPhotoVisable() ? "ja" : "nein");
 
-        if(u.getPhoto() != null){
-            userDetailViewImageView.setImage(new Image(new ByteArrayInputStream(u.getPhoto())));
+            if (u.getPhoto() != null) {
+                userDetailViewImageView.setImage(new Image(new ByteArrayInputStream(u.getPhoto())));
+            }
         }
+
+
     }
+
 
     @FXML
     void onUserDeleteButtonClicked(MouseEvent event) {

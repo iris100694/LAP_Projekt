@@ -2,9 +2,12 @@ package com.lap.roomplaningsystem.controller.updateController;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.controller.BaseController;
+import com.lap.roomplaningsystem.model.Room;
 import com.lap.roomplaningsystem.model.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -82,6 +85,9 @@ public class UserOnUpdateController extends BaseController {
     private TextField userUsernameInput;
 
     @FXML
+    private Label errorUsernameLabel;
+
+    @FXML
     void initialize() {
         assert saveUser != null : "fx:id=\"saveUser\" was not injected: check your FXML file 'userDetailOnUpdate-view.fxml'.";
         assert userActivComboBox != null : "fx:id=\"userActivComboBox\" was not injected: check your FXML file 'userDetailOnUpdate-view.fxml'.";
@@ -102,23 +108,32 @@ public class UserOnUpdateController extends BaseController {
         assert userTrainerComboBox != null : "fx:id=\"userTrainerComboBox\" was not injected: check your FXML file 'userDetailOnUpdate-view.fxml'.";
         assert userUsernameInput != null : "fx:id=\"userUsernameInput\" was not injected: check your FXML file 'userDetailOnUpdate-view.fxml'.";
 
-        initView();
-    }
+        Optional<User> optionalUser = model.getDataholder().getUsers().stream().filter(user -> user == model.getSelectedUserProperty()).findAny();
 
-    private void initView() {
-        User u = model.getShowUser();
+        if(optionalUser.isPresent()){
+            User u = optionalUser.get();
 
-        userNumberLabel.setText("B" + String.valueOf(u.getId()));
-        userFirstnameInput.setText(u.getFirstname());
-        userLastnameInput.setText(u.getLastname());
-        userTitleInput.setText(u.getTitle());
-        userUsernameInput.setText(u.getUsername());
-        userPhoneInput.setText(u.getPhone());
-        userEMailInput.setText(u.getEmail());
-        userTextInput.setText(u.getText());
+            userNumberLabel.setText("B" + String.valueOf(u.getId()));
+            userFirstnameInput.setText(u.getFirstname());
+            userLastnameInput.setText(u.getLastname());
+            userTitleInput.setText(u.getTitle());
+            userUsernameInput.setText(u.getUsername());
+            userPhoneInput.setText(u.getPhone());
+            userEMailInput.setText(u.getEmail());
+            userTextInput.setText(u.getText());
 
-        if(u.getPhoto() != null){
-            userImageView.setImage(new Image(new ByteArrayInputStream(u.getPhoto())));
+            if(u.getPhoto() != null){
+                userImageView.setImage(new Image(new ByteArrayInputStream(u.getPhoto())));
+            }
+
+            userActivComboBox.getSelectionModel().select(u.isActive());
+            userTrainerComboBox.getSelectionModel().select(u.isTrainer());
+            userTextVisableComboBox.getSelectionModel().select(u.isTextVisable());
+            userEMailVisableComboBox.getSelectionModel().select(u.isEmailVisable());
+            userPhoneVisableComboBox.getSelectionModel().select(u.isPhoneVisable());
+            userPhotoVisableComboBox.getSelectionModel().select(u.isPhotoVisable());
+            userAuthorizationCombobox.getSelectionModel().select(u.getAuthorization() == "admin" ? "Administrator" : "Trainer");
+
         }
 
         ObservableList<Boolean> booleanList = booleanList();
@@ -131,14 +146,6 @@ public class UserOnUpdateController extends BaseController {
         userPhotoVisableComboBox.setItems(booleanList);
         userAuthorizationCombobox.setItems(authorizationList());
 
-        userActivComboBox.getSelectionModel().select(u.isActive());
-        userTrainerComboBox.getSelectionModel().select(u.isTrainer());
-        userTextVisableComboBox.getSelectionModel().select(u.isTextVisable());
-        userEMailVisableComboBox.getSelectionModel().select(u.isEmailVisable());
-        userPhoneVisableComboBox.getSelectionModel().select(u.isPhoneVisable());
-        userPhotoVisableComboBox.getSelectionModel().select(u.isPhotoVisable());
-        userAuthorizationCombobox.getSelectionModel().select(u.getAuthorization() == "admin" ? "Administrator" : "Trainer");
-
         initStringConverter(userActivComboBox);
         initStringConverter(userTrainerComboBox);
         initStringConverter(userTextVisableComboBox);
@@ -147,35 +154,21 @@ public class UserOnUpdateController extends BaseController {
         initStringConverter(userPhotoVisableComboBox);
 
 
-    }
-
-    private void initStringConverter(ComboBox<Boolean> box) {
-        box.setConverter(new StringConverter<Boolean>() {
-            @Override
-            public String toString(Boolean b) {
-                return b ? "ja" : "nein";
-            }
-
-            @Override
-            public Boolean fromString(String s) {
-                return s.equals("ja")? Boolean.TRUE : Boolean.FALSE;
+        userUsernameInput.setOnKeyTyped(event -> {
+            List<String> usernames = model.getDataholder().getUsers().stream().map(User::getUsername).toList();
+            boolean exist = usernames.stream().anyMatch(username -> username.equals(userUsernameInput.getText()));
+            if (exist) {
+                errorUsernameLabel.setText("Username bereits vergeben!");
+            } else {
+                errorUsernameLabel.setText("");
             }
         });
     }
 
-    private ObservableList<Boolean> booleanList() {
-        ObservableList<Boolean> booleanList = FXCollections.observableArrayList();
-        booleanList.add(Boolean.TRUE);
-        booleanList.add(Boolean.FALSE);
-        return booleanList;
-    }
 
-    private ObservableList<String> authorizationList() {
-        ObservableList<String> authorizationList = FXCollections.observableArrayList();
-        authorizationList.add("Administrator");
-        authorizationList.add("Trainer");
-        return authorizationList;
-    }
+
+
+
 
     @FXML
     void onUserButtonClicked(MouseEvent event) {

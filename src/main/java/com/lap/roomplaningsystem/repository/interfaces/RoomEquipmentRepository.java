@@ -1,8 +1,6 @@
 package com.lap.roomplaningsystem.repository.interfaces;
 
-import com.lap.roomplaningsystem.model.Event;
-import com.lap.roomplaningsystem.model.RoomEquipment;
-import com.lap.roomplaningsystem.model.User;
+import com.lap.roomplaningsystem.model.*;
 import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
@@ -12,9 +10,11 @@ public interface RoomEquipmentRepository extends BaseRepository {
 
     Optional<ObservableList<RoomEquipment>> readAll() throws Exception;
 
-    void add(RoomEquipment roomEquipment) throws SQLException;
+    RoomEquipment add(Room room, Equipment equipment) throws Exception;
 
     void update(RoomEquipment roomEquipment) throws SQLException;
 
     void delete(RoomEquipment roomEquipment) throws SQLException;
+
+
 }

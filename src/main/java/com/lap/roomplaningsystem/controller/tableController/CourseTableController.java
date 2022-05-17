@@ -63,11 +63,7 @@ public class CourseTableController extends BaseController {
         assert courseStartColumn != null : "fx:id=\"courseStartColumn\" was not injected: check your FXML file 'courseTable.fxml'.";
         assert courseTableView != null : "fx:id=\"courseTable\" was not injected: check your FXML file 'courseTable.fxml'.";
 
-        initCourseTable(model.getDataholder().getCourses());
-    }
-
-    private void initCourseTable(ObservableList<Course> course) {
-        courseTableView.setItems(course);
+        courseTableView.setItems(model.getDataholder().getCourses());
 
         courseNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("K" + String.valueOf(dataFeatures.getValue().getCourseID())));
         courseProgramColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getProgram().getDescription()));
@@ -77,14 +73,23 @@ public class CourseTableController extends BaseController {
         courseEndColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<Date>(dataFeatures.getValue().getEnd()));
 
         courseTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
-            model.setShowCourse(nv);
+
             try {
-                showNewView(Constants.PATH_TO_COURSE_DETAIL_VIEW);
-//                Platform.runLater( ()-> {  courseTableView.getSelectionModel().clearSelection();  });
+                if(nv != null){
+                    model.setSelectedCourseProperty(nv);
+                    showNewView(Constants.PATH_TO_COURSE_DETAIL_VIEW);
+                }
+
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
+    }
+
+    private void initCourseTable(ObservableList<Course> course) {
+        courseTableView.setItems(course);
+
 
     }
 

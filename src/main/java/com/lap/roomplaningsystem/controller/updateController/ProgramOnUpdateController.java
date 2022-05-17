@@ -1,10 +1,12 @@
 package com.lap.roomplaningsystem.controller.updateController;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.Program;
+import com.lap.roomplaningsystem.model.RoomEquipment;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -36,15 +38,18 @@ public class ProgramOnUpdateController extends BaseController {
         assert programNumberLabel != null : "fx:id=\"programNumberLabel\" was not injected: check your FXML file 'programDetailOnUpdate-view.fxml'.";
         assert saveProgram != null : "fx:id=\"saveProgram\" was not injected: check your FXML file 'programDetailOnUpdate-view.fxml'.";
 
-        initView();
+        Optional<Program> optionalProgram = model.getDataholder().getPrograms().stream().filter(program -> program == model.getSelectedProgramProperty()).findAny();
+
+        if(optionalProgram.isPresent()){
+            Program p = optionalProgram.get();
+
+            programNumberLabel.setText("P" + String.valueOf(p.getProgramID()));
+            programDescriptionInput.setText(p.getDescription());
+        }
+
     }
 
-    private void initView() {
-        Program p = model.getShowProgram();
 
-        programNumberLabel.setText("P" + String.valueOf(p.getProgramID()));
-        programDescriptionInput.setText(p.getDescription());
-    }
 
     @FXML
     void onProgramSaveButtonClicked(MouseEvent event) {

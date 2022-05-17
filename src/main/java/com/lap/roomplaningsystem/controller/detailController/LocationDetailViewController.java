@@ -2,6 +2,7 @@ package com.lap.roomplaningsystem.controller.detailController;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.app.Constants;
@@ -53,18 +54,19 @@ public class LocationDetailViewController extends BaseController {
         assert locationDetailViewNumberLabel != null : "fx:id=\"locationDetailViewNumberLabel\" was not injected: check your FXML file 'locationDetail-view.fxml'.";
         assert locationDetailViewPostCodeLabel != null : "fx:id=\"locationDetailViewPostCodeLabel\" was not injected: check your FXML file 'locationDetail-view.fxml'.";
 
-        initView();
+        Optional<Location> optionalLocation = model.getDataholder().getLocations().stream().filter(location -> location == model.getSelectedLocationProperty()).findAny();
+
+        if(optionalLocation.isPresent()) {
+            Location l = optionalLocation.get();
+            locationDetailViewNumberLabel.setText("S" + String.valueOf(l.getLocationID()));
+            locationDetailViewDescriptionLabel.setText(l.getDescription());
+            locationDetailViewAdressLabel.setText(l.getAdress());
+            locationDetailViewPostCodeLabel.setText(l.getPostCode());
+            locationDetailViewCityLabel.setText(l.getCity());
+        }
     }
 
-    private void initView() {
-        Location location = model.getShowLocation();
 
-        locationDetailViewNumberLabel.setText("S" + String.valueOf(location.getLocationID()));
-        locationDetailViewDescriptionLabel.setText(location.getDescription());
-        locationDetailViewAdressLabel.setText(location.getAdress());
-        locationDetailViewPostCodeLabel.setText(location.getPostCode());
-        locationDetailViewCityLabel.setText(location.getCity());
-    }
 
     @FXML
     void onLocationDeleteButtonClicked(MouseEvent event) throws IOException {

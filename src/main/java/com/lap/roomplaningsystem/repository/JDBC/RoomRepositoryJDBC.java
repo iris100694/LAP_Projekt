@@ -2,12 +2,15 @@ package com.lap.roomplaningsystem.repository.JDBC;
 
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.model.Location;
+import com.lap.roomplaningsystem.model.Program;
 import com.lap.roomplaningsystem.model.Room;
 import com.lap.roomplaningsystem.repository.Repository;
 import com.lap.roomplaningsystem.repository.interfaces.RoomRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,7 +84,42 @@ public class RoomRepositoryJDBC extends Repository implements RoomRepository {
     }
 
     @Override
-    public void add(Room room) throws SQLException {
+    public Room add(String description, Location location, String maxPersons, InputStream inputStream) throws SQLException {
+
+        byte[] photo= new byte[0];
+        if (inputStream != null) {
+            try {
+                photo = inputStream.readAllBytes();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        Connection connection = connect();
+
+        String query = "INSERT INTO rooms (DESCRIPTION, LOCATIONID, MAXPERSONS, PHOTO) VALUES (?,?,?,?)";
+
+        PreparedStatement stmt = null;
+
+        stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        stmt.setString(1, description);
+        stmt.setInt(2, location.getLocationID());
+        stmt.setInt(3, Integer.parseInt(maxPersons));
+        stmt.setBlob(4, inputStream);
+
+        stmt.executeQuery();
+
+        ResultSet resultSet = stmt.getGeneratedKeys();
+
+        Room room = null;
+
+        while(resultSet.next()){
+
+            int roomID  = resultSet.getInt(1);
+            room = new Room(roomID, description, location, Integer.parseInt(maxPersons), photo);
+        }
+
+        return room;
+
 
     }
 
@@ -121,7 +159,5 @@ public class RoomRepositoryJDBC extends Repository implements RoomRepository {
 
         return Optional.of(observableListRooms);
     }
-
-
 
 }

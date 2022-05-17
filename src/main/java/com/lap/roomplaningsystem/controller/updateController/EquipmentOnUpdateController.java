@@ -1,10 +1,12 @@
 package com.lap.roomplaningsystem.controller.updateController;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.Equipment;
+import com.lap.roomplaningsystem.model.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -36,15 +38,16 @@ public class EquipmentOnUpdateController extends BaseController {
         assert equipmentNumberLabel != null : "fx:id=\"equipmentNumberLabel\" was not injected: check your FXML file 'equipmentDetailOnUpdate-view.fxml'.";
         assert saveEquipment != null : "fx:id=\"saveEquipment\" was not injected: check your FXML file 'equipmentDetailOnUpdate-view.fxml'.";
 
-        initView();
+        Optional<Equipment> optionalEquipment = model.getDataholder().getEquipments().stream().filter(equipment -> equipment == model.getSelectedEquipmentProperty()).findAny();
+
+        if(optionalEquipment.isPresent()){
+            Equipment e = optionalEquipment.get();
+
+            equipmentNumberLabel.setText("A" + String.valueOf(e.getEquipmentID()));
+            equipmentDescriptionInput.setText(e.getDescription());
+        }
     }
 
-    private void initView() {
-        Equipment equipment = model.getShowEquipment();
-
-        equipmentNumberLabel.setText("A" + String.valueOf(equipment.getEquipmentID()));
-        equipmentDescriptionInput.setText(equipment.getDescription());
-    }
 
 
     @FXML

@@ -12,10 +12,11 @@ public interface EquipmentRepository extends BaseRepository{
 
     Optional<ObservableList<Equipment>> readAll() throws Exception;
 
-    void add(Equipment equipment) throws SQLException;
+    Equipment add(String text) throws Exception;
 
     void update(Equipment equipment) throws SQLException;
 
     void delete(Equipment equipment) throws SQLException;
+
 
 }

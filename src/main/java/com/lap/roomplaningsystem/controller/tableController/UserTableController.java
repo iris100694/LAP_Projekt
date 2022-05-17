@@ -57,12 +57,7 @@ public class UserTableController extends BaseController {
         assert userTableView != null : "fx:id=\"userTableView\" was not injected: check your FXML file 'userTable.fxml'.";
         assert userUsernameColumn != null : "fx:id=\"userUsernameColumn\" was not injected: check your FXML file 'userTable.fxml'.";
 
-        initUserTable(model.getDataholder().getUsers());
-        
-    }
-
-    private void initUserTable(ObservableList<User> users) {
-        userTableView.setItems(users);
+        userTableView.setItems(model.getDataholder().getUsers());
 
         userIDColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("U" + String.valueOf(dataFeatures.getValue().getId())));
         userFirstnameColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getFirstname()));
@@ -73,14 +68,18 @@ public class UserTableController extends BaseController {
 
 
         userTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
-            model.setShowUser(nv);
+
             try {
-                showNewView(Constants.PATH_TO_USER_DETAIL_VIEW);
-//                Platform.runLater( ()-> {  userTableView.getSelectionModel().clearSelection();  });
+                if(nv != null){
+                    model.setSelectedUserProperty(nv);
+                    showNewView(Constants.PATH_TO_USER_DETAIL_VIEW);
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
     }
+
 
 }

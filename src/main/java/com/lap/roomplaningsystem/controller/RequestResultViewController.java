@@ -56,7 +56,7 @@ public class RequestResultViewController extends BaseController{
 
 
         tableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) ->  {
-            model.setSelectedRequestResult(nv.getRoomID());
+            model.setSelectedResultProperty(nv);
 
             Stage resultStage = (Stage) tableView.getScene().getWindow();
             resultStage.close();

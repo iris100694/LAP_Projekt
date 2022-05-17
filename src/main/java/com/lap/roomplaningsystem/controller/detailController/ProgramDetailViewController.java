@@ -2,6 +2,7 @@ package com.lap.roomplaningsystem.controller.detailController;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.app.Constants;
@@ -42,14 +43,17 @@ public class ProgramDetailViewController extends BaseController {
         assert programDetailViewDescriptionLabel != null : "fx:id=\"programDetailViewDescriptionLabel\" was not injected: check your FXML file 'programDetail-view.fxml'.";
         assert programDetailViewNumberLabel != null : "fx:id=\"programDetailViewNumberLabel\" was not injected: check your FXML file 'programDetail-view.fxml'.";
 
-        initView();
+        Optional<Program> optionalProgram = model.getDataholder().getPrograms().stream().filter(program -> program == model.getSelectedProgramProperty()).findAny();
+
+        if(optionalProgram.isPresent()) {
+            Program p = optionalProgram.get();
+            programDetailViewNumberLabel.setText("P" + String.valueOf(p.getProgramID()));
+            programDetailViewDescriptionLabel.setText(p.getDescription());
+        }
     }
 
     private void initView() {
-        Program program = model.getShowProgram();
 
-        programDetailViewNumberLabel.setText("P" + String.valueOf(program.getProgramID()));
-        programDetailViewDescriptionLabel.setText(program.getDescription());
     }
 
 

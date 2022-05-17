@@ -52,11 +52,7 @@ public class LocationTableController extends BaseController {
         assert locationPostCodeColumn != null : "fx:id=\"locationPostCodeColumn\" was not injected: check your FXML file 'locationTable.fxml'.";
         assert locationTableView != null : "fx:id=\"locationTableView\" was not injected: check your FXML file 'locationTable.fxml'.";
 
-        initLocationTable(model.getDataholder().getLocations());
-    }
-
-    private void initLocationTable(ObservableList<Location> locations) {
-        locationTableView.setItems(locations);
+        locationTableView.setItems(model.getDataholder().getLocations());
 
         locationNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("S" + String.valueOf(dataFeatures.getValue().getLocationID())));
         locationDescriptionColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDescription()));
@@ -65,15 +61,18 @@ public class LocationTableController extends BaseController {
         locationCityColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getCity()));
 
         locationTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
-            model.setShowLocation(nv);
+
             try {
-                showNewView(Constants.PATH_TO_LOCATION_DETAIL_VIEW);
-                Platform.runLater( ()-> {  locationTableView.getSelectionModel().clearSelection();  });
+                if(nv != null){
+                    model.setSelectedLocationProperty(nv);
+                    showNewView(Constants.PATH_TO_LOCATION_DETAIL_VIEW);
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
-
     }
+
 
 }

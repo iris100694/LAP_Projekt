@@ -52,11 +52,7 @@ public class EventTableController extends BaseController {
         assert eventStartColumn != null : "fx:id=\"eventStartColumn\" was not injected: check your FXML file 'eventTable.fxml'.";
         assert eventTableView != null : "fx:id=\"eventTableView\" was not injected: check your FXML file 'eventTable.fxml'.";
 
-        initEventTable(model.getDataholder().getEvents());
-    }
-
-    private void initEventTable(ObservableList<Event> events) {
-        eventTableView.setItems(events);
+        eventTableView.setItems(model.getDataholder().getEvents());
 
         eventNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("V" + String.valueOf(dataFeatures.getValue().getEventID())));
         eventTitleColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getCourse().getTitle() + "   " + dataFeatures.getValue().getCourse().getProgram().getDescription()));
@@ -65,7 +61,7 @@ public class EventTableController extends BaseController {
         eventEndColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getEndTime().toString()));
 
         eventTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) ->  {
-            model.setShowEvent(nv);
+            model.setSelectedEventProperty(nv);
 
             try {
                 showNewView(Constants.PATH_TO_EVENT_DETAIL_VIEW);
@@ -74,6 +70,10 @@ public class EventTableController extends BaseController {
                 e.printStackTrace();
             }
         });
+    }
+
+    private void initEventTable(ObservableList<Event> events) {
+        eventTableView.setItems(events);
 
     }
 }

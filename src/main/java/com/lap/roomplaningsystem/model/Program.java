@@ -9,6 +9,10 @@ public class Program{
         this.description = description;
     }
 
+    public Program(String description) {
+        this.description = description;
+    }
+
     public int getProgramID() {
         return programID;
     }

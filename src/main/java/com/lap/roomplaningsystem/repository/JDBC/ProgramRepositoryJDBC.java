@@ -8,10 +8,7 @@ import com.lap.roomplaningsystem.repository.interfaces.ProgramRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Optional;
 
 public class ProgramRepositoryJDBC extends Repository implements ProgramRepository {
@@ -28,7 +25,29 @@ public class ProgramRepositoryJDBC extends Repository implements ProgramReposito
     }
 
     @Override
-    public void add(Program program) throws SQLException {
+    public Program add(String description) throws Exception{
+        Connection connection = connect();
+
+        String query = "INSERT INTO program (DESCRIPTION) VALUES (?)";
+
+        PreparedStatement stmt = null;
+
+        stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        stmt.setString(1, description);
+
+        stmt.executeQuery();
+
+        ResultSet resultSet = stmt.getGeneratedKeys();
+
+        Program program = null;
+
+        while(resultSet.next()){
+            int programID  = resultSet.getInt(1);
+            program = new Program(programID, description);
+        }
+
+        return program;
+
 
     }
 

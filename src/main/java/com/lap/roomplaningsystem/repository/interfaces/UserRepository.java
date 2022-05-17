@@ -5,6 +5,7 @@ import com.lap.roomplaningsystem.model.Event;
 import com.lap.roomplaningsystem.model.User;
 import javafx.collections.ObservableList;
 
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -16,11 +17,13 @@ public interface UserRepository extends BaseRepository {
 
     Optional<User> readUserByID(int id) throws SQLException;
 
-    void add(User user) throws SQLException;
+    User add(String firstname, String lastname, String title, String username, String authorization, String password, Boolean trainer,
+             Boolean textVisable, String phone, Boolean phoneVisable, String email, Boolean emailVisable, Boolean photoVisable,
+             String text, InputStream inputStream) throws Exception;
 
     void update(User user) throws SQLException;
 
     void delete(User user) throws SQLException;
 
-
 }
+

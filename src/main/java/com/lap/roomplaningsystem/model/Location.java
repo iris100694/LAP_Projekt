@@ -1,22 +1,29 @@
 package com.lap.roomplaningsystem.model;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+
 public class Location {
 
     private int locationID;
-    private String description;
-    private String adress;
-    private String postCode;
-    private String city;
+    private StringProperty description;
+    private StringProperty adress;
+    private StringProperty postCode;
+    private StringProperty city;
 
     public Location() {
     }
 
     public Location(int locationID, String description, String adress, String postCode, String city) {
         this.locationID = locationID;
-        this.description = description;
-        this.adress = adress;
-        this.postCode = postCode;
-        this.city = city;
+        this.description = new SimpleStringProperty(description);
+        this.adress = new SimpleStringProperty(adress);
+        this.postCode = new SimpleStringProperty(postCode);
+        this.city = new SimpleStringProperty(city);
+
+
     }
 
     @Override
@@ -39,36 +46,50 @@ public class Location {
     }
 
     public String getDescription() {
+        return description.get();
+    }
+
+    public StringProperty descriptionProperty() {
         return description;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description.set(description);
     }
 
     public String getAdress() {
+        return adress.get();
+    }
+
+    public StringProperty adressProperty() {
         return adress;
     }
 
     public void setAdress(String adress) {
-        this.adress = adress;
+        this.adress.set(adress);
     }
 
     public String getPostCode() {
+        return postCode.get();
+    }
+
+    public StringProperty postCodeProperty() {
         return postCode;
     }
 
     public void setPostCode(String postCode) {
-        this.postCode = postCode;
+        this.postCode.set(postCode);
     }
 
     public String getCity() {
+        return city.get();
+    }
+
+    public StringProperty cityProperty() {
         return city;
     }
 
     public void setCity(String city) {
-        this.city = city;
+        this.city.set(city);
     }
-
-
 }

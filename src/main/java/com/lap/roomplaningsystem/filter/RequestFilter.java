@@ -8,13 +8,13 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class RequestFilter {
-    private  String location;
-    private  String room;
+    private  String location = "";
+    private  String room = "";
     private  Boolean roomDisable = true;
-    private  String size;
-    private  String equipment;
-    private  String course;
-    private  String user;
+    private  String size = "";
+    private  String equipment = "";
+    private  String course = "";
+    private  String user = "";
     private LocalDate startDate;
     private  LocalDate endDate;
     private LocalTime startTime;

@@ -9,10 +9,7 @@ import com.lap.roomplaningsystem.repository.interfaces.EquipmentRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Optional;
 
 public class EquipmentRepositoryJDBC extends Repository implements EquipmentRepository {
@@ -29,9 +26,30 @@ public class EquipmentRepositoryJDBC extends Repository implements EquipmentRepo
     }
 
     @Override
-    public void add(Equipment equipment) throws SQLException {
+    public Equipment add(String description) throws Exception {
+        Connection connection = connect();
 
+        String query = "INSERT INTO equipment (DESCRIPTION) VALUES (\"" + description + "\")";
+
+        PreparedStatement stmt = null;
+
+        stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        stmt.setString(1, description);
+
+        stmt.executeQuery();
+
+        ResultSet resultSet = stmt.getGeneratedKeys();
+
+        Equipment equipment = null;
+
+        while(resultSet.next()){
+            int equipmentID  = resultSet.getInt(1);
+            equipment = new Equipment(equipmentID, description);
+        }
+
+        return equipment;
     }
+
 
     @Override
     public void update(Equipment equipment) throws SQLException {

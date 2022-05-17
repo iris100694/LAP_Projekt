@@ -69,7 +69,6 @@ public class RoomsViewController extends BaseController{
     private final Roomfilter filter = new Roomfilter();
 
 
-//    private ObjectProperty<Room> selectedRoom = new SimpleObjectProperty<>();
     @FXML
     private TextField searchField;
 
@@ -82,7 +81,26 @@ public class RoomsViewController extends BaseController{
         }
 
         initFilterItems();
-        initRoomTable(model.getDataholder().getRooms());
+
+        roomTable.setItems(model.getDataholder().getRooms());
+
+        roomNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("R" + String.valueOf(dataFeatures.getValue().getRoomID())));
+        roomTitleColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDescription()));
+        roomSizeColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<Integer>(dataFeatures.getValue().getMaxPersons()));
+        roomLocationColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getLocation().getDescription()));
+
+
+        roomTable.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
+            try {
+                if(nv != null){
+                    model.setSelectedRoomProperty(nv);
+                    showNewView(Constants.PATH_TO_ROOM_DETAIL_VIEW);
+//                    Platform.runLater( ()-> {  roomTable.getSelectionModel().clearSelection();  });
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
     }
 
@@ -156,32 +174,11 @@ public class RoomsViewController extends BaseController{
     }
 
 
-    private boolean isBlank(String value) {
-        return value.equals("");
-    }
+
 
 
     private void initRoomTable(ObservableList<Room> rooms) {
-
         roomTable.setItems(rooms);
-
-        roomNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("R" + String.valueOf(dataFeatures.getValue().getRoomID())));
-        roomTitleColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDescription()));
-        roomSizeColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<Integer>(dataFeatures.getValue().getMaxPersons()));
-        roomLocationColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getLocation().getDescription()));
-
-
-        roomTable.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
-            try {
-                if(nv != null){
-                    model.setShowRoom(nv);
-                    showNewView(Constants.PATH_TO_ROOM_DETAIL_VIEW);
-//                    Platform.runLater( ()-> {  roomTable.getSelectionModel().clearSelection();  });
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
     }
 
 

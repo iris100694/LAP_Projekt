@@ -11,9 +11,12 @@ public interface LocationRepository extends BaseRepository{
 
     Optional<ObservableList<Location>> readAll() throws Exception;
 
-    void add(Location location) throws SQLException;
+    Location add(String description, String adress, String postCode, String city) throws Exception;
 
-    void update(Location location) throws SQLException;
+    Boolean update(Location location) throws SQLException;
 
     void delete(Location location) throws SQLException;
+
+
+
 }

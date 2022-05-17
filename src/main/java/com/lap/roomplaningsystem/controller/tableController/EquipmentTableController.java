@@ -40,24 +40,24 @@ public class EquipmentTableController extends BaseController {
         assert equipmentTableView != null : "fx:id=\"equipmentTableView\" was not injected: check your FXML file 'equipmentTable.fxml'.";
         assert equipmentNumberColumn != null : "fx:id=\"roomNumberColumn\" was not injected: check your FXML file 'equipmentTable.fxml'.";
 
-        initEquipmentTable(model.getDataholder().getEquipments());
-    }
-
-    private void initEquipmentTable(ObservableList<Equipment> equipments) {
-        equipmentTableView.setItems(equipments);
+        equipmentTableView.setItems(model.getDataholder().getEquipments());
 
         equipmentNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("A" + String.valueOf(dataFeatures.getValue().getEquipmentID())));
         equipmentDescriptionColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDescription()));
 
         equipmentTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) ->  {
-            model.setShowEquipment(nv);
             try {
-                showNewView(Constants.PATH_TO_EQUIPMENT_DETAIL_VIEW);
-//                Platform.runLater( ()-> {  equipmentTableView.getSelectionModel().clearSelection();  });
+                if(nv != null){
+                    model.setSelectedEquipmentProperty(nv);
+                    showNewView(Constants.PATH_TO_EQUIPMENT_DETAIL_VIEW);
+                }
+
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
     }
+
 
 }

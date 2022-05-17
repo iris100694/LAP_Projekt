@@ -6,6 +6,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.function.Predicate;
 
 public class Dataholder {
@@ -144,6 +145,41 @@ public class Dataholder {
         this.roomEquipments = roomEquipments;
     }
 
+    public void addProgram(Program program){
+        this.programs.add(program);
+    }
 
+
+    public void addRoom(Room room) {
+        this.rooms.add(room);
+    }
+
+    public void addUser(User user) {
+        this.users.add(user);
+    }
+
+    public void addEquipment(Equipment equipment) {
+        this.equipments.add(equipment);
+    }
+
+    public void addRoomEquipment(RoomEquipment roomEquipment) {
+        this.roomEquipments.add(roomEquipment);
+    }
+
+    public void addLocation(Location location) {
+        this.locations.add(location);
+    }
+
+    public void addCourse(Course course) {
+        this.courses.add(course);
+    }
+
+    public void addEvent(Event event) {
+        this.events.add(event);
+    }
+
+    public void addEvents(ObservableList<Event> events) {
+        this.events.addAll(events);
+    }
 
 }

@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -27,6 +28,8 @@ public class StammdataViewController extends BaseController{
     private ChoiceBox<String> choiceBoxForTables;
     @FXML
     private BorderPane tableBorderPane;
+    @FXML
+    private Button newButton;
 
     @FXML
     void initialize() throws IOException {
@@ -41,6 +44,7 @@ public class StammdataViewController extends BaseController{
             public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
                 try {
                     vaildateTable(newValue);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -60,7 +64,7 @@ public class StammdataViewController extends BaseController{
 
         items.add("Benutzer");
         items.add("Räume");
-        items.add("Events");
+        items.add("Veranstaltungen");
         items.add("Kurse");
         items.add("Programme");
         items.add("Standorte");
@@ -74,7 +78,7 @@ public class StammdataViewController extends BaseController{
         switch(newValue){
             case "Benutzer" -> loadFXMLInBorderPaneCenter(Constants.PATH_TO_USER_TABLE_VIEW);
             case "Räume" -> loadFXMLInBorderPaneCenter(Constants.PATH_TO_ROOM_TABLE_VIEW);
-            case "Events" -> loadFXMLInBorderPaneCenter(Constants.PATH_TO_EVENT_TABLE_VIEW);
+            case "Veranstaltungen" -> loadFXMLInBorderPaneCenter(Constants.PATH_TO_EVENT_TABLE_VIEW);
             case "Kurse" -> loadFXMLInBorderPaneCenter(Constants.PATH_TO_COURSE_TABLE_VIEW);
             case "Programme" -> loadFXMLInBorderPaneCenter(Constants.PATH_TO_PROGRAM_TABLE_VIEW);
             case "Standorte" -> loadFXMLInBorderPaneCenter(Constants.PATH_TO_LOCATION_TABLE_VIEW);
@@ -92,5 +96,18 @@ public class StammdataViewController extends BaseController{
     }
 
 
+    @FXML
+    private void onNewButtonClicked(MouseEvent mouseEvent) throws IOException {
+        switch(choiceBoxForTables.getValue()){
+            case "Benutzer" -> showNewView(Constants.PATH_TO_USER_ADD_VIEW);
+            case "Räume" -> showNewView(Constants.PATH_TO_ROOM_ADD_VIEW);
+            case "Veranstaltungen" -> model.setPathToView(Constants.PATH_TO_CREATE_EVENT_VIEW);
+            case "Kurse" -> showNewView(Constants.PATH_TO_COURSE_ADD_VIEW);
+            case "Programme" -> showNewView(Constants.PATH_TO_PROGRAM_ADD_VIEW);
+            case "Standorte" -> showNewView(Constants.PATH_TO_LOCATION_ADD_VIEW);
+            case "Ausstattung" -> showNewView(Constants.PATH_TO_EQUIPMENT_ADD_VIEW);
+            case "Ausstattung - in Verwendung" -> showNewView(Constants.PATH_TO_ROOMEQUIPMENT_ADD_VIEW);
 
+        }
+    }
 }

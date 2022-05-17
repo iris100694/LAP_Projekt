@@ -18,4 +18,6 @@ module com.lap.roomplaningsystem {
     opens com.lap.roomplaningsystem.controller.updateController to javafx.fxml;
     exports com.lap.roomplaningsystem.controller.deleteController;
     opens com.lap.roomplaningsystem.controller.deleteController to javafx.fxml;
+    exports com.lap.roomplaningsystem.controller.addController;
+    opens com.lap.roomplaningsystem.controller.addController to javafx.fxml;
 }

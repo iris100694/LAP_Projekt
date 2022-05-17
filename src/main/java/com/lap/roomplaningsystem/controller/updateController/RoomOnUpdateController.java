@@ -2,6 +2,7 @@ package com.lap.roomplaningsystem.controller.updateController;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.controller.BaseController;
@@ -58,36 +59,38 @@ public class RoomOnUpdateController extends BaseController {
         assert saveRoom != null : "fx:id=\"saveRoom\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
         assert roomMaxPersons != null : "fx:id=\"roomMaxPersons\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
 
-        initView();
-    }
+        Optional<Room> optionalRoom = model.getDataholder().getRooms().stream().filter(room -> room == model.getSelectedRoomProperty()).findAny();
 
-    private void initView() {
-        Room r = model.getShowRoom();
+        if (optionalRoom.isPresent()){
+            Room r = optionalRoom.get();
 
-        roomNumberLabel.setText("R" + String.valueOf(r.getRoomID()));
-        roomDescriptionInput.setText(r.getDescription());
-        roomMaxPersons.setText(String.valueOf(r.getMaxPersons()));
+            roomNumberLabel.setText("R" + String.valueOf(r.getRoomID()));
+            roomDescriptionInput.setText(r.getDescription());
+            roomMaxPersons.setText(String.valueOf(r.getMaxPersons()));
 
-        if(r.getPhoto() != null){
-            roomImageView.setImage(new Image(new ByteArrayInputStream(r.getPhoto())));
+            if(r.getPhoto() != null){
+                roomImageView.setImage(new Image(new ByteArrayInputStream(r.getPhoto())));
+            }
+
+            roomLocationComboBox.setItems(model.getDataholder().getLocations());
+            roomLocationComboBox.getSelectionModel().select(r.getLocation());
+
+            roomLocationComboBox.setConverter(new StringConverter<Location>() {
+                @Override
+                public String toString(Location location) {
+                    return location.getDescription();
+                }
+
+                @Override
+                public Location fromString(String s) {
+                    LocationMatcher locationMatcher = new LocationMatcher();
+                    return locationMatcher.matchByString(s, model.getDataholder().getLocations());
+                }
+            });
         }
 
-        roomLocationComboBox.setItems(model.getDataholder().getLocations());
-        roomLocationComboBox.getSelectionModel().select(r.getLocation());
-
-        roomLocationComboBox.setConverter(new StringConverter<Location>() {
-            @Override
-            public String toString(Location location) {
-                return location.getDescription();
-            }
-
-            @Override
-            public Location fromString(String s) {
-                LocationMatcher locationMatcher = new LocationMatcher();
-                return locationMatcher.matchByString(s, model.getDataholder().getLocations());
-            }
-        });
     }
+
 
     @FXML
     void onRoomSaveButtonClicked(MouseEvent event) {

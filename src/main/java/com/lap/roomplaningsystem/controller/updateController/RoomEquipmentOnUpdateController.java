@@ -1,6 +1,7 @@
 package com.lap.roomplaningsystem.controller.updateController;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.controller.BaseController;
@@ -64,18 +65,22 @@ public class RoomEquipmentOnUpdateController extends BaseController {
 
 
     private void initView() {
-        RoomEquipment roomEquipment = model.getShowRoomEquipment();
-//        System.out.println(roomEquipment.toString());
+        Optional<RoomEquipment> optionalRoomEquipment = model.getDataholder().getRoomEquipments().stream().filter(roomEquipment -> roomEquipment == model.getSelectedRoomEquipmentProperty()).findAny();
 
-        roomEquipmentNumberLabel.setText("RA" + String.valueOf(roomEquipment.getRoomEquipmentID()));
+        if(optionalRoomEquipment.isPresent()){
+            RoomEquipment roomEquipment = optionalRoomEquipment.get();
 
-        roomEquipmentLocationComboBox.setItems(model.getDataholder().getLocations());
-        roomEquipmentRoomComboBox.setItems(availableRooms(roomEquipment.getRoom().getLocation()));
-        roomEquipmentEquipmentComboBox.setItems(model.getDataholder().getEquipments());
+            roomEquipmentNumberLabel.setText("RA" + String.valueOf(roomEquipment.getRoomEquipmentID()));
 
-        roomEquipmentLocationComboBox.getSelectionModel().select(roomEquipment.getRoom().getLocation());
-        roomEquipmentRoomComboBox.getSelectionModel().select(roomEquipment.getRoom());
-        roomEquipmentEquipmentComboBox.getSelectionModel().select(roomEquipment.getEquipment());
+            roomEquipmentLocationComboBox.setItems(model.getDataholder().getLocations());
+            roomEquipmentRoomComboBox.setItems(availableRooms(roomEquipment.getRoom().getLocation()));
+            roomEquipmentEquipmentComboBox.setItems(model.getDataholder().getEquipments());
+
+            roomEquipmentLocationComboBox.getSelectionModel().select(roomEquipment.getRoom().getLocation());
+            roomEquipmentRoomComboBox.getSelectionModel().select(roomEquipment.getRoom());
+            roomEquipmentEquipmentComboBox.getSelectionModel().select(roomEquipment.getEquipment());
+        }
+
 
         roomEquipmentLocationComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Location>() {
             @Override

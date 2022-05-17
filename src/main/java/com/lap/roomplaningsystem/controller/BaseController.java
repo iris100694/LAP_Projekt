@@ -11,7 +11,9 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.sql.Time;
@@ -48,5 +50,37 @@ public class BaseController {
         }
 
         return timeList;
+    }
+
+    protected boolean isBlank(String s) {
+        return s.equals("");
+    }
+
+    protected void initStringConverter(ComboBox<Boolean> box) {
+        box.setConverter(new StringConverter<Boolean>() {
+            @Override
+            public String toString(Boolean b) {
+                return b ? "ja" : "nein";
+            }
+
+            @Override
+            public Boolean fromString(String s) {
+                return s.equals("ja")? Boolean.TRUE : Boolean.FALSE;
+            }
+        });
+    }
+
+    protected ObservableList<Boolean> booleanList() {
+        ObservableList<Boolean> booleanList = FXCollections.observableArrayList();
+        booleanList.add(Boolean.TRUE);
+        booleanList.add(Boolean.FALSE);
+        return booleanList;
+    }
+
+    protected ObservableList<String> authorizationList() {
+        ObservableList<String> authorizationList = FXCollections.observableArrayList();
+        authorizationList.add("Administrator");
+        authorizationList.add("Trainer");
+        return authorizationList;
     }
 }

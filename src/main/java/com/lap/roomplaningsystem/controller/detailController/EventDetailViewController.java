@@ -2,6 +2,7 @@ package com.lap.roomplaningsystem.controller.detailController;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.RoomplaningsystemApplication;
@@ -66,23 +67,26 @@ public class EventDetailViewController extends BaseController {
         assert eventDetailViewStartLabel != null : "fx:id=\"eventDetailViewStartLabel\" was not injected: check your FXML file 'eventDetail-view.fxml'.";
         assert eventDetailViewCourseLabel != null : "fx:id=\"eventDetailViewTitleLabel\" was not injected: check your FXML file 'eventDetail-view.fxml'.";
 
-        initView();
+        Optional<Event> optionalEvent = model.getDataholder().getEvents().stream().filter(event -> event == model.getSelectedEventProperty()).findAny();
+
+
+
+        if(optionalEvent.isPresent()){
+            Event e = optionalEvent.get();
+            eventDetailViewNumberLabel.setText("V" + e.getEventID());
+            eventDetailViewCourseLabel.setText(e.getCourse().getTitle() + " " + e.getCourse().getProgram().getDescription());
+            eventDetailViewLocationLabel.setText(e.getRoom().getLocation().getDescription());
+            eventDetailViewRoomLabel.setText(e.getRoom().getDescription());
+            eventDetailViewDateLabel.setText(e.getDate().toString());
+            eventDetailViewStartLabel.setText(e.getStartTime().toString());
+            eventDetailViewEndLabel.setText(e.getEndTime().toString());
+            eventDetailViewCoachLabel.setText(e.getCoach().getLastname());
+        }
+
         editAuthorization();
 
     }
 
-    private void initView() {
-        Event e = model.getShowEvent();
-
-        eventDetailViewNumberLabel.setText("V" + e.getEventID());
-        eventDetailViewCourseLabel.setText(e.getCourse().getTitle() + " " + e.getCourse().getProgram().getDescription());
-        eventDetailViewLocationLabel.setText(e.getRoom().getLocation().getDescription());
-        eventDetailViewRoomLabel.setText(e.getRoom().getDescription());
-        eventDetailViewDateLabel.setText(e.getDate().toString());
-        eventDetailViewStartLabel.setText(e.getStartTime().toString());
-        eventDetailViewEndLabel.setText(e.getEndTime().toString());
-        eventDetailViewCoachLabel.setText(e.getCoach().getLastname());
-    }
 
     private void editAuthorization() {
         switch(model.getAuthorization()){
@@ -97,7 +101,8 @@ public class EventDetailViewController extends BaseController {
     }
 
     private void editEventCoachAuthorization() {
-        if(model.getShowEvent().getCreator().getId() == model.getUser().getId()){
+        Optional <Event> e = model.getDataholder().getEvents().stream().filter(event -> event == model.getSelectedEventProperty()).findAny();
+        if(e.get().getCreator().getId() == model.getUser().getId()){
             editEvent.setVisible(true);
             deleteEvent.setVisible(true);
         }
@@ -105,12 +110,12 @@ public class EventDetailViewController extends BaseController {
 
     @FXML
     void onEventDeleteButtonClicked(MouseEvent event) throws IOException {
-        Event deleteEvent = model.getShowEvent();
+       Optional<Event> optionalEvent = model.getDataholder().getEvents().stream().filter(e -> e == model.getSelectedEventProperty()).findAny();
 
         FXMLLoader fxmlLoader = new FXMLLoader(RoomplaningsystemApplication.class.getResource(Constants.PATH_TO_EVENT_ON_DELETE_VIEW));
         Parent root = (Parent) fxmlLoader.load();
         Stage stage = new Stage();
-        stage.setTitle("V" + deleteEvent.getEventID());
+        stage.setTitle("V" + optionalEvent.get().getEventID());
         stage.setScene(new Scene(root));
         stage.show();
 
@@ -126,9 +131,5 @@ public class EventDetailViewController extends BaseController {
         Stage detailStage = (Stage) editEvent.getScene().getWindow();
         detailStage.close();
     }
-
-
-
-
 
 }

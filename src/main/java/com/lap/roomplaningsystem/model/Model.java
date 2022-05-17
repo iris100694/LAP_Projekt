@@ -1,10 +1,6 @@
 package com.lap.roomplaningsystem.model;
 
-import com.lap.roomplaningsystem.repository.JDBC.*;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
@@ -15,21 +11,21 @@ public class Model {
     private StringProperty pathToView = new SimpleStringProperty();
     private StringProperty authorization = new SimpleStringProperty("standard");
 
-
     private User user = null;
     private Dataholder dataholder;
 
-    private Event showEvent;
-    private Room showRoom;
-    private Course showCourse;
-    private Program showProgram;
-    private Location showLocation;
-    private Equipment showEquipment;
-    private RoomEquipment showRoomEquipment;
-    private User showUser;
+
+    private ObjectProperty<Event> selectedEventProperty = new SimpleObjectProperty<>();
+    private ObjectProperty<Room> selectedRoomProperty = new SimpleObjectProperty<>();
+    private ObjectProperty<Course> selectedCourseProperty = new SimpleObjectProperty<>();
+    private ObjectProperty<Program> selectedProgramProperty = new SimpleObjectProperty<>();
+    private ObjectProperty<Location> selectedLocationProperty = new SimpleObjectProperty<>();
+    private ObjectProperty<Equipment> selectedEquipmentProperty = new SimpleObjectProperty<>();
+    private ObjectProperty<RoomEquipment> selectedRoomEquipmentProperty = new SimpleObjectProperty<>();
+    private ObjectProperty<User> selectedUserProperty = new SimpleObjectProperty<>();
 
     private ObservableList<Room> requestResult;
-    private IntegerProperty selectedRequestResult = new SimpleIntegerProperty();
+    private ObjectProperty<Room> selectedResultProperty = new SimpleObjectProperty<>();
 
     public Model()  {
 
@@ -53,16 +49,24 @@ public class Model {
         return false;
     }
 
-    public int getSelectedRequestResult() {
-        return selectedRequestResult.get();
+    public Event getSelectedEventProperty() {
+        return selectedEventProperty.get();
     }
 
-    public IntegerProperty selectedRequestResultProperty() {
-        return selectedRequestResult;
+    public void setSelectedEventProperty(Event selectedEventProperty) {
+        this.selectedEventProperty.set(selectedEventProperty);
     }
 
-    public void setSelectedRequestResult(int selectedRequestResult) {
-        this.selectedRequestResult.set(selectedRequestResult);
+    public Room getSelectedResultProperty() {
+        return selectedResultProperty.get();
+    }
+
+    public ObjectProperty<Room> selectedResultProperty() {
+        return selectedResultProperty;
+    }
+
+    public void setSelectedResultProperty(Room selectedResultProperty) {
+        this.selectedResultProperty.set(selectedResultProperty);
     }
 
     public String getPathToView() {
@@ -97,22 +101,6 @@ public class Model {
         this.user = user;
     }
 
-    public Event getShowEvent() {
-        return showEvent;
-    }
-
-    public void setShowEvent(Event showEvent) {
-        this.showEvent = showEvent;
-    }
-
-    public void setShowRoom(Room showRoom) {
-        this.showRoom = showRoom;
-    }
-
-    public Room getShowRoom() {
-        return showRoom;
-    }
-
     public Dataholder getDataholder() {
         return dataholder;
     }
@@ -121,52 +109,92 @@ public class Model {
         this.dataholder = dataholder;
     }
 
-    public Course getShowCourse() {
-        return showCourse;
+    public ObjectProperty<Event> selectedEventProperty() {
+        return selectedEventProperty;
     }
 
-    public void setShowCourse(Course showCourse) {
-        this.showCourse = showCourse;
+    public Room getSelectedRoomProperty() {
+        return selectedRoomProperty.get();
     }
 
-    public Program getShowProgram() {
-        return showProgram;
+    public ObjectProperty<Room> selectedRoomProperty() {
+        return selectedRoomProperty;
     }
 
-    public void setShowProgram(Program showProgram) {
-        this.showProgram = showProgram;
+    public void setSelectedRoomProperty(Room selectedRoomProperty) {
+        this.selectedRoomProperty.set(selectedRoomProperty);
     }
 
-    public Location getShowLocation() {
-        return showLocation;
+    public Course getSelectedCourseProperty() {
+        return selectedCourseProperty.get();
     }
 
-    public void setShowLocation(Location showLocation) {
-        this.showLocation = showLocation;
+    public ObjectProperty<Course> selectedCourseProperty() {
+        return selectedCourseProperty;
     }
 
-    public Equipment getShowEquipment() {
-        return showEquipment;
+    public void setSelectedCourseProperty(Course selectedCourseProperty) {
+        this.selectedCourseProperty.set(selectedCourseProperty);
     }
 
-    public void setShowEquipment(Equipment showEquipment) {
-        this.showEquipment = showEquipment;
+    public Program getSelectedProgramProperty() {
+        return selectedProgramProperty.get();
     }
 
-    public RoomEquipment getShowRoomEquipment() {
-        return showRoomEquipment;
+    public ObjectProperty<Program> selectedProgramProperty() {
+        return selectedProgramProperty;
     }
 
-    public void setShowRoomEquipment(RoomEquipment showRoomEquipment) {
-        this.showRoomEquipment = showRoomEquipment;
+    public void setSelectedProgramProperty(Program selectedProgramProperty) {
+        this.selectedProgramProperty.set(selectedProgramProperty);
     }
 
-    public User getShowUser() {
-        return showUser;
+    public Location getSelectedLocationProperty() {
+        return selectedLocationProperty.get();
     }
 
-    public void setShowUser(User showUser) {
-        this.showUser = showUser;
+    public ObjectProperty<Location> selectedLocationProperty() {
+        return selectedLocationProperty;
+    }
+
+    public void setSelectedLocationProperty(Location selectedLocationProperty) {
+        this.selectedLocationProperty.set(selectedLocationProperty);
+    }
+
+    public Equipment getSelectedEquipmentProperty() {
+        return selectedEquipmentProperty.get();
+    }
+
+    public ObjectProperty<Equipment> selectedEquipmentProperty() {
+        return selectedEquipmentProperty;
+    }
+
+    public void setSelectedEquipmentProperty(Equipment selectedEquipmentProperty) {
+        this.selectedEquipmentProperty.set(selectedEquipmentProperty);
+    }
+
+    public RoomEquipment getSelectedRoomEquipmentProperty() {
+        return selectedRoomEquipmentProperty.get();
+    }
+
+    public ObjectProperty<RoomEquipment> selectedRoomEquipmentProperty() {
+        return selectedRoomEquipmentProperty;
+    }
+
+    public void setSelectedRoomEquipmentProperty(RoomEquipment selectedRoomEquipmentProperty) {
+        this.selectedRoomEquipmentProperty.set(selectedRoomEquipmentProperty);
+    }
+
+    public User getSelectedUserProperty() {
+        return selectedUserProperty.get();
+    }
+
+    public ObjectProperty<User> selectedUserProperty() {
+        return selectedUserProperty;
+    }
+
+    public void setSelectedUserProperty(User selectedUserProperty) {
+        this.selectedUserProperty.set(selectedUserProperty);
     }
 
     public ObservableList<Room> getRequestResult() {
@@ -176,4 +204,6 @@ public class Model {
     public void setRequestResult(ObservableList<Room> requestResult) {
         this.requestResult = requestResult;
     }
+
+
 }

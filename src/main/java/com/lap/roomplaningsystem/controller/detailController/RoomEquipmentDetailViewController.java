@@ -2,6 +2,7 @@ package com.lap.roomplaningsystem.controller.detailController;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.app.Constants;
@@ -49,17 +50,20 @@ public class RoomEquipmentDetailViewController extends BaseController {
         assert roomEquipmentDetailViewNumberLabel != null : "fx:id=\"roomEquipmentDetailViewNumberLabel\" was not injected: check your FXML file 'roomEquipmentDetail-view.fxml'.";
         assert roomEquipmentDetailViewRoomLabel != null : "fx:id=\"roomEquipmentDetailViewRoomLabel\" was not injected: check your FXML file 'roomEquipmentDetail-view.fxml'.";
 
-        initView();
+        Optional<RoomEquipment> optionalRoomEquipment = model.getDataholder().getRoomEquipments().stream().filter(roomEquipment -> roomEquipment == model.getSelectedRoomEquipmentProperty()).findAny();
+
+        if(optionalRoomEquipment.isPresent()) {
+            RoomEquipment roomEquipment = optionalRoomEquipment.get();
+
+
+            roomEquipmentDetailViewNumberLabel.setText("RA" + String.valueOf(roomEquipment.getRoomEquipmentID()));
+            roomEquipmentDetailViewRoomLabel.setText(roomEquipment.getRoom().getDescription());
+            roomEquipmentDetailViewLocationLabel.setText(roomEquipment.getRoom().getLocation().getDescription());
+            roomEquipmentDetailViewEquipmentLabel.setText(roomEquipment.getEquipment().getDescription());
+        }
     }
 
-    private void initView() {
-        RoomEquipment roomEquipment = model.getShowRoomEquipment();
 
-        roomEquipmentDetailViewNumberLabel.setText("RA" + String.valueOf(roomEquipment.getRoomEquipmentID()));
-        roomEquipmentDetailViewRoomLabel.setText(roomEquipment.getRoom().getDescription());
-        roomEquipmentDetailViewLocationLabel.setText(roomEquipment.getRoom().getLocation().getDescription());
-        roomEquipmentDetailViewEquipmentLabel.setText(roomEquipment.getEquipment().getDescription());
-    }
 
     @FXML
     void onRoomEquipmentDeleteButtonClicked(MouseEvent event) {

@@ -7,10 +7,8 @@ import com.lap.roomplaningsystem.repository.interfaces.RoomEquipmentRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.io.IOException;
+import java.sql.*;
 import java.util.Optional;
 
 public class RoomEquipmentRepositoryJDBC extends Repository implements RoomEquipmentRepository {
@@ -27,9 +25,34 @@ public class RoomEquipmentRepositoryJDBC extends Repository implements RoomEquip
     }
 
     @Override
-    public void add(RoomEquipment roomEquipment) throws SQLException {
+    public RoomEquipment add(Room room, Equipment equipment) throws Exception {
 
+
+        Connection connection = connect();
+
+        String query = "INSERT INTO roomequipment (ROOMID, EQUIPMENTID) VALUES (?,?)";
+
+        PreparedStatement stmt = null;
+
+        stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        stmt.setInt(1, room.getRoomID());
+        stmt.setInt(2, equipment.getEquipmentID());
+
+        stmt.executeQuery();
+
+        ResultSet resultSet = stmt.getGeneratedKeys();
+
+        RoomEquipment roomEquipment = null;
+
+        while(resultSet.next()){
+
+            int roomEquipmentID  = resultSet.getInt(1);
+            roomEquipment = new RoomEquipment(roomEquipmentID, room, equipment);
+        }
+
+        return roomEquipment;
     }
+
 
     @Override
     public void update(RoomEquipment roomEquipment) throws SQLException {

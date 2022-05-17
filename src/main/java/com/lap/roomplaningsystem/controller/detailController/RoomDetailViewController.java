@@ -3,6 +3,7 @@ package com.lap.roomplaningsystem.controller.detailController;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.app.Constants;
@@ -60,23 +61,26 @@ public class RoomDetailViewController extends BaseController {
         assert roomDetailMembersLabel != null : "fx:id=\"roomDetailMembersLabel\" was not injected: check your FXML file 'roomDetail-view.fxml'.";
         assert roomDetailTitleLabel != null : "fx:id=\"roomDetailTitleLabel\" was not injected: check your FXML file 'roomDetail-view.fxml'.";
 
-        initView();
+        Optional<Room> optionalRoom = model.getDataholder().getRooms().stream().filter(room -> room == model.getSelectedRoomProperty()).findAny();
+
+        if (optionalRoom.isPresent()){
+            Room r = optionalRoom.get();
+
+            roomDetailViewNumberLabel.setText("V" + r.getRoomID());
+            roomDetailTitleLabel.setText(r.getDescription());
+            roomDetailLocationLabel.setText(r.getLocation().getDescription());
+            roomDetailMembersLabel.setText(String.valueOf(r.getMaxPersons()));
+            if(r.getPhoto() != null){
+                roomDetailImageView.setImage(new Image(new ByteArrayInputStream(r.getPhoto())));
+            }
+
+        }
+
         editAuthorization();
 
     }
 
 
-    private void initView() {
-        Room r = model.getShowRoom();
-
-        roomDetailViewNumberLabel.setText("V" + r.getRoomID());
-        roomDetailTitleLabel.setText(r.getDescription());
-        roomDetailLocationLabel.setText(r.getLocation().getDescription());
-        roomDetailMembersLabel.setText(String.valueOf(r.getMaxPersons()));
-        if(r.getPhoto() != null){
-            roomDetailImageView.setImage(new Image(new ByteArrayInputStream(r.getPhoto())));
-        }
-    }
 
     private void editAuthorization() {
         if(model.getAuthorization().equals("admin")){

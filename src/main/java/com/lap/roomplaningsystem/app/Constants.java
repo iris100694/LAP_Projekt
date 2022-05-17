@@ -25,9 +25,17 @@ public class Constants {
     public static final String PATH_TO_EQUIPMENT_UPDATE_VIEW = "/com/lap/roomplaningsystem/views/detailViewsOnUpdate/equipmentDetailOnUpdate-view.fxml";
     public static final String PATH_TO_ROOMEQUIPMENT_UPDATE_VIEW = "/com/lap/roomplaningsystem/views/detailViewsOnUpdate/roomEquipmentDetailOnUpdate-view.fxml";
     public static final String PATH_TO_USER_UPDATE_VIEW = "/com/lap/roomplaningsystem/views/detailViewsOnUpdate/userDetailOnUpdate-view.fxml";
-
+    public static final String PATH_TO_SUCCESSFUL_UPDATE = "/com/lap/roomplaningsystem/views/detailViewsOnUpdate/successfulUpdate-view.fxml";
 
     public static final String PATH_TO_EVENT_ON_DELETE_VIEW = "/com/lap/roomplaningsystem/views/detailViewOnDelete/eventDetailOnDelete-view.fxml";
+
+    public static final String PATH_TO_PROGRAM_ADD_VIEW = "/com/lap/roomplaningsystem/views/detailViewsOnAdd/programDetailOnAdd-view.fxml";
+    public static final String PATH_TO_COURSE_ADD_VIEW = "/com/lap/roomplaningsystem/views/detailViewsOnAdd/courseDetailOnAdd-view.fxml";
+    public static final String PATH_TO_LOCATION_ADD_VIEW = "/com/lap/roomplaningsystem/views/detailViewsOnAdd/locationDetailOnAdd-view.fxml";
+    public static final String PATH_TO_EQUIPMENT_ADD_VIEW = "/com/lap/roomplaningsystem/views/detailViewsOnAdd/equipmentDetailOnAdd-view.fxml";
+    public static final String PATH_TO_ROOMEQUIPMENT_ADD_VIEW = "/com/lap/roomplaningsystem/views/detailViewsOnAdd/roomEquipmentDetailOnAdd-view.fxml";
+    public static final String PATH_TO_USER_ADD_VIEW = "/com/lap/roomplaningsystem/views/detailViewsOnAdd/userDetailOnAdd-view.fxml";
+    public static final String PATH_TO_ROOM_ADD_VIEW = "/com/lap/roomplaningsystem/views/detailViewsOnAdd/roomDetailOnAdd-view.fxml";
 
 
 
@@ -55,5 +63,7 @@ public class Constants {
 
     public static final String CALL_LISTS_FOR_REQUEST_COMBOBOXES = "{CALL listsForRequest()}";
    public static final String CALL_LISTS_FOR_REQUEST_ROOMS = "{CALL listsForRequestRooms(?)}";
+
+
 
 }

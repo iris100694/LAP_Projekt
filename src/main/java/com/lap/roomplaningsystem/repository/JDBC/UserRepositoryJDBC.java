@@ -1,12 +1,15 @@
 package com.lap.roomplaningsystem.repository.JDBC;
 
 import com.lap.roomplaningsystem.model.Course;
+import com.lap.roomplaningsystem.model.Room;
 import com.lap.roomplaningsystem.model.User;
 import com.lap.roomplaningsystem.repository.Repository;
 import com.lap.roomplaningsystem.repository.interfaces.UserRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.Optional;
 
@@ -52,8 +55,60 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
     }
 
     @Override
-    public void add(User user){
-        Connection connection;
+    public User add(String firstname, String lastname, String title, String username, String authorization, String password, Boolean trainer, Boolean textVisable, String phone, Boolean phoneVisable, String email, Boolean emailVisable, Boolean photoVisable, String text, InputStream inputStream) throws Exception{
+        byte[] photo= new byte[0];
+
+        if (inputStream != null) {
+            photo = inputStream.readAllBytes();
+        }
+
+        Connection connection = connect();
+
+        String query = "INSERT INTO users(ACTIVE, TITLE, FIRSTNAME, LASTNAME, USERNAME, PASSWORD, AUTHORIZATION," +
+                "COACH, TEXT, TEXTVISABLE, PHONE, PHONEVISABLE, EMAIL, EMAILVISABLE, PHOTO, PHOTOVISABLE) VALUES " +
+                "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+        PreparedStatement stmt = null;
+
+        stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        stmt.setBoolean(1, true);
+        stmt.setString(2, title);
+        stmt.setString(3, firstname);
+        stmt.setString(4, lastname);
+        stmt.setString(5, username);
+        stmt.setString(6, password);
+        stmt.setString(7, authorization);
+        stmt.setBoolean(8, trainer);
+        stmt.setString(9, text);
+        stmt.setBoolean(10, textVisable);
+        stmt.setString(11, phone);
+        stmt.setBoolean(12, phoneVisable);
+        stmt.setString(13, email);
+        stmt.setBoolean(14, emailVisable);
+        stmt.setBlob(15, inputStream);
+        stmt.setBoolean(16, photoVisable);
+
+        stmt.executeQuery();
+
+        ResultSet resultSet = stmt.getGeneratedKeys();
+
+        User user = null;
+
+        while(resultSet.next()){
+
+            int userID  = resultSet.getInt(1);
+            user = new User(userID, true, title, firstname, lastname, username, authorization, trainer, text, textVisable,
+                    phone, phoneVisable, email, emailVisable, photo, photoVisable);
+        }
+
+        return user;
+
+
+    }
+
+//    @Override
+//    public void add(User user){
+//        Connection connection;
 //        try(PreparedStatement prepareStatement = connection.prepareStatement("SELECT * FROM user")){
 //            prepareStatement.setLong(1, user.getId());
 //            prepareStatement.setString(2, user.getUsername());
@@ -73,7 +128,7 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
 //        }
 
 
-    }
+//    }
 
     @Override
     public void update(User user) throws SQLException {

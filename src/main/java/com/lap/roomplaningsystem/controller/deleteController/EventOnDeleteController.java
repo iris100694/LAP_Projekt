@@ -1,10 +1,12 @@
 package com.lap.roomplaningsystem.controller.deleteController;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.Event;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -47,18 +49,22 @@ public class EventOnDeleteController extends BaseController {
         assert eventStartLabel != null : "fx:id=\"eventStartLabel\" was not injected: check your FXML file 'eventDetailOnDelete-view.fxml'.";
 
 
-        initEvent();
+        Optional<Event> optionalEvent = model.getDataholder().getEvents().stream().filter(e -> e == model.getSelectedEventProperty()).findAny();
+
+        if(optionalEvent.isPresent()){
+            deleteLabel.setText("V" + String.valueOf(optionalEvent.get().getEventID()) + "  " + optionalEvent.get().getCourse().getTitle() + "  " + optionalEvent.get().getCourse().getProgram().getDescription());
+            eventDateLabel.setText(String.valueOf(optionalEvent.get().getDate()));
+            eventStartLabel.setText(String.valueOf(optionalEvent.get().getStartTime()));
+            eventEndLabel.setText(String.valueOf(optionalEvent.get().getEndTime()));
+            eventRoomLabel.setText(optionalEvent.get().getRoom().getDescription());
+            eventLocationLabel.setText(optionalEvent.get().getRoom().getLocation().getDescription());
+        }
+
+
     }
 
     private void initEvent() {
-        Event e = model.getShowEvent();
-        System.out.println(e.getDate());
-        deleteLabel.setText("V" + String.valueOf(e.getEventID()) + "  " + e.getCourse().getTitle() + "  " + e.getCourse().getProgram().getDescription());
-        eventDateLabel.setText(String.valueOf(e.getDate()));
-        eventStartLabel.setText(String.valueOf(e.getStartTime()));
-        eventEndLabel.setText(String.valueOf(e.getEndTime()));
-        eventRoomLabel.setText(e.getRoom().getDescription());
-        eventLocationLabel.setText(e.getRoom().getLocation().getDescription());
+
     }
 
     @FXML
@@ -70,8 +76,13 @@ public class EventOnDeleteController extends BaseController {
 
     @FXML
     void onYesButtonClicked(MouseEvent event) {
+        Optional <Event> optionalEvent = model.getDataholder().getEvents().stream().filter(e -> e == model.getSelectedEventProperty()).findAny();
+        model.setSelectedEventProperty(null);
+        optionalEvent.ifPresent(e -> model.getDataholder().deleteEvent(e));
+
         Stage stage = (Stage) deleteLabel.getScene().getWindow();
-        model.getDataholder().deleteEvent(model.getShowEvent());
+
+
         stage.close();
 
     }

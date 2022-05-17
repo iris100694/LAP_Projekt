@@ -2,28 +2,30 @@ package com.lap.roomplaningsystem.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
 import java.sql.Time;
-import java.time.LocalTime;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.app.Constants;
+import com.lap.roomplaningsystem.matcher.CourseMatcher;
 import com.lap.roomplaningsystem.matcher.LocationMatcher;
 import com.lap.roomplaningsystem.matcher.RoomMatcher;
 import com.lap.roomplaningsystem.matcher.UserMatcher;
-import com.lap.roomplaningsystem.model.Course;
-import com.lap.roomplaningsystem.model.Location;
-import com.lap.roomplaningsystem.model.Room;
-import com.lap.roomplaningsystem.model.User;
+import com.lap.roomplaningsystem.model.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 public class CreateEventViewController extends BaseController{
@@ -65,6 +67,18 @@ public class CreateEventViewController extends BaseController{
     @FXML
     private ComboBox<String> typComboBox;
 
+    @FXML
+    private Button saveButton;
+
+    @FXML
+    private Label errorLabel;
+
+    @FXML
+    private Label resultLabel;
+
+    boolean isSeries;
+    boolean isOneTime = true;
+
 
 
     @FXML
@@ -81,12 +95,6 @@ public class CreateEventViewController extends BaseController{
         assert singleDateStartTimeComboBox != null : "fx:id=\"singeDateStartTimeComboBox\" was not injected: check your FXML file 'eventCreate-view.fxml'.";
         assert singleDateDatePicker != null : "fx:id=\"singleDateDatePicker\" was not injected: check your FXML file 'eventCreate-view.fxml'.";
         assert typComboBox != null : "fx:id=\"typComboBox\" was not injected: check your FXML file 'eventCreate-view.fxml'.";
-
-        initView();
-        setConverterOnChoiceBoxes();
-    }
-
-    private void initView() {
 
         locationComboBox.setItems(model.getDataholder().getLocations());
         coachComboBox.setItems(model.getDataholder().getCoaches());
@@ -129,11 +137,11 @@ public class CreateEventViewController extends BaseController{
 
         });
 
-        model.selectedRequestResultProperty().addListener(new ChangeListener<Number>() {
+        model.selectedResultProperty().addListener(new ChangeListener<Room>() {
             @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number oldRoom, Number newRoom) {
+            public void changed(ObservableValue<? extends Room> observableValue, Room oldRoom, Room newRoom) {
                 Optional<Room> room = model.getDataholder().getRooms().stream()
-                        .filter(r -> r.getRoomID() == newRoom.intValue())
+                        .filter(r -> r == newRoom)
                         .findAny();
 
                 if(room.isPresent()){
@@ -143,46 +151,6 @@ public class CreateEventViewController extends BaseController{
             }
         });
 
-
-
-    }
-
-
-
-    private void setSeriesDateAreaVisable() {
-        singleDateDatePicker.setDisable(true);
-        singleDateStartTimeComboBox.setDisable(true);
-        singleDateEndTimeComboBox.setDisable(true);
-
-        seriesDateStartDatePicker.setDisable(false);
-        seriesDateEndDatePicker.setDisable(false);
-        seriesDateStartTimeComboBox.setDisable(false);
-        seriesDateEndTimeComboBox.setDisable(false);
-    }
-
-    private void setOnTimeDateAreaVisable() {
-        singleDateDatePicker.setDisable(false);
-        singleDateStartTimeComboBox.setDisable(false);
-        singleDateEndTimeComboBox.setDisable(false);
-
-        seriesDateStartDatePicker.setDisable(true);
-        seriesDateEndDatePicker.setDisable(true);
-        seriesDateStartTimeComboBox.setDisable(true);
-        seriesDateEndTimeComboBox.setDisable(true);
-    }
-
-    private ObservableList<String> createTypList() {
-        ObservableList<String> typs = FXCollections.observableArrayList();
-
-        typs.add("einmalig");
-        typs.add("täglich");
-        typs.add("wöchentlich");
-        typs.add("monatlich");
-
-        return typs;
-    }
-
-    private void setConverterOnChoiceBoxes() {
         locationComboBox.setConverter(new StringConverter<Location>() {
             @Override
             public String toString(Location location) {
@@ -223,7 +191,60 @@ public class CreateEventViewController extends BaseController{
                 return roomMatcher.matchByString(s, model.getDataholder().getRooms());
             }
         });
+
+        courseComboBox.setConverter(new StringConverter<Course>() {
+            @Override
+            public String toString(Course course) {
+                return course == null ? "Kurs" :  course.getTitle();
+            }
+
+            @Override
+            public Course fromString(String s) {
+                CourseMatcher courseMatcher = new CourseMatcher();
+                return courseMatcher.matchByString(s, model.getDataholder().getCourses());
+            }
+        });
     }
+
+
+
+    private void setSeriesDateAreaVisable() {
+        isSeries = true;
+        isOneTime = false;
+        singleDateDatePicker.setDisable(true);
+        singleDateStartTimeComboBox.setDisable(true);
+        singleDateEndTimeComboBox.setDisable(true);
+
+        seriesDateStartDatePicker.setDisable(false);
+        seriesDateEndDatePicker.setDisable(false);
+        seriesDateStartTimeComboBox.setDisable(false);
+        seriesDateEndTimeComboBox.setDisable(false);
+    }
+
+    private void setOnTimeDateAreaVisable() {
+        isSeries = false;
+        isOneTime = true;
+        singleDateDatePicker.setDisable(false);
+        singleDateStartTimeComboBox.setDisable(false);
+        singleDateEndTimeComboBox.setDisable(false);
+
+        seriesDateStartDatePicker.setDisable(true);
+        seriesDateEndDatePicker.setDisable(true);
+        seriesDateStartTimeComboBox.setDisable(true);
+        seriesDateEndTimeComboBox.setDisable(true);
+    }
+
+    private ObservableList<String> createTypList() {
+        ObservableList<String> typs = FXCollections.observableArrayList();
+
+        typs.add("einmalig");
+        typs.add("täglich");
+        typs.add("wöchentlich");
+        typs.add("monatlich");
+
+        return typs;
+    }
+
 
     @FXML
     void onLogoutLabelClicked(MouseEvent event) {
@@ -236,5 +257,84 @@ public class CreateEventViewController extends BaseController{
     @FXML
     private void onRequestButtonClicked(MouseEvent mouseEvent) throws IOException {
         showNewView(Constants.PATH_TO_REQUEST_VIEW);
+    }
+
+    @FXML
+    private void onSaveButtonClicked(MouseEvent mouseEvent) throws Exception {
+        boolean valid = false;
+        if (locationComboBox.getValue() == null || roomComboBox.getValue() == null ||
+            courseComboBox.getValue() == null || coachComboBox.getValue() == null){
+            errorLabel.setText("Bitte alle Felder ausfüllen!");
+        } else if(isOneTime){
+            if(singleDateDatePicker.getValue() == null || singleDateStartTimeComboBox.getValue() == null ||
+            singleDateEndTimeComboBox.getValue() == null){
+                errorLabel.setText("Bitte Datum und Uhrzeit ausfüllen!");
+            } else {
+                if(singleDateDatePicker.getValue().isBefore(LocalDate.now())){
+                    errorLabel.setText("Datum darf nicht in der Vergangenheit gewählt werden!");
+                }else if(singleDateEndTimeComboBox.getValue().isBefore(singleDateStartTimeComboBox.getValue())){
+                    errorLabel.setText("Endzeit darf nicht vor dem Stardatum gewählt werden!");
+                } else {
+                    valid = true;
+                }
+            }
+        } else {
+            if(seriesDateStartDatePicker.getValue() == null || seriesDateEndDatePicker.getValue() == null ||
+                    seriesDateStartTimeComboBox.getValue() == null || seriesDateEndDatePicker.getValue() == null){
+                errorLabel.setText("Bitte Datum und Uhrzeit ausfüllen!");
+            } else {
+                if(seriesDateStartDatePicker.getValue().isBefore(LocalDate.now())){
+                    errorLabel.setText("Startdatum darf nicht in der Vergangenheit gewählt werden!");
+                }else if(seriesDateEndDatePicker.getValue().isBefore(seriesDateStartDatePicker.getValue())){
+                    errorLabel.setText("Enddatum darf nicht vor dem Stardatum gewählt werden!");
+                } else if (seriesDateEndTimeComboBox.getValue().isBefore(seriesDateStartTimeComboBox.getValue()) ||
+                        seriesDateEndTimeComboBox.getValue().toString().equals(seriesDateStartTimeComboBox.getValue().toString())){
+                    errorLabel.setText("Endzeit darf nicht vor und zur gleichen Startzeit gewählt werden!");
+                } else {
+                    valid = true;
+                }
+            }
+        }
+
+        if(valid){
+
+            if(isOneTime){
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                String startDate = singleDateDatePicker.getValue().toString() + " "+ singleDateStartTimeComboBox.getValue().toString();
+                String endDate = singleDateDatePicker.getValue().toString() + " "+ singleDateEndTimeComboBox.getValue().toString();
+                LocalDateTime start = LocalDateTime.parse(startDate, formatter);
+                LocalDateTime end = LocalDateTime.parse(endDate, formatter);
+
+                Event event = Dataholder.eventRepositoryJDBC.add(model.getUser(),roomComboBox.getValue(),courseComboBox.getValue(),
+                        coachComboBox.getValue(), singleDateDatePicker.getValue(), start, end);
+
+                model.getDataholder().addEvent(event);
+
+                resultLabel.setText("Veranstaltung erfolgreich erfasst!");
+            } else if(isSeries){
+                ObservableList<Event> events = handleSeries(typComboBox.getValue());
+
+                model.getDataholder().addEvents(events);
+
+                resultLabel.setText("Veranstaltung erfolgreich erfasst!");
+            }
+
+        }
+    }
+
+
+    private ObservableList<Event> handleSeries(String serie){
+        ObservableList<Event> isBooked = null;
+
+
+        return isBooked = switch (serie){
+            case "täglich" -> Dataholder.eventRepositoryJDBC.seriesDaily(model.getUser(),roomComboBox.getValue(),courseComboBox.getValue(),
+                    coachComboBox.getValue(), seriesDateStartDatePicker.getValue(), seriesDateEndDatePicker.getValue(), seriesDateStartTimeComboBox.getValue().toString(), seriesDateEndTimeComboBox.getValue().toString());
+            case "wöchentlich" -> Dataholder.eventRepositoryJDBC.seriesWeekly(model.getUser(),roomComboBox.getValue(),courseComboBox.getValue(),
+                    coachComboBox.getValue(), seriesDateStartDatePicker.getValue(), seriesDateEndDatePicker.getValue(), seriesDateStartTimeComboBox.getValue().toString(), seriesDateEndTimeComboBox.getValue().toString());
+            case "monatlich" -> Dataholder.eventRepositoryJDBC.seriesMonthly(model.getUser(),roomComboBox.getValue(),courseComboBox.getValue(),
+                    coachComboBox.getValue(), seriesDateStartDatePicker.getValue(), seriesDateEndDatePicker.getValue(), seriesDateStartTimeComboBox.getValue().toString(), seriesDateEndTimeComboBox.getValue().toString());
+            default-> null;
+        };
     }
 }

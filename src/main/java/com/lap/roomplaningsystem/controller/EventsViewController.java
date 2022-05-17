@@ -13,6 +13,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -72,8 +74,42 @@ public class EventsViewController extends BaseController{
             loginLabel.setOnMouseClicked(this::onLogoutLabelClicked);
         }
 
+
+
         initFilter();
-        initEventTable(model.getDataholder().getEvents());
+
+        eventTable.setItems(model.getDataholder().getEvents());
+
+        eventNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("V" + String.valueOf(dataFeatures.getValue().getEventID())));
+        eventTitleColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getCourse().getTitle() + "   " + dataFeatures.getValue().getCourse().getProgram().getDescription()));
+        eventDateColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDate().toString()));
+        eventStartColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getStartTime().toString()));
+        eventEndColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getEndTime().toString()));
+
+        eventTable.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) ->  {
+            try {
+//
+                if(nv != null){
+                    model.setSelectedEventProperty(nv);
+                    showNewView(Constants.PATH_TO_EVENT_DETAIL_VIEW);
+                }
+
+//
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        model.selectedEventProperty().addListener(new ChangeListener<Event>() {
+            @Override
+            public void changed(ObservableValue<? extends Event> observableValue, Event oldEvent, Event newEvent) {
+                if(newEvent == null){
+                    eventTable.getSelectionModel().clearSelection();
+                }
+            }
+        });
+
+
     }
 
     private void initFilter() throws SQLException {
@@ -154,31 +190,12 @@ public class EventsViewController extends BaseController{
         });
     }
 
-    private boolean isBlank(String value) {
-        return value.equals("");
-    }
+
 
 
 
     private void initEventTable(ObservableList<Event> events) {
         eventTable.setItems(events);
-
-        eventNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("V" + String.valueOf(dataFeatures.getValue().getEventID())));
-        eventTitleColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getCourse().getTitle() + "   " + dataFeatures.getValue().getCourse().getProgram().getDescription()));
-        eventDateColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDate().toString()));
-        eventStartColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getStartTime().toString()));
-        eventEndColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getEndTime().toString()));
-
-        eventTable.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) ->  {
-            try {
-                model.setShowEvent(nv);
-                showNewView(Constants.PATH_TO_EVENT_DETAIL_VIEW);
-//                Platform.runLater( ()-> {  eventTable.getSelectionModel().clearSelection();  });
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-
 
     }
 

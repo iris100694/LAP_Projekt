@@ -3,6 +3,7 @@ package com.lap.roomplaningsystem.controller.detailController;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.app.Constants;
@@ -61,21 +62,22 @@ public class CourseDetailViewController extends BaseController {
         assert deleteCourse != null : "fx:id=\"deleteCourse\" was not injected: check your FXML file 'courseDetail-view.fxml'.";
         assert editCourse != null : "fx:id=\"editCourse\" was not injected: check your FXML file 'courseDetail-view.fxml'.";
 
-        initView();
+        Optional<Course> optionalCourse = model.getDataholder().getCourses().stream().filter(course -> course == model.getSelectedCourseProperty()).findAny();
+
+        if(optionalCourse.isPresent()) {
+            Course c = optionalCourse.get();
+
+            courseDetailViewNumberLabel.setText("K" + c.getCourseID());
+            courseDetailViewDescriptionLabel.setText(c.getTitle());
+            courseDetailViewProgramLabel.setText(c.getProgram().getDescription());
+            courseDetailViewMembersLabel.setText(String.valueOf(c.getMembers()));
+            courseDetailViewStartLabel.setText(c.getStart().toString());
+            courseDetailViewEndLabel.setText(c.getEnd().toString());
+        }
 
     }
 
-    private void initView() {
-        Course c = model.getShowCourse();
 
-        courseDetailViewNumberLabel.setText("K" + c.getCourseID());
-        courseDetailViewDescriptionLabel.setText(c.getTitle());
-        courseDetailViewProgramLabel.setText(c.getProgram().getDescription());
-        courseDetailViewMembersLabel.setText(String.valueOf(c.getMembers()));
-        courseDetailViewStartLabel.setText(c.getStart().toString());
-        courseDetailViewEndLabel.setText(c.getEnd().toString());
-
-    }
 
 
     @FXML

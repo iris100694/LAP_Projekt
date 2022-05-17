@@ -6,10 +6,8 @@ import com.lap.roomplaningsystem.repository.interfaces.CourseRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDate;
 import java.util.Optional;
 
 public class CourseRepositoryJDBC extends Repository implements CourseRepository {
@@ -26,9 +24,33 @@ public class CourseRepositoryJDBC extends Repository implements CourseRepository
     }
 
     @Override
-    public void add(Course course) throws SQLException {
+    public Course add(String description, Program program, Integer members, Date startDate, Date endDate) throws Exception {
+        Connection connection = connect();
 
+        String query = "INSERT INTO course (PROGRAMID, TITLE, MEMBERS, START, END) VALUES (?,?,?,?,?)";
+
+        PreparedStatement stmt = null;
+
+        stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        stmt.setInt(1, program.getProgramID());
+        stmt.setString(2, description);
+        stmt.setInt(3, members);
+        stmt.setDate(4, startDate);
+        stmt.setDate(5, endDate);
+        stmt.executeQuery();
+
+        ResultSet resultSet = stmt.getGeneratedKeys();
+
+        Course course = null;
+
+        while(resultSet.next()){
+            int courseID  = resultSet.getInt(1);
+            course = new Course(courseID, program, description, members, startDate, endDate);
+        }
+
+        return course;
     }
+
 
     @Override
     public void update(Course course) throws SQLException {

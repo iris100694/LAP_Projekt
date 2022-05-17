@@ -3,6 +3,7 @@ package com.lap.roomplaningsystem.controller.updateController;
 import java.net.URL;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.controller.BaseController;
@@ -85,21 +86,24 @@ public class EventOnUpdateController extends BaseController {
 
 
     private void initComboBoxes() {
-        Event e = model.getShowEvent();
+        Optional<Event> optionalEvent = model.getDataholder().getEvents().stream().filter(e -> e == model.getSelectedEventProperty()).findAny();
 
-        eventDetailViewLocationComboBox.setItems(model.getDataholder().getLocations());
-        eventDetailViewCoachComboBox.setItems(model.getDataholder().getCoaches());
-        eventDetailViewCourseComboBox.setItems(model.getDataholder().getCourses());
-        eventDetailViewRoomComboBox.setItems(availableRooms(e.getRoom().getLocation()));
+        if(optionalEvent.isPresent()){
+            eventDetailViewLocationComboBox.setItems(model.getDataholder().getLocations());
+            eventDetailViewCoachComboBox.setItems(model.getDataholder().getCoaches());
+            eventDetailViewCourseComboBox.setItems(model.getDataholder().getCourses());
+            eventDetailViewRoomComboBox.setItems(availableRooms(optionalEvent.get().getRoom().getLocation()));
 
-        eventDetailViewLocationComboBox.getSelectionModel().select(e.getRoom().getLocation());
-        eventDetailViewRoomComboBox.getSelectionModel().select(e.getRoom());
-        eventDetailViewCoachComboBox.getSelectionModel().select(e.getCoach());
-        eventDetailViewCourseComboBox.getSelectionModel().select(e.getCourse());
+            eventDetailViewLocationComboBox.getSelectionModel().select(optionalEvent.get().getRoom().getLocation());
+            eventDetailViewRoomComboBox.getSelectionModel().select(optionalEvent.get().getRoom());
+            eventDetailViewCoachComboBox.getSelectionModel().select(optionalEvent.get().getCoach());
+            eventDetailViewCourseComboBox.getSelectionModel().select(optionalEvent.get().getCourse());
 
-        eventDetailViewDatePicker.setValue(e.getDate());
-        eventDetailViewStartInput.setText(e.getStartTime().toString());
-        eventDetailViewEndInput.setText(e.getEndTime().toString());
+            eventDetailViewDatePicker.setValue(optionalEvent.get().getDate());
+            eventDetailViewStartInput.setText(optionalEvent.get().getStartTime().toString());
+            eventDetailViewEndInput.setText(optionalEvent.get().getEndTime().toString());
+        }
+
 
 
         eventDetailViewLocationComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Location>() {

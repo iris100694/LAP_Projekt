@@ -44,11 +44,8 @@ public class RoomEquipmentTableController extends BaseController {
         assert roomEquipmentRoomColumn != null : "fx:id=\"roomEquipmentRoomColumn\" was not injected: check your FXML file 'roomEquipmentTable.fxml'.";
         assert roomEquipmentTableView != null : "fx:id=\"roomEquipmentTableView\" was not injected: check your FXML file 'roomEquipmentTable.fxml'.";
 
-        initRoomEquipmentTable(model.getDataholder().getRoomEquipments());
-    }
 
-    private void initRoomEquipmentTable(ObservableList<RoomEquipment> roomEquipments) {
-        roomEquipmentTableView.setItems(roomEquipments);
+        roomEquipmentTableView.setItems(model.getDataholder().getRoomEquipments());
 
         roomEquipmentNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("RA" + String.valueOf(dataFeatures.getValue().getRoomEquipmentID())));
         roomEquipmentRoomColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getRoom().getDescription()));
@@ -56,14 +53,19 @@ public class RoomEquipmentTableController extends BaseController {
 
 
         roomEquipmentTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
-            model.setShowRoomEquipment(nv);
+
             try {
-                showNewView(Constants.PATH_TO_ROOMEQUIPMENT_DETAIL_VIEW);
-//                Platform.runLater( ()-> {  roomEquipmentTableView.getSelectionModel().clearSelection();  });
+
+                if(nv != null){
+                    model.setSelectedRoomEquipmentProperty(nv);
+                    showNewView(Constants.PATH_TO_ROOMEQUIPMENT_DETAIL_VIEW);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
     }
+
+
 
 }

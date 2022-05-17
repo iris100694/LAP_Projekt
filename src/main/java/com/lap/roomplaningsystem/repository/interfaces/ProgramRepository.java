@@ -12,7 +12,7 @@ public interface ProgramRepository extends BaseRepository{
 
     Optional<ObservableList<Program>> readAll() throws Exception;
 
-    void add(Program program) throws SQLException;
+    Program add(String description) throws Exception;
 
     void update(Program program) throws SQLException;
 

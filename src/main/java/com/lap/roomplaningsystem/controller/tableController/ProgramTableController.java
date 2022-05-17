@@ -10,6 +10,7 @@ import com.lap.roomplaningsystem.model.Program;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -40,24 +41,26 @@ public class ProgramTableController extends BaseController {
         assert programNumberColumn != null : "fx:id=\"programNumberColumn\" was not injected: check your FXML file 'programTable.fxml'.";
         assert programTableView != null : "fx:id=\"programTableView\" was not injected: check your FXML file 'programTable.fxml'.";
 
-        initProgramTable(model.getDataholder().getPrograms());
-    }
 
-    private void initProgramTable(ObservableList<Program> programs) {
-        programTableView.setItems(programs);
+        programTableView.setItems(model.getDataholder().getPrograms());
 
         programNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("P" + String.valueOf(dataFeatures.getValue().getProgramID())));
         programDescriptionColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDescription()));
 
         programTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
-            model.setShowProgram(nv);
-//            Platform.runLater( ()-> {  programTableView.getSelectionModel().clearSelection();  });
+
             try {
-                showNewView(Constants.PATH_TO_PROGRAM_DETAIL_VIEW);
+                if(nv != null) {
+                    model.setSelectedProgramProperty(nv);
+                    showNewView(Constants.PATH_TO_PROGRAM_DETAIL_VIEW);
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
 
     }
+
+
 }
