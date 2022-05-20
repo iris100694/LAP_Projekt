@@ -4,6 +4,7 @@ import com.lap.roomplaningsystem.repository.JDBC.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class Dataholder {
     protected ObservableList<Room> rooms;
     protected ObservableList<RoomEquipment> roomEquipments;
 
+
     public static UserRepositoryJDBC userRepositoryJDBC = new UserRepositoryJDBC();
     public static RoomRepositoryJDBC roomRepositoryJDBC = new RoomRepositoryJDBC();
     public static EventRepositoryJDBC eventRepositoryJDBC = new EventRepositoryJDBC();
@@ -28,6 +30,7 @@ public class Dataholder {
     public static EquipmentRepositoryJDBC equipmentRepositoryJDBC = new EquipmentRepositoryJDBC();
     public static LocationRepositoryJDBC locationRepositoryJDBC = new LocationRepositoryJDBC();
     public static RoomEquipmentRepositoryJDBC roomEquipmentRepositoryJDBC = new RoomEquipmentRepositoryJDBC();
+
 
 
     public Dataholder() throws Exception {
@@ -39,6 +42,8 @@ public class Dataholder {
         this.events = eventRepositoryJDBC.readAll().orElse(null);
         this.rooms = roomRepositoryJDBC.readAll().orElse(null);
         this.roomEquipments = roomEquipmentRepositoryJDBC.readAll().orElse(null);
+
+
 
         initChangeListener();
 
@@ -76,6 +81,8 @@ public class Dataholder {
         }
         return coaches;
     }
+
+
 
     public void deleteEvent(Event e) {
         events.remove(e);
@@ -182,4 +189,36 @@ public class Dataholder {
         this.events.addAll(events);
     }
 
+    public void updateRoom(int index, Room room) {
+        this.rooms.set(index, room);
+    }
+
+    public void updateUser(int index, User user) {
+        this.users.set(index, user);
+    }
+
+    public void updateEquipment(int index, Equipment equipment) {
+        this.equipments.set(index,equipment);
+    }
+
+    public void updateRoomEquipment(int index, RoomEquipment roomEquipment) {
+        this.roomEquipments.set(index,roomEquipment);
+    }
+
+    public void updateLocation(int index, Location location) {
+        this.locations.set(index,location);
+    }
+
+    public void updateCourse(int index, Course course) {
+        this.courses.set(index,course);
+    }
+
+    public void updateEvent(int index, Event event) {
+        this.events.set(index,event);
+    }
+
+
+    public void updateProgram(int index, Program program) {
+        this.programs.set(index,program);
+    }
 }

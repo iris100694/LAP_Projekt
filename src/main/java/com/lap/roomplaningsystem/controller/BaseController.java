@@ -83,4 +83,12 @@ public class BaseController {
         authorizationList.add("Trainer");
         return authorizationList;
     }
+
+    protected Integer getInt(String s) {
+        try{
+            return Integer.parseInt(s);
+        } catch (Exception e){
+            return null;
+        }
+    }
 }

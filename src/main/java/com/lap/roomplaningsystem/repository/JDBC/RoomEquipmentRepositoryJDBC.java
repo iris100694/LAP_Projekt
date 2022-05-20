@@ -2,12 +2,10 @@ package com.lap.roomplaningsystem.repository.JDBC;
 
 import com.lap.roomplaningsystem.model.*;
 import com.lap.roomplaningsystem.repository.Repository;
-import com.lap.roomplaningsystem.repository.interfaces.CourseRepository;
 import com.lap.roomplaningsystem.repository.interfaces.RoomEquipmentRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.io.IOException;
 import java.sql.*;
 import java.util.Optional;
 
@@ -55,9 +53,26 @@ public class RoomEquipmentRepositoryJDBC extends Repository implements RoomEquip
 
 
     @Override
-    public void update(RoomEquipment roomEquipment) throws SQLException {
+    public boolean update(RoomEquipment roomEquipment) throws SQLException {
 
+        Connection connection = connect();
+
+        String query = "UPDATE roomequipment SET ROOMID = ?, EQUIPMENTID = ? WHERE ROOMEQUIPMENTID = ?";
+
+        PreparedStatement stmt = null;
+
+        stmt = connection.prepareStatement(query);
+
+        stmt.setInt(1, roomEquipment.getRoom().getRoomID());
+        stmt.setInt(2, roomEquipment.getEquipment().getEquipmentID());
+        stmt.setInt(3, roomEquipment.getRoomEquipmentID());
+
+
+        int isUpdated = stmt.executeUpdate();
+
+        return isUpdated != 0;
     }
+
 
     @Override
     public void delete(RoomEquipment roomEquipment) throws SQLException {

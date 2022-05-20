@@ -7,6 +7,7 @@ public class Constants {
     public static final String PATH_TO_CREATE_EVENT_VIEW = "/com/lap/roomplaningsystem/views/eventCreate-view.fxml";
     public static final String PATH_TO_STAMMDATA_VIEW = "/com/lap/roomplaningsystem/views/stammdata-view.fxml";
     public static final String PATH_TO_LOGIN_VIEW = "/com/lap/roomplaningsystem/views/login-view.fxml";
+    public static final String PATH_TO_CREATE_PASSWORD_VIEW = "/com/lap/roomplaningsystem/views/createPassword-view.fxml";
 
     public static final String PATH_TO_EVENT_DETAIL_VIEW = "/com/lap/roomplaningsystem/views/detailViews/eventDetail-view.fxml";
     public static final String PATH_TO_ROOM_DETAIL_VIEW = "/com/lap/roomplaningsystem/views/detailViews/roomDetail-view.fxml";
@@ -62,7 +63,7 @@ public class Constants {
 
 
     public static final String CALL_LISTS_FOR_REQUEST_COMBOBOXES = "{CALL listsForRequest()}";
-   public static final String CALL_LISTS_FOR_REQUEST_ROOMS = "{CALL listsForRequestRooms(?)}";
+    public static final String CALL_LISTS_FOR_REQUEST_ROOMS = "{CALL listsForRequestRooms(?)}";
 
 
 

@@ -69,7 +69,6 @@ public class RequestResultViewController extends BaseController{
 
 
 
-
     @FXML
     void onReturnButtonClicked(MouseEvent event) throws IOException {
 

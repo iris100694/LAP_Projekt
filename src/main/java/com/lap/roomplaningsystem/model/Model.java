@@ -27,6 +27,8 @@ public class Model {
     private ObservableList<Room> requestResult;
     private ObjectProperty<Room> selectedResultProperty = new SimpleObjectProperty<>();
 
+    private StringProperty hashedPassword=  new SimpleStringProperty();
+
     public Model()  {
 
         try {
@@ -47,6 +49,19 @@ public class Model {
             return true;
         }
         return false;
+    }
+
+
+    public String getHashedPassword() {
+        return hashedPassword.get();
+    }
+
+    public StringProperty hashedPasswordProperty() {
+        return hashedPassword;
+    }
+
+    public void setHashedPassword(String hashedPassword) {
+        this.hashedPassword.set(hashedPassword);
     }
 
     public Event getSelectedEventProperty() {

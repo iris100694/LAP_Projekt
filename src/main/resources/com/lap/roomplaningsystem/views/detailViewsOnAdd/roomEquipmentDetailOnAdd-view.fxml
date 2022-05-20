@@ -32,7 +32,7 @@
             <Insets />
          </GridPane.margin>
          <children>
-            <Label prefHeight="23.0" prefWidth="264.0" text="Ausstattung in Verwendung">
+            <Label prefHeight="23.0" prefWidth="264.0" text="Neue Ausstattung">
                <font>
                   <Font name="Century Gothic Bold" size="18.0" />
                </font>

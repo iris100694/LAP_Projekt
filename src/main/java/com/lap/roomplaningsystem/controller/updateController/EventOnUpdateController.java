@@ -3,6 +3,7 @@ package com.lap.roomplaningsystem.controller.updateController;
 import java.net.URL;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -26,56 +27,48 @@ import javafx.util.converter.LocalDateStringConverter;
 public class EventOnUpdateController extends BaseController {
 
     @FXML
-    private ResourceBundle resources;
+    private ComboBox<User> coachComboBox;
 
     @FXML
-    private URL location;
+    private ComboBox<Course> courseComboBox;
+
+    @FXML
+    private DatePicker datePicker;
+
+    @FXML
+    private ComboBox<LocalTime> endComboBox;
 
     @FXML
     private Label errorLabel;
 
     @FXML
-    private ComboBox<User> eventDetailViewCoachComboBox;
+    private ComboBox<Location> locationComboBox;
 
     @FXML
-    private DatePicker eventDetailViewDatePicker;
+    private Label numberLabel;
 
     @FXML
-    private TextField eventDetailViewEndInput;
+    private ComboBox<Room> roomComboBox;
 
     @FXML
-    private ComboBox<Location> eventDetailViewLocationComboBox;
+    private Button saveButton;
 
     @FXML
-    private Label eventDetailViewNumberLabel;
+    private ComboBox<LocalTime> startComboBox;
 
-    @FXML
-    private ComboBox<Room> eventDetailViewRoomComboBox;
-
-    @FXML
-    private TextField eventDetailViewStartInput;
-
-    @FXML
-    private ComboBox<Course> eventDetailViewCourseComboBox;
-
-
-
-    @FXML
-    private Button saveEventButton;
-
-    private ObservableList<FilterBox> filterboxes = FXCollections.observableArrayList();
 
     @FXML
     void initialize() {
+        assert coachComboBox != null : "fx:id=\"coachComboBox\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
+        assert courseComboBox != null : "fx:id=\"courseComboBox\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
+        assert datePicker != null : "fx:id=\"datePicker\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
+        assert endComboBox != null : "fx:id=\"endComboBox\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
         assert errorLabel != null : "fx:id=\"errorLabel\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
-        assert eventDetailViewCoachComboBox != null : "fx:id=\"eventDetailViewCoachChoiceBox\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
-        assert eventDetailViewDatePicker != null : "fx:id=\"eventDetailViewDatePicker\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
-        assert eventDetailViewEndInput != null : "fx:id=\"eventDetailViewEndInput\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
-        assert eventDetailViewLocationComboBox != null : "fx:id=\"eventDetailViewLocationChoiceBox\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
-        assert eventDetailViewNumberLabel != null : "fx:id=\"eventDetailViewNumberLabel\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
-        assert eventDetailViewRoomComboBox != null : "fx:id=\"eventDetailViewRoomChoiceBox\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
-        assert eventDetailViewStartInput != null : "fx:id=\"eventDetailViewStartInput\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
-        assert saveEventButton != null : "fx:id=\"saveEventButton\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
+        assert locationComboBox != null : "fx:id=\"locationComboBox\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
+        assert numberLabel != null : "fx:id=\"numberLabel\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
+        assert roomComboBox != null : "fx:id=\"roomComboBox\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
+        assert saveButton != null : "fx:id=\"saveButton\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
+        assert startComboBox != null : "fx:id=\"startComboBox\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
 
 
         initComboBoxes();
@@ -89,29 +82,28 @@ public class EventOnUpdateController extends BaseController {
         Optional<Event> optionalEvent = model.getDataholder().getEvents().stream().filter(e -> e == model.getSelectedEventProperty()).findAny();
 
         if(optionalEvent.isPresent()){
-            eventDetailViewLocationComboBox.setItems(model.getDataholder().getLocations());
-            eventDetailViewCoachComboBox.setItems(model.getDataholder().getCoaches());
-            eventDetailViewCourseComboBox.setItems(model.getDataholder().getCourses());
-            eventDetailViewRoomComboBox.setItems(availableRooms(optionalEvent.get().getRoom().getLocation()));
+            locationComboBox.setItems(model.getDataholder().getLocations());
+            coachComboBox.setItems(model.getDataholder().getCoaches());
+            courseComboBox.setItems(model.getDataholder().getCourses());
+            roomComboBox.setItems(availableRooms(optionalEvent.get().getRoom().getLocation()));
 
-            eventDetailViewLocationComboBox.getSelectionModel().select(optionalEvent.get().getRoom().getLocation());
-            eventDetailViewRoomComboBox.getSelectionModel().select(optionalEvent.get().getRoom());
-            eventDetailViewCoachComboBox.getSelectionModel().select(optionalEvent.get().getCoach());
-            eventDetailViewCourseComboBox.getSelectionModel().select(optionalEvent.get().getCourse());
+            locationComboBox.getSelectionModel().select(optionalEvent.get().getRoom().getLocation());
+            roomComboBox.getSelectionModel().select(optionalEvent.get().getRoom());
+            coachComboBox.getSelectionModel().select(optionalEvent.get().getCoach());
+            courseComboBox.getSelectionModel().select(optionalEvent.get().getCourse());
 
-            eventDetailViewDatePicker.setValue(optionalEvent.get().getDate());
-            eventDetailViewStartInput.setText(optionalEvent.get().getStartTime().toString());
-            eventDetailViewEndInput.setText(optionalEvent.get().getEndTime().toString());
+            datePicker.setValue(optionalEvent.get().getDate());
+            startComboBox.setItems(createTimeList());
+
         }
 
 
-
-        eventDetailViewLocationComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Location>() {
+        locationComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Location>() {
             @Override
             public void changed(ObservableValue<? extends Location> observableValue, Location location, Location newLocation) {
-                eventDetailViewRoomComboBox.setItems(availableRooms(newLocation));
-                eventDetailViewRoomComboBox.getSelectionModel().select(null);
-                eventDetailViewRoomComboBox.setPromptText("Raum");
+                roomComboBox.setItems(availableRooms(newLocation));
+                roomComboBox.getSelectionModel().select(null);
+                roomComboBox.setPromptText("Raum");
 
             }
         });
@@ -120,7 +112,7 @@ public class EventOnUpdateController extends BaseController {
 
 
     private void setConverterOnChoiceBoxes() {
-        eventDetailViewCourseComboBox.setConverter(new StringConverter<Course>() {
+        courseComboBox.setConverter(new StringConverter<Course>() {
             @Override
             public String toString(Course course) {
                 return course == null ? "": course.getTitle() + " " + course.getProgram().getDescription();
@@ -134,7 +126,7 @@ public class EventOnUpdateController extends BaseController {
             }
         });
 
-        eventDetailViewLocationComboBox.setConverter(new StringConverter<Location>() {
+        locationComboBox.setConverter(new StringConverter<Location>() {
             @Override
             public String toString(Location location) {
                 return location == null ? "" : location.getDescription();
@@ -148,7 +140,7 @@ public class EventOnUpdateController extends BaseController {
             }
         });
 
-        eventDetailViewCoachComboBox.setConverter(new StringConverter<User>() {
+        coachComboBox.setConverter(new StringConverter<User>() {
             @Override
             public String toString(User user) {
                 return user == null ? "" : user.getFirstname() + " " + user.getLastname();
@@ -161,7 +153,7 @@ public class EventOnUpdateController extends BaseController {
             }
         });
 
-        eventDetailViewRoomComboBox.setConverter(new StringConverter<Room>() {
+        roomComboBox.setConverter(new StringConverter<Room>() {
             @Override
             public String toString(Room room) {
                 return room == null ? "" : room.getDescription();
@@ -169,7 +161,7 @@ public class EventOnUpdateController extends BaseController {
 
             @Override
             public Room fromString(String s) {
-                RoomMatcher roomMatcher = new RoomMatcher(eventDetailViewLocationComboBox.getValue());
+                RoomMatcher roomMatcher = new RoomMatcher(locationComboBox.getValue());
                 return roomMatcher.matchByString(s, model.getDataholder().getRooms());
             }
         });
@@ -178,7 +170,7 @@ public class EventOnUpdateController extends BaseController {
 
 
     @FXML
-    void onSaveEventButtonClicked(MouseEvent event) {
+    void onSaveButtonClicked(MouseEvent event) {
 
     }
 

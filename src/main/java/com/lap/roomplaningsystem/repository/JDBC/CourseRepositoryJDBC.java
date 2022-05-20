@@ -7,7 +7,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.Optional;
 
 public class CourseRepositoryJDBC extends Repository implements CourseRepository {
@@ -53,7 +52,27 @@ public class CourseRepositoryJDBC extends Repository implements CourseRepository
 
 
     @Override
-    public void update(Course course) throws SQLException {
+    public boolean update(Course course) throws SQLException {
+        Connection connection = connect();
+
+        String query = "UPDATE course SET PROGRAMID = ?, TITLE = ?, MEMBERS = ?, START = ?, END = ? WHERE COURSEID = ?";
+
+        PreparedStatement stmt = null;
+
+        stmt = connection.prepareStatement(query);
+
+        stmt.setInt(1, course.getProgram().getProgramID());
+        stmt.setString(2, course.getTitle());
+        stmt.setInt(3, course.getMembers());
+        stmt.setDate(4, course.getStart());
+        stmt.setDate(5, course.getEnd());
+        stmt.setInt(6, course.getCourseID());
+
+
+        int isUpdated = stmt.executeUpdate();
+
+        return isUpdated != 0;
+
 
     }
 

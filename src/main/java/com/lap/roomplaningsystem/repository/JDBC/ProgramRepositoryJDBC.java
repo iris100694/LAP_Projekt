@@ -1,9 +1,7 @@
 package com.lap.roomplaningsystem.repository.JDBC;
 
-import com.lap.roomplaningsystem.model.Equipment;
 import com.lap.roomplaningsystem.model.Program;
 import com.lap.roomplaningsystem.repository.Repository;
-import com.lap.roomplaningsystem.repository.interfaces.CourseRepository;
 import com.lap.roomplaningsystem.repository.interfaces.ProgramRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -52,7 +50,23 @@ public class ProgramRepositoryJDBC extends Repository implements ProgramReposito
     }
 
     @Override
-    public void update(Program program) throws SQLException {
+    public boolean update(Program program) throws SQLException {
+
+        Connection connection = connect();
+
+        String query = "UPDATE program SET DESCRIPTION = ? WHERE PROGRAMID = ?";
+
+        PreparedStatement stmt = null;
+
+        stmt = connection.prepareStatement(query);
+
+        stmt.setString(1, program.getDescription());
+        stmt.setInt(2, program.getProgramID());
+
+
+        int isUpdated = stmt.executeUpdate();
+
+        return isUpdated != 0;
 
     }
 

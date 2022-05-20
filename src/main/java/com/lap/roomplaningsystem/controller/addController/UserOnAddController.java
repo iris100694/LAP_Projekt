@@ -182,7 +182,7 @@ public class UserOnAddController extends BaseController {
             errorSaveLabel.setText("Bitte das Passwort wiederholen");
 
         } else {
-                String authorize = authorizationCombobox.getValue().equals("Administator") ? "admin" : "coach";
+                String authorize = authorizationCombobox.getValue().equals("Administrator") ? "admin" : "coach";
 
                 User user = Dataholder.userRepositoryJDBC.add(firstnameInput.getText(), lastnameInput.getText(), titleInput.getText(), usernameInput.getText(),
                         authorize, passwordInput.getText(), trainerComboBox.getValue(), textVisableComboBox.getValue(),

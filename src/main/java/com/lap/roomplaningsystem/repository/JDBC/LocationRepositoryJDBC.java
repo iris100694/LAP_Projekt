@@ -62,7 +62,8 @@ public class LocationRepositoryJDBC extends Repository implements LocationReposi
 
         PreparedStatement stmt = null;
 
-        stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        stmt = connection.prepareStatement(query);
+
         stmt.setString(1, location.getDescription());
         stmt.setString(2, location.getAdress());
         stmt.setString(3, location.getPostCode());

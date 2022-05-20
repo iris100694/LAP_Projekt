@@ -66,7 +66,7 @@ public class RoomDetailViewController extends BaseController {
         if (optionalRoom.isPresent()){
             Room r = optionalRoom.get();
 
-            roomDetailViewNumberLabel.setText("V" + r.getRoomID());
+            roomDetailViewNumberLabel.setText("R" + r.getRoomID());
             roomDetailTitleLabel.setText(r.getDescription());
             roomDetailLocationLabel.setText(r.getLocation().getDescription());
             roomDetailMembersLabel.setText(String.valueOf(r.getMaxPersons()));

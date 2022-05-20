@@ -3,9 +3,13 @@ package com.lap.roomplaningsystem.filter;
 import com.lap.roomplaningsystem.model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
 
 public class RequestFilter {
     private  String location = "";
@@ -37,36 +41,35 @@ public class RequestFilter {
 
     }
 
-    public ObservableList<Room> filter(Model model) {
-        ObservableList<Room> rooms = model.getDataholder().getRooms();
+    public Predicate<Room> filter(Model model) {
+        List<Predicate<Room>> predicateList = new ArrayList<>();
 
         if(!isBlank(location)) {
-            rooms.removeIf(r -> !r.getLocation().getDescription().equals(location));
-            System.out.println(rooms);
+            predicateList.add(r -> r.getLocation().getDescription().equals(location));
         }
 
         if(!isBlank(room) && !roomDisable){
-            rooms.removeIf(r -> !room.equals(r.getDescription()));
-            System.out.println(rooms);
+            predicateList.add(r -> room.equals(r.getDescription()));
+
         }
 
         if(!isBlank(size)){
-            rooms.removeIf(r -> r.getMaxPersons() != Integer.parseInt(size));
-            System.out.println(rooms);
+            predicateList.add(r -> r.getMaxPersons() == Integer.parseInt(size));
+
         }
 
         if(startDate != null){
             if(endDate != null){
                 for(Event e : model.getDataholder().getEvents()){
-                    rooms.removeIf(r -> e.getRoom() == r && !e.getDate().isBefore(startDate)|| !e.getDate().isBefore(endDate));
+                    predicateList.add(r -> e.getRoom() != r && e.getDate().isBefore(startDate)|| e.getDate().isBefore(endDate));
+//
                 }
 
             } else {
                 for(Event e : model.getDataholder().getEvents()) {
-                    rooms.removeIf(r -> e.getRoom() == r && !e.getDate().isEqual(startDate));
+                    predicateList.add(r -> e.getRoom() != r && e.getDate().isBefore(startDate)|| e.getDate().isBefore(endDate));
                 }
             }
-            System.out.println(rooms);
         }
 
         if(!isBlank(equipment)){
@@ -77,30 +80,32 @@ public class RequestFilter {
                     break;
                 }
             }
+
             if(matchRoom != null){
                 Room finalMatchRoom = matchRoom;
-                rooms.removeIf(r -> r.getRoomID() != finalMatchRoom.getRoomID());
+                predicateList.add(r -> r.getRoomID() == finalMatchRoom.getRoomID());
             } else {
-                rooms.removeAll();
+                predicateList.add(r -> false);
             }
 
-            System.out.println(rooms);
         }
 
         if(!isBlank(user)){
-            ObservableList<User> coaches = model.getDataholder().getCoaches();
+            FilteredList<User> coaches = new FilteredList<>(model.getDataholder().getCoaches());
             for(Event e : model.getDataholder().getEvents()){
                 if((e.getCoach().getFirstname() + " " + e.getCoach().getLastname()).equals(user)){
                     if(!e.getDate().isBefore(startDate) || !e.getDate().isAfter(endDate)){
-                        coaches.removeIf( coach -> e.getCoach() == coach);
-                        System.out.println(coaches);
+                        coaches.setPredicate( coach -> e.getCoach() != coach);
+
                     }
                 }
             }
-            System.out.println(rooms);
+
         }
 
-        return rooms;
+        Predicate<Room> combinedPredicate = predicateList.stream().reduce(r -> true, Predicate::and);
+
+        return combinedPredicate;
     }
 
 

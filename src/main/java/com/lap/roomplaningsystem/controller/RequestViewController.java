@@ -18,6 +18,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -160,11 +161,20 @@ public class RequestViewController extends BaseController{
 
     @FXML
     void onRequestButtonClicked(MouseEvent event) throws IOException {
-        requestFilter.handleRequest(locationComboBox.getValue(), roomComboBox.getValue(),coachComboBox.getValue(),
-                equipmentComboBox.getValue(),sizeComboBox.getValue(), startDatePicker.getValue(), endDatePicker.getValue(),
-                startTimeComboBox.getValue(), endTimeComboBox.getValue());
+        requestFilter.setLocation(locationComboBox.getValue());
+        requestFilter.setRoom(roomComboBox.getValue());
+        requestFilter.setUser(coachComboBox.getValue());
+        requestFilter.setEquipment(equipmentComboBox.getValue());
+        requestFilter.setSize(sizeComboBox.getValue());
+        requestFilter.setStartDate(startDatePicker.getValue());
+        requestFilter.setEndDate(endDatePicker.getValue());
+        requestFilter.setStartTime(startTimeComboBox.getValue());
+        requestFilter.setEndTime(endTimeComboBox.getValue());
 
-        model.setRequestResult(requestFilter.filter(model));
+
+        FilteredList<Room> filteredList = new FilteredList<Room>(model.getDataholder().getRooms());
+        filteredList.setPredicate(requestFilter.filter(model));
+        model.setRequestResult(filteredList);
 
         showNewView(Constants.PATH_TO_ROOM_REQUEST_RESULT_VIEW);
 

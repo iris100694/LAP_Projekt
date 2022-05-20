@@ -1,15 +1,19 @@
 package com.lap.roomplaningsystem.controller.updateController;
 
-import java.io.ByteArrayInputStream;
+import java.io.*;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.matcher.LocationMatcher;
 import com.lap.roomplaningsystem.matcher.RoomMatcher;
-import com.lap.roomplaningsystem.model.Location;
-import com.lap.roomplaningsystem.model.Room;
+import com.lap.roomplaningsystem.model.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -18,64 +22,69 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 public class RoomOnUpdateController extends BaseController {
 
     @FXML
-    private ResourceBundle resources;
+    private Button changeImage;
 
     @FXML
-    private URL location;
+    private TextField descriptionInput;
 
     @FXML
-    private Button roomChangeImage;
+    private Label errorLabel;
 
     @FXML
-    private TextField roomDescriptionInput;
+    private ImageView imageView;
 
     @FXML
-    private TextField roomMaxPersons;
+    private ComboBox<Location> locationComboBox;
 
     @FXML
-    private ImageView roomImageView;
+    private TextField maxPersonsInput;
 
     @FXML
-    private ComboBox<Location> roomLocationComboBox;
+    private Label numberLabel;
 
-    @FXML
-    private Label roomNumberLabel;
+    FileChooser fileChooser = new FileChooser();
+    InputStream inputStream = null;
 
-    @FXML
-    private Button saveRoom;
+    boolean descriptionIsChange;
+    boolean maxPersonsIsChange;
+    boolean imageIsChange;
+    boolean locationIsChange;
+    boolean validChange;
+
 
     @FXML
     void initialize() {
-        assert roomChangeImage != null : "fx:id=\"roomChangeImage\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
-        assert roomDescriptionInput != null : "fx:id=\"roomDescriptionInput\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
-        assert roomImageView != null : "fx:id=\"roomImageView\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
-        assert roomLocationComboBox != null : "fx:id=\"roomLocationComboBox\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
-        assert roomNumberLabel != null : "fx:id=\"roomNumberLabel\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
-        assert saveRoom != null : "fx:id=\"saveRoom\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
-        assert roomMaxPersons != null : "fx:id=\"roomMaxPersons\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
+        assert changeImage != null : "fx:id=\"changeImage\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
+        assert descriptionInput != null : "fx:id=\"descriptionInput\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
+        assert errorLabel != null : "fx:id=\"errorLabel\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
+        assert imageView != null : "fx:id=\"imageView\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
+        assert locationComboBox != null : "fx:id=\"locationComboBox\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
+        assert numberLabel != null : "fx:id=\"numberLabel\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
 
         Optional<Room> optionalRoom = model.getDataholder().getRooms().stream().filter(room -> room == model.getSelectedRoomProperty()).findAny();
 
         if (optionalRoom.isPresent()){
             Room r = optionalRoom.get();
 
-            roomNumberLabel.setText("R" + String.valueOf(r.getRoomID()));
-            roomDescriptionInput.setText(r.getDescription());
-            roomMaxPersons.setText(String.valueOf(r.getMaxPersons()));
+            numberLabel.setText("R" + String.valueOf(r.getRoomID()));
+            descriptionInput.setText(r.getDescription());
+            maxPersonsInput.setText(String.valueOf(r.getMaxPersons()));
 
             if(r.getPhoto() != null){
-                roomImageView.setImage(new Image(new ByteArrayInputStream(r.getPhoto())));
+                imageView.setImage(new Image(new ByteArrayInputStream(r.getPhoto())));
             }
 
-            roomLocationComboBox.setItems(model.getDataholder().getLocations());
-            roomLocationComboBox.getSelectionModel().select(r.getLocation());
+            locationComboBox.setItems(model.getDataholder().getLocations());
+            locationComboBox.getSelectionModel().select(r.getLocation());
 
-            roomLocationComboBox.setConverter(new StringConverter<Location>() {
+            locationComboBox.setConverter(new StringConverter<Location>() {
                 @Override
                 public String toString(Location location) {
                     return location.getDescription();
@@ -87,19 +96,125 @@ public class RoomOnUpdateController extends BaseController {
                     return locationMatcher.matchByString(s, model.getDataholder().getLocations());
                 }
             });
+
+            descriptionInput.textProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+                    if(!newValue.equals(r.getDescription())){
+                        descriptionIsChange = true;
+                    }else {
+                        descriptionIsChange= false;
+                    }
+                }
+            });
+
+            maxPersonsInput.textProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+                    if(!newValue.equals(r.getMaxPersons())){
+                        maxPersonsIsChange = true;
+                    }else {
+                        maxPersonsIsChange= false;
+                    }
+                }
+            });
+
+
         }
 
     }
 
 
     @FXML
-    void onRoomSaveButtonClicked(MouseEvent event) {
+    void onChangeImageButtonClicked(MouseEvent event)  {
+        File file = fileChooser.showOpenDialog(imageView.getScene().getWindow());
 
+        try{
+            inputStream = new FileInputStream(file);
+            imageView.setImage(new Image(inputStream));
+            imageIsChange = true;
+        } catch (Exception e){
+            System.out.println("Kein Bild ausgewählt!");
+        }
+        System.out.println(2);
     }
 
     @FXML
-    void onRoomChangeImageButtonClicked(MouseEvent event) {
+    void onSaveButtonClicked(MouseEvent event) throws Exception {
+        if(isBlank(descriptionInput.getText())  || isBlank(maxPersonsInput.getText())){
+            errorLabel.setText("Bitte alle Felder ausfüllen!");
 
+        } else if (!descriptionIsChange && !maxPersonsIsChange && !imageIsChange){
+            errorLabel.setText("Es wurden keine Änderungen vorgenommen)");
+        }else if(descriptionIsChange){
+            boolean exist = model.getDataholder().getLocations().stream().anyMatch(l-> l.getDescription().equals(descriptionInput.getText()));
+            if(exist){
+                errorLabel.setText("Bezeichung bereits vergeben!");
+            } else{
+                if(maxPersonsIsChange){
+                    validChange = checkMaxPersons();
+                }
+            }
+        } else if (maxPersonsIsChange){
+            validChange = checkMaxPersons();
+
+        } else {
+            validChange = true;
+        }
+
+        if(validChange){
+            Optional<Room> optionalRoom = model.getDataholder().getRooms().stream().filter(l-> l.getRoomID() == model.getSelectedRoomProperty().getRoomID()).findAny();
+
+            if(optionalRoom.isPresent()){
+                Room room = optionalRoom.get();
+
+                if(descriptionIsChange){
+                    room.setDescription(descriptionInput.getText());
+                }
+
+
+                if(maxPersonsIsChange){
+                    room.setMaxPersons(Integer.parseInt(maxPersonsInput.getText()));
+                }
+
+                if(imageIsChange){
+                    try{
+                        room.setPhoto(inputStream.readAllBytes());
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+                System.out.println(inputStream);
+                boolean isUpdated = Dataholder.roomRepositoryJDBC.update(room, inputStream);
+
+                if(isUpdated){
+                    showNewView(Constants.PATH_TO_SUCCESSFUL_UPDATE);
+                    int index = model.getDataholder().getRooms().indexOf(room);
+                    model.getDataholder().updateRoom(index, room);
+                }
+
+            }
+
+            //TODO: Change this four rows with a better method
+            Optional<ObservableList<Event>> optionalEvents = Dataholder.eventRepositoryJDBC.readAll();
+            Optional<ObservableList<RoomEquipment>> optionalRoomEquipments = Dataholder.roomEquipmentRepositoryJDBC.readAll();
+            optionalEvents.ifPresent(events -> model.getDataholder().setEvents(events));
+            optionalRoomEquipments.ifPresent(roomEquipments -> model.getDataholder().setRoomEquipments(roomEquipments));
+
+            Stage detailStage = (Stage) descriptionInput.getScene().getWindow();
+            detailStage.close();
+        }
+    }
+
+    private boolean checkMaxPersons() {
+        try{
+            Integer.parseInt(maxPersonsInput.getText());
+            return true;
+        } catch (Exception e){
+            errorLabel.setText("Bitte für maximale Personenzahl eine ganze Zahl eingeben!");
+            return false;
+        }
     }
 
 }

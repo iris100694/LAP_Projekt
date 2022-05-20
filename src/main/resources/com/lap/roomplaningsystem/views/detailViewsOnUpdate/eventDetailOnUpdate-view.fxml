@@ -5,7 +5,6 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -43,7 +42,7 @@
                   <Font name="Century Gothic Bold" size="18.0" />
                </font>
             </Label>
-            <Label fx:id="eventDetailViewNumberLabel">
+            <Label fx:id="numberLabel">
                <font>
                   <Font name="Century Gothic" size="14.0" />
                </font>
@@ -93,7 +92,6 @@
             <Insets />
          </GridPane.margin>
       </Label>
-      <TextField fx:id="eventDetailViewStartInput" GridPane.columnIndex="2" GridPane.rowIndex="6" />
       <Label text="Ende:" GridPane.rowIndex="7">
          <font>
             <Font name="Century Gothic Bold" size="14.0" />
@@ -110,9 +108,8 @@
             <Insets />
          </GridPane.margin>
       </Label>
-      <TextField fx:id="eventDetailViewEndInput" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-      <DatePicker fx:id="eventDetailViewDatePicker" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-      <Button fx:id="saveEventButton" mnemonicParsing="false" onMouseClicked="#onSaveEventButtonClicked" style="-fx-background-radius: 15; -fx-background-color: #303C52;" text="Speichern" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="10">
+      <DatePicker fx:id="datePicker" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+      <Button fx:id="saveButton" mnemonicParsing="false" onMouseClicked="#onSaveButtonClicked" style="-fx-background-radius: 15; -fx-background-color: #303C52;" text="Speichern" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="10">
          <font>
             <Font name="Century Gothic" size="14.0" />
          </font>
@@ -128,10 +125,17 @@
             <Font name="Century Gothic" size="13.0" />
          </font>
       </Label>
-      <ComboBox fx:id="eventDetailViewLocationComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-      <ComboBox fx:id="eventDetailViewRoomComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-      <ComboBox fx:id="eventDetailViewCoachComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="8" />
-      <ComboBox fx:id="eventDetailViewCourseComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+      <ComboBox fx:id="locationComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+      <ComboBox fx:id="roomComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+      <ComboBox fx:id="coachComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+      <ComboBox fx:id="courseComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+      <Label fx:id="errorLabel" textFill="#eb2828" GridPane.columnSpan="3" GridPane.rowIndex="10">
+         <font>
+            <Font name="Century Gothic" size="14.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="endComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+      <ComboBox fx:id="startComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
    </children>
    <padding>
       <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />

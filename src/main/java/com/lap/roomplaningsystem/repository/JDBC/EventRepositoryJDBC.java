@@ -211,9 +211,6 @@ public class EventRepositoryJDBC extends Repository implements EventRepository {
 
     }
 
-    private boolean isBlank(String s){
-        return s.equals("");
-    }
 
     public static boolean isWeekend(final LocalDate ld)
     {

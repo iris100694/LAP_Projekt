@@ -12,6 +12,7 @@ import com.lap.roomplaningsystem.matcher.LocationMatcher;
 import com.lap.roomplaningsystem.model.Dataholder;
 import com.lap.roomplaningsystem.model.Location;
 import com.lap.roomplaningsystem.model.Program;
+import com.lap.roomplaningsystem.model.Room;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -71,7 +72,7 @@ public class LocationOnUpdateController extends BaseController {
             descriptionInput.textProperty().addListener(new ChangeListener<String>() {
                 @Override
                 public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-                    if(!oldValue.equals(newValue)){
+                    if(!newValue.equals(l.getDescription())){
                         descriptionIsChange = true;
                     } else {
                         descriptionIsChange = false;
@@ -82,7 +83,7 @@ public class LocationOnUpdateController extends BaseController {
             adressInput.textProperty().addListener(new ChangeListener<String>() {
                 @Override
                 public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-                    if(!oldValue.equals(newValue)){
+                    if(!newValue.equals(l.getAdress())){
                         adressIsChange = true;
                     }else {
                         adressIsChange = false;
@@ -93,7 +94,7 @@ public class LocationOnUpdateController extends BaseController {
             postCodeInput.textProperty().addListener(new ChangeListener<String>() {
                 @Override
                 public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-                    if(!oldValue.equals(newValue)){
+                    if(!newValue.equals(l.getPostCode())){
                         postCodeIsChange = true;
                     } else{
 
@@ -106,7 +107,7 @@ public class LocationOnUpdateController extends BaseController {
             cityInput.textProperty().addListener(new ChangeListener<String>() {
                 @Override
                 public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-                    if(!oldValue.equals(newValue)){
+                    if(!newValue.equals(l.getCity())){
                         cityIsChange = true;
                     }else {
                         cityIsChange= false;
@@ -121,7 +122,7 @@ public class LocationOnUpdateController extends BaseController {
 
 
     @FXML
-    void onSaveButtonClicked(MouseEvent event) throws SQLException, IOException {
+    void onSaveButtonClicked(MouseEvent event) throws Exception {
         if(isBlank(descriptionInput.getText()) || isBlank(adressInput.getText()) || isBlank(cityInput.getText()) || isBlank(postCodeInput.getText())){
             errorLabel.setText("Bitte alle Felder ausfüllen!");
         } else if(!descriptionIsChange && !adressIsChange && !postCodeIsChange && !cityIsChange) {
@@ -164,10 +165,16 @@ public class LocationOnUpdateController extends BaseController {
                 if(isUpdated){
                     showNewView(Constants.PATH_TO_SUCCESSFUL_UPDATE);
                     int index = model.getDataholder().getLocations().indexOf(location);
-                    model.getDataholder().getLocations().set(index, location);
+                    model.getDataholder().updateLocation(index, location);
                 }
 
             }
+
+
+            //TODO: Change this two rows with a better method
+            Optional<ObservableList<Room>> optionalRooms = Dataholder.roomRepositoryJDBC.readAll();
+            optionalRooms.ifPresent(rooms -> model.getDataholder().setRooms(rooms));
+
 
             Stage detailStage = (Stage) descriptionInput.getScene().getWindow();
             detailStage.close();

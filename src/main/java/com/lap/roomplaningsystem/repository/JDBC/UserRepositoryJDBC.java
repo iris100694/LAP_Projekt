@@ -1,7 +1,5 @@
 package com.lap.roomplaningsystem.repository.JDBC;
 
-import com.lap.roomplaningsystem.model.Course;
-import com.lap.roomplaningsystem.model.Room;
 import com.lap.roomplaningsystem.model.User;
 import com.lap.roomplaningsystem.repository.Repository;
 import com.lap.roomplaningsystem.repository.interfaces.UserRepository;
@@ -131,7 +129,50 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
 //    }
 
     @Override
-    public void update(User user) throws SQLException {
+    public boolean update(User user, String password, InputStream inputStream) throws SQLException, IOException {
+
+        Connection connection = connect();
+
+        String query;
+
+        query = inputStream == null ? "UPDATE users SET ACTIVE = ?, TITLE = ?, FIRSTNAME = ?, LASTNAME = ?, USERNAME = ?, PASSWORD = ?, AUTHORIZATION = ?," +
+                    "COACH = ?, TEXT = ?, TEXTVISABLE = ?, PHONE = ?, PHONEVISABLE = ?, EMAIL = ?, EMAILVISABLE = ?, PHOTOVISABLE = ? WHERE USERID = ?" : "UPDATE users SET ACTIVE = ?, " +
+                "TITLE = ?, FIRSTNAME = ?, LASTNAME = ?, USERNAME = ?, PASSWORD = ?, AUTHORIZATION = ?," +
+                    "COACH = ?, TEXT = ?, TEXTVISABLE = ?, PHONE = ?, PHONEVISABLE = ?, EMAIL = ?, EMAILVISABLE = ?, PHOTO = ?, PHOTOVISABLE = ? WHERE USERID = ?";
+        System.out.println(query);
+        PreparedStatement stmt = null;
+        System.out.println(user.toString());
+        stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        stmt.setBoolean(1, user.isActive());
+        stmt.setString(2, user.getTitle());
+        stmt.setString(3, user.getFirstname());
+        stmt.setString(4, user.getLastname());
+        stmt.setString(5, user.getUsername());
+        stmt.setString(6, password);
+        stmt.setString(7, user.getAuthorization());
+        stmt.setBoolean(8, user.isTrainer());
+        stmt.setString(9, user.getText());
+        stmt.setBoolean(10, user.isTextVisable());
+        stmt.setString(11, user.getPhone());
+        stmt.setBoolean(12, user.isPhoneVisable());
+        stmt.setString(13, user.getEmail());
+        stmt.setBoolean(14, user.isEmailVisable());
+
+        if(inputStream != null){
+            stmt.setBytes(15, user.getPhoto());
+            stmt.setBoolean(16, user.isPhotoVisable());
+            stmt.setInt(17, user.getId());
+        } else {
+            stmt.setBoolean(15, user.isPhotoVisable());
+            stmt.setInt(16, user.getId());
+        }
+
+
+
+
+        int isUpdated = stmt.executeUpdate();
+
+        return isUpdated != 0;
 
     }
 
@@ -161,7 +202,9 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
                     resultSet.getBoolean("EMAILVISABLE"),
                     resultSet.getBytes("PHOTO"),
                     resultSet.getBoolean("PHOTOVISABLE")));
+
         }
+
         return user;
     }
 
@@ -187,7 +230,7 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
                     resultSet.getBoolean("EMAILVISABLE"),
                     resultSet.getBytes("PHOTO"),
                     resultSet.getBoolean("PHOTOVISABLE"));
-
+            System.out.println(user.toString());
             users.add(user);
         }
 

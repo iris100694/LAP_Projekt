@@ -89,12 +89,6 @@ public class CourseOnAddController extends BaseController {
 
     }
 
-    private Integer getInt(String s) {
-        try{
-            return Integer.parseInt(s);
-        } catch (Exception e){
-            return null;
-        }
-    }
+
 
 }

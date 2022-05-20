@@ -1,10 +1,7 @@
 package com.lap.roomplaningsystem.repository.JDBC;
 
-import com.lap.roomplaningsystem.model.Course;
 import com.lap.roomplaningsystem.model.Equipment;
-import com.lap.roomplaningsystem.model.Program;
 import com.lap.roomplaningsystem.repository.Repository;
-import com.lap.roomplaningsystem.repository.interfaces.CourseRepository;
 import com.lap.roomplaningsystem.repository.interfaces.EquipmentRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -52,7 +49,24 @@ public class EquipmentRepositoryJDBC extends Repository implements EquipmentRepo
 
 
     @Override
-    public void update(Equipment equipment) throws SQLException {
+    public boolean update(Equipment equipment) throws SQLException {
+
+        Connection connection = connect();
+
+        String query = "UPDATE equipment SET DESCRIPTION = ? WHERE EQUIPMENTID = ?";
+
+        PreparedStatement stmt = null;
+
+        stmt = connection.prepareStatement(query);
+
+        stmt.setString(1, equipment.getDescription());
+        stmt.setInt(2, equipment.getEquipmentID());
+
+
+        int isUpdated = stmt.executeUpdate();
+
+        return isUpdated != 0;
+
 
     }
 

@@ -37,7 +37,7 @@
                   <Font name="Century Gothic Bold" size="18.0" />
                </font>
             </Label>
-            <Label fx:id="roomEquipmentNumberLabel">
+            <Label fx:id="numberLabel">
                <font>
                   <Font name="Century Gothic" size="14.0" />
                </font>
@@ -55,7 +55,7 @@
             <Insets />
          </GridPane.margin>
       </Label>
-      <Button fx:id="saveRoomEquipment" mnemonicParsing="false" onMouseClicked="#onRoomEquipmentSaveButtonClicked" style="-fx-background-radius: 15; -fx-background-color: #303C52;" text="Speichern" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="6">
+      <Button fx:id="saveButton" mnemonicParsing="false" onMouseClicked="#onSaveButtonClicked" style="-fx-background-radius: 15; -fx-background-color: #303C52;" text="Speichern" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="6">
          <font>
             <Font name="Century Gothic" size="14.0" />
          </font>
@@ -66,9 +66,9 @@
             <Insets />
          </GridPane.margin>
       </Button>
-      <ComboBox fx:id="roomEquipmentRoomComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-      <ComboBox fx:id="roomEquipmentLocationComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-      <ComboBox fx:id="roomEquipmentEquipmentComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+      <ComboBox fx:id="roomComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+      <ComboBox fx:id="locationComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+      <ComboBox fx:id="equipmentComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
       <Label text="Standort:" GridPane.rowIndex="2">
          <font>
             <Font name="Century Gothic Bold" size="14.0" />
@@ -77,6 +77,11 @@
       <Label text="Raum:" GridPane.rowIndex="3">
          <font>
             <Font name="Century Gothic Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="errorLabel" textFill="#eb2828" GridPane.columnSpan="3" GridPane.rowIndex="6">
+         <font>
+            <Font name="Century Gothic" size="14.0" />
          </font>
       </Label>
    </children>

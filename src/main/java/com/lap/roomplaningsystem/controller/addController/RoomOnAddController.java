@@ -45,10 +45,11 @@ public class RoomOnAddController extends BaseController {
     @FXML
     private Button saveRoom;
 
+        @FXML
+    private Label errorLabel;
+
     FileChooser fileChooser = new FileChooser();
     InputStream inputStream = null;
-    @FXML
-    private Label errorLabel;
     boolean error;
 
 
@@ -98,12 +99,15 @@ public class RoomOnAddController extends BaseController {
 
 
     @FXML
-    void onAddImageButtonClicked(MouseEvent event) throws FileNotFoundException {
+    void onAddImageButtonClicked(MouseEvent event) {
       File file = fileChooser.showOpenDialog(addImage.getScene().getWindow());
-      inputStream = new FileInputStream(file);
-      roomImageView.setImage(new Image(inputStream));
 
-
+        try{
+            inputStream = new FileInputStream(file);
+            roomImageView.setImage(new Image(inputStream));
+        } catch (Exception e){
+            System.out.println("Kein Bild ausgewählt!");
+        }
     }
 
     @FXML

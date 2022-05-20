@@ -117,6 +117,8 @@ public class Repository {
 
     }
 
-
+    protected boolean isBlank(String stmt) {
+        return stmt.equals("");
+    }
 
 }

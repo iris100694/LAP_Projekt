@@ -52,7 +52,7 @@
                   <Font name="Century Gothic Bold" size="18.0" />
                </font>
             </Label>
-            <Label fx:id="userNumberLabel">
+            <Label fx:id="numberLabel">
                <font>
                   <Font name="Century Gothic" size="14.0" />
                </font>
@@ -102,7 +102,7 @@
             <Insets />
          </GridPane.margin>
       </Label>
-      <Button fx:id="saveUser" mnemonicParsing="false" onMouseClicked="#onUserButtonClicked" style="-fx-background-radius: 15; -fx-background-color: #303C52;" text="Speichern" textFill="WHITE" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="18">
+      <Button fx:id="saveButton" mnemonicParsing="false" onMouseClicked="#onSaveButtonClicked" style="-fx-background-radius: 15; -fx-background-color: #303C52;" text="Speichern" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="18">
          <font>
             <Font name="Century Gothic" size="14.0" />
          </font>
@@ -164,19 +164,19 @@
             <Font name="Century Gothic Bold" size="14.0" />
          </font>
       </Label>
-      <ImageView fx:id="userImageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowSpan="4" GridPane.valignment="CENTER" />
-      <TextField fx:id="userFirstnameInput" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <TextField fx:id="userLastnameInput" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-      <TextField fx:id="userTitleInput" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-      <TextField fx:id="userUsernameInput" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-      <TextField fx:id="userPhoneInput" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-      <ComboBox fx:id="userAuthorizationCombobox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-      <ComboBox fx:id="userTextVisableComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-      <ComboBox fx:id="userPhoneVisableComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-      <ComboBox fx:id="userEMailVisableComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="14" />
-      <ComboBox fx:id="userPhotoVisableComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="15" />
-      <TextField fx:id="userEMailInput" GridPane.columnIndex="1" GridPane.rowIndex="13" />
-      <Button fx:id="userChangeImage" mnemonicParsing="false" onMouseClicked="#onUserChangeImageButtonClicked" style="-fx-background-radius: 15; -fx-background-color: #303C52;" text="Ändern" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="4">
+      <ImageView fx:id="imageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowSpan="4" GridPane.valignment="CENTER" />
+      <TextField fx:id="firstnameInput" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <TextField fx:id="lastnameInput" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <TextField fx:id="titleInput" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+      <TextField fx:id="usernameInput" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+      <TextField fx:id="phoneInput" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+      <ComboBox fx:id="authorizationCombobox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+      <ComboBox fx:id="textVisableComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+      <ComboBox fx:id="phoneVisableComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+      <ComboBox fx:id="emailVisableComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+      <ComboBox fx:id="photoVisableComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+      <TextField fx:id="emailInput" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+      <Button fx:id="changeImageButton" mnemonicParsing="false" onMouseClicked="#onChangeImageButtonClicked" style="-fx-background-radius: 15; -fx-background-color: #303C52;" text="Profilbild ändern" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="4">
          <font>
             <Font name="Century Gothic" size="14.0" />
          </font>
@@ -184,9 +184,9 @@
             <Insets bottom="6.0" left="12.0" right="12.0" top="6.0" />
          </padding>
       </Button>
-      <ComboBox fx:id="userActivComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-      <ComboBox fx:id="userTrainerComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-      <TextArea fx:id="userTextInput" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="16" GridPane.rowSpan="2" />
+      <ComboBox fx:id="activComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      <ComboBox fx:id="trainerComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+      <TextArea fx:id="textInput" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="16" GridPane.rowSpan="2" />
       <Label fx:id="errorUsernameLabel" textFill="#eb2828" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6">
          <font>
             <Font name="Century Gothic" size="12.0" />
@@ -195,12 +195,12 @@
             <Insets left="10.0" />
          </GridPane.margin>
       </Label>
-      <Label text="Passwort*:" GridPane.rowIndex="7">
+      <Label text="Passwort:" GridPane.rowIndex="7">
          <font>
             <Font name="Century Gothic Bold" size="14.0" />
          </font>
       </Label>
-      <Button fx:id="saveUser1" mnemonicParsing="false" onMouseClicked="#onUserButtonClicked" style="-fx-background-radius: 15; -fx-background-color: #303C52;" text="Passwort ändern" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="7">
+      <Button fx:id="passwordChangeButton" mnemonicParsing="false" onMouseClicked="#onChangePasswordButtonClicked" style="-fx-background-radius: 15; -fx-background-color: #303C52;" text="Passwort ändern" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="7">
          <font>
             <Font name="Century Gothic" size="14.0" />
          </font>
@@ -208,6 +208,11 @@
             <Insets bottom="6.0" left="12.0" right="12.0" top="6.0" />
          </padding>
       </Button>
+      <Label fx:id="errorLabel" textFill="#eb2828" GridPane.columnSpan="3" GridPane.rowIndex="18">
+         <font>
+            <Font name="Century Gothic" size="14.0" />
+         </font>
+      </Label>
    </children>
    <padding>
       <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />

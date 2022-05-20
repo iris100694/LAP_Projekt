@@ -1,10 +1,9 @@
 package com.lap.roomplaningsystem.repository.interfaces;
 
-import com.lap.roomplaningsystem.model.Course;
-import com.lap.roomplaningsystem.model.Event;
 import com.lap.roomplaningsystem.model.User;
 import javafx.collections.ObservableList;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -21,7 +20,7 @@ public interface UserRepository extends BaseRepository {
              Boolean textVisable, String phone, Boolean phoneVisable, String email, Boolean emailVisable, Boolean photoVisable,
              String text, InputStream inputStream) throws Exception;
 
-    void update(User user) throws SQLException;
+    boolean update(User user, String password, InputStream inputStream) throws SQLException, IOException;
 
     void delete(User user) throws SQLException;
 

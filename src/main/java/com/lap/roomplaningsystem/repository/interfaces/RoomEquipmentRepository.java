@@ -12,7 +12,7 @@ public interface RoomEquipmentRepository extends BaseRepository {
 
     RoomEquipment add(Room room, Equipment equipment) throws Exception;
 
-    void update(RoomEquipment roomEquipment) throws SQLException;
+    boolean update(RoomEquipment roomEquipment) throws SQLException;
 
     void delete(RoomEquipment roomEquipment) throws SQLException;
 

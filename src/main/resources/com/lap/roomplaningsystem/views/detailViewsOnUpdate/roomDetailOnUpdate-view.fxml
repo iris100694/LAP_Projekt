@@ -29,7 +29,7 @@
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <ImageView fx:id="roomImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+      <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
       <Label text="Raum" GridPane.columnSpan="2">
          <font>
             <Font name="Century Gothic Bold" size="18.0" />
@@ -62,12 +62,12 @@
             <Insets />
          </GridPane.margin>
       </Label>
-      <Label fx:id="roomNumberLabel" GridPane.columnIndex="1">
+      <Label fx:id="numberLabel" GridPane.columnIndex="1">
          <font>
             <Font name="Century Gothic" size="14.0" />
          </font>
       </Label>
-      <Button fx:id="saveRoom" mnemonicParsing="false" onMouseClicked="#onRoomSaveButtonClicked" style="-fx-background-radius: 15; -fx-background-color: #303C52;" text="Speichern" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="7">
+      <Button mnemonicParsing="false" onMouseClicked="#onSaveButtonClicked" style="-fx-background-radius: 15; -fx-background-color: #303C52;" text="Speichern" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="7">
          <font>
             <Font name="Century Gothic" size="14.0" />
          </font>
@@ -75,10 +75,10 @@
             <Insets bottom="6.0" left="12.0" right="12.0" top="6.0" />
          </padding>
       </Button>
-      <TextField fx:id="roomDescriptionInput" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-      <TextField fx:id="roomMaxPersons" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-      <ComboBox fx:id="roomLocationComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-      <Button fx:id="roomChangeImage" mnemonicParsing="false" onMouseClicked="#onRoomChangeImageButtonClicked" style="-fx-background-radius: 15; -fx-background-color: #303C52;" text="Ändern" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="6">
+      <TextField fx:id="descriptionInput" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+      <TextField fx:id="maxPersonsInput" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+      <ComboBox fx:id="locationComboBox" disable="true" prefWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+      <Button fx:id="changeImage" mnemonicParsing="false" onMouseClicked="#onChangeImageButtonClicked" style="-fx-background-radius: 15; -fx-background-color: #303C52;" text="Ändern" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="6">
          <font>
             <Font name="Century Gothic" size="14.0" />
          </font>
@@ -86,6 +86,11 @@
             <Insets bottom="6.0" left="12.0" right="12.0" top="6.0" />
          </padding>
       </Button>
+      <Label fx:id="errorLabel" textFill="#eb2828" GridPane.columnSpan="3" GridPane.rowIndex="7">
+         <font>
+            <Font name="Century Gothic" size="14.0" />
+         </font>
+      </Label>
    </children>
    <padding>
       <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />

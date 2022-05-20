@@ -33,55 +33,7 @@ public class RoomRepositoryJDBC extends Repository implements RoomRepository {
 
     }
 
-    public String createFilterStatement(String id, String description, String size, String location, String equipment, boolean image) {
-        String stmt = "";
 
-        if (!isBlank(id)) {
-            stmt = stmt + " WHERE rooms.ROOMID = " + id;
-        }
-
-        if (!isBlank(description)) {
-            stmt = isBlank(stmt) ? stmt + " WHERE rooms.DESCRIPTION = \"" + description + "\"" : stmt + " AND rooms.DESCRIPTION = \"" + description + "\"";
-        }
-
-        if (!isBlank(size)) {
-            stmt = isBlank(stmt) ? stmt + " WHERE rooms.MAXPERSONS = " + size : stmt + " AND rooms.MAXPERSONS = " + size;
-        }
-
-        if (!isBlank(location)) {
-            stmt = isBlank(stmt) ? stmt + " WHERE locations.DESCRIPTION = \"" + location + "\"" : stmt + " AND locations.DESCRIPTION = \"" + location + "\"";
-        }
-
-        if (!isBlank(equipment)) {
-            stmt = isBlank(stmt) ? stmt + " WHERE equipment.DESCRIPTION = \"" + equipment + "\"" : stmt + " AND equipment.DESCRIPTION = \"" + equipment + "\"";
-        }
-
-        if(image){
-            stmt = isBlank(stmt) ? stmt + " WHERE rooms.PHOTO IS NOT NULL" : stmt + " AND rooms.PHOTO IS NOT NULL";
-        }
-
-        return stmt;
-    }
-
-    private boolean isBlank(String stmt) {
-        return stmt.equals("");
-    }
-
-
-    @Override
-    public Optional<ObservableList<Room>> filter(String filter, boolean equipment) throws Exception {
-
-        Connection connection = connect();
-
-        String query = equipment ?  Constants.ROOM_BASE_FILTER + filter : Constants.ROOM_EQUIPMENT_FILTER + filter;
-
-        System.out.println(query);
-
-        PreparedStatement stmt = connection.prepareStatement(query);
-        ResultSet resultSet = stmt.executeQuery();
-
-        return createRooms(resultSet);
-    }
 
     @Override
     public Room add(String description, Location location, String maxPersons, InputStream inputStream) throws SQLException {
@@ -124,18 +76,85 @@ public class RoomRepositoryJDBC extends Repository implements RoomRepository {
     }
 
     @Override
-    public void update(Room room) throws SQLException {
+    public boolean update(Room room, InputStream inputStream) throws Exception {
+        Connection connection = connect();
+
+        String query = "UPDATE rooms SET DESCRIPTION = ?, LOCATIONID = ?, MAXPERSONS = ?, PHOTO = ? WHERE ROOMID = ?";
+
+        PreparedStatement stmt = null;
+
+        stmt = connection.prepareStatement(query);
+
+        stmt.setString(1, room.getDescription());
+        stmt.setInt(2, room.getLocation().getLocationID());
+        stmt.setInt(3, room.getMaxPersons());
+        stmt.setBytes(4, room.getPhoto());
+        stmt.setInt(5, room.getRoomID());
+
+
+
+
+
+
+        int isUpdated = stmt.executeUpdate();
+
+        return isUpdated != 0;
 
     }
+
 
     @Override
     public void delete(Room room) throws SQLException {
 
     }
 
+    public String createFilterStatement(String id, String description, String size, String location, String equipment, boolean image) {
+        String stmt = "";
+
+        if (!isBlank(id)) {
+            stmt = stmt + " WHERE rooms.ROOMID = " + id;
+        }
+
+        if (!isBlank(description)) {
+            stmt = isBlank(stmt) ? stmt + " WHERE rooms.DESCRIPTION = \"" + description + "\"" : stmt + " AND rooms.DESCRIPTION = \"" + description + "\"";
+        }
+
+        if (!isBlank(size)) {
+            stmt = isBlank(stmt) ? stmt + " WHERE rooms.MAXPERSONS = " + size : stmt + " AND rooms.MAXPERSONS = " + size;
+        }
+
+        if (!isBlank(location)) {
+            stmt = isBlank(stmt) ? stmt + " WHERE locations.DESCRIPTION = \"" + location + "\"" : stmt + " AND locations.DESCRIPTION = \"" + location + "\"";
+        }
+
+        if (!isBlank(equipment)) {
+            stmt = isBlank(stmt) ? stmt + " WHERE equipment.DESCRIPTION = \"" + equipment + "\"" : stmt + " AND equipment.DESCRIPTION = \"" + equipment + "\"";
+        }
+
+        if(image){
+            stmt = isBlank(stmt) ? stmt + " WHERE rooms.PHOTO IS NOT NULL" : stmt + " AND rooms.PHOTO IS NOT NULL";
+        }
+
+        return stmt;
+    }
 
 
 
+
+    @Override
+    public Optional<ObservableList<Room>> filter(String filter, boolean equipment) throws Exception {
+
+        Connection connection = connect();
+
+        String query = equipment ?  Constants.ROOM_BASE_FILTER + filter : Constants.ROOM_EQUIPMENT_FILTER + filter;
+
+        System.out.println(query);
+
+        PreparedStatement stmt = connection.prepareStatement(query);
+        ResultSet resultSet = stmt.executeQuery();
+
+        return createRooms(resultSet);
+    }
 
 
     private Optional<ObservableList<Room>> createRooms(ResultSet resultSet) throws Exception{
@@ -159,5 +178,7 @@ public class RoomRepositoryJDBC extends Repository implements RoomRepository {
 
         return Optional.of(observableListRooms);
     }
+
+
 
 }

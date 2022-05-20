@@ -1,63 +1,62 @@
 package com.lap.roomplaningsystem.controller.updateController;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
+import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.matcher.EquipmentMatcher;
 import com.lap.roomplaningsystem.matcher.LocationMatcher;
 import com.lap.roomplaningsystem.matcher.RoomMatcher;
-import com.lap.roomplaningsystem.model.Equipment;
-import com.lap.roomplaningsystem.model.Location;
-import com.lap.roomplaningsystem.model.Room;
-import com.lap.roomplaningsystem.model.RoomEquipment;
+import com.lap.roomplaningsystem.model.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 public class RoomEquipmentOnUpdateController extends BaseController {
 
     @FXML
-    private ResourceBundle resources;
+    private ComboBox<Equipment> equipmentComboBox;
 
     @FXML
-    private URL location;
+    private Label errorLabel;
 
     @FXML
-    private ComboBox<Equipment> roomEquipmentEquipmentComboBox;
+    private ComboBox<Location> locationComboBox;
 
     @FXML
-    private ComboBox<Location> roomEquipmentLocationComboBox;
+    private Label numberLabel;
 
     @FXML
-    private Label roomEquipmentNumberLabel;
+    private ComboBox<Room> roomComboBox;
 
     @FXML
-    private ComboBox<Room> roomEquipmentRoomComboBox;
+    private Button saveButton;
 
-    @FXML
-    private Button saveRoomEquipment;
 
-    @FXML
-    void onRoomEquipmentSaveButtonClicked(MouseEvent event) {
-
-    }
 
     @FXML
     void initialize() {
-        assert roomEquipmentEquipmentComboBox != null : "fx:id=\"roomEquipmentEquipmentComboBox\" was not injected: check your FXML file 'roomEquipmentDetailOnUpdate-view.fxml'.";
-        assert roomEquipmentLocationComboBox != null : "fx:id=\"roomEquipmentLocationComboBox\" was not injected: check your FXML file 'roomEquipmentDetailOnUpdate-view.fxml'.";
-        assert roomEquipmentNumberLabel != null : "fx:id=\"roomEquipmentNumberLabel\" was not injected: check your FXML file 'roomEquipmentDetailOnUpdate-view.fxml'.";
-        assert roomEquipmentRoomComboBox != null : "fx:id=\"roomEquipmentRoomComboBox\" was not injected: check your FXML file 'roomEquipmentDetailOnUpdate-view.fxml'.";
-        assert saveRoomEquipment != null : "fx:id=\"saveRoomEquipment\" was not injected: check your FXML file 'roomEquipmentDetailOnUpdate-view.fxml'.";
+        assert equipmentComboBox != null : "fx:id=\"equipmentComboBox\" was not injected: check your FXML file 'roomEquipmentDetailOnUpdate-view.fxml'.";
+        assert errorLabel != null : "fx:id=\"errorLabel\" was not injected: check your FXML file 'roomEquipmentDetailOnUpdate-view.fxml'.";
+        assert locationComboBox != null : "fx:id=\"locationComboBox\" was not injected: check your FXML file 'roomEquipmentDetailOnUpdate-view.fxml'.";
+        assert numberLabel != null : "fx:id=\"numberLabel\" was not injected: check your FXML file 'roomEquipmentDetailOnUpdate-view.fxml'.";
+        assert roomComboBox != null : "fx:id=\"roomComboBox\" was not injected: check your FXML file 'roomEquipmentDetailOnUpdate-view.fxml'.";
+        assert saveButton != null : "fx:id=\"saveButton\" was not injected: check your FXML file 'roomEquipmentDetailOnUpdate-view.fxml'.";
 
         initView();
         setConverterOnChoiceBoxes();
@@ -66,35 +65,38 @@ public class RoomEquipmentOnUpdateController extends BaseController {
 
     private void initView() {
         Optional<RoomEquipment> optionalRoomEquipment = model.getDataholder().getRoomEquipments().stream().filter(roomEquipment -> roomEquipment == model.getSelectedRoomEquipmentProperty()).findAny();
-
         if(optionalRoomEquipment.isPresent()){
             RoomEquipment roomEquipment = optionalRoomEquipment.get();
+            numberLabel.setText("RA" + String.valueOf(roomEquipment.getRoomEquipmentID()));
 
-            roomEquipmentNumberLabel.setText("RA" + String.valueOf(roomEquipment.getRoomEquipmentID()));
+            locationComboBox.setItems(model.getDataholder().getLocations());
+            roomComboBox.setItems(availableRooms(roomEquipment.getRoom().getLocation()));
 
-            roomEquipmentLocationComboBox.setItems(model.getDataholder().getLocations());
-            roomEquipmentRoomComboBox.setItems(availableRooms(roomEquipment.getRoom().getLocation()));
-            roomEquipmentEquipmentComboBox.setItems(model.getDataholder().getEquipments());
+            List<Equipment> notAvailableEquipments = model.getDataholder().getRoomEquipments().stream().map(RoomEquipment::getEquipment).toList();
+            //TODO: Undo all pointer in this Project !!!
+            List<Equipment> equipments = new ArrayList<>(model.getDataholder().getEquipments());
+            equipments.removeIf(e -> e.getEquipmentID() != roomEquipment.getEquipment().getEquipmentID() && notAvailableEquipments.stream().anyMatch(equipment -> equipment.getEquipmentID() == e.getEquipmentID()));
+            equipmentComboBox.setItems(FXCollections.observableList(equipments));
 
-            roomEquipmentLocationComboBox.getSelectionModel().select(roomEquipment.getRoom().getLocation());
-            roomEquipmentRoomComboBox.getSelectionModel().select(roomEquipment.getRoom());
-            roomEquipmentEquipmentComboBox.getSelectionModel().select(roomEquipment.getEquipment());
+            locationComboBox.getSelectionModel().select(roomEquipment.getRoom().getLocation());
+            roomComboBox.getSelectionModel().select(roomEquipment.getRoom());
+            equipmentComboBox.getSelectionModel().select(roomEquipment.getEquipment());
         }
 
 
-        roomEquipmentLocationComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Location>() {
+        locationComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Location>() {
             @Override
             public void changed(ObservableValue<? extends Location> observableValue, Location location, Location newLocation) {
-                roomEquipmentRoomComboBox.setItems(availableRooms(newLocation));
-                roomEquipmentRoomComboBox.getSelectionModel().select(null);
-                roomEquipmentRoomComboBox.setPromptText("Raum");
+                roomComboBox.setItems(availableRooms(newLocation));
+                roomComboBox.getSelectionModel().select(null);
+                roomComboBox.setPromptText("Raum");
             }
         });
 
     }
 
     private void setConverterOnChoiceBoxes() {
-        roomEquipmentLocationComboBox.setConverter(new StringConverter<Location>() {
+        locationComboBox.setConverter(new StringConverter<Location>() {
             @Override
             public String toString(Location location) {
                 return location.getDescription();
@@ -107,7 +109,7 @@ public class RoomEquipmentOnUpdateController extends BaseController {
             }
         });
 
-        roomEquipmentRoomComboBox.setConverter(new StringConverter<Room>() {
+        roomComboBox.setConverter(new StringConverter<Room>() {
             @Override
             public String toString(Room room) {
                 return room == null ? "" : room.getDescription();
@@ -115,12 +117,12 @@ public class RoomEquipmentOnUpdateController extends BaseController {
 
             @Override
             public Room fromString(String s) {
-                RoomMatcher roomMatcher = new RoomMatcher(roomEquipmentLocationComboBox.getValue());
+                RoomMatcher roomMatcher = new RoomMatcher(locationComboBox.getValue());
                 return roomMatcher.matchByString(s, model.getDataholder().getRooms());
             }
         });
 
-        roomEquipmentEquipmentComboBox.setConverter(new StringConverter<Equipment>() {
+        equipmentComboBox.setConverter(new StringConverter<Equipment>() {
             @Override
             public String toString(Equipment equipment) {
                 return equipment.getDescription();
@@ -134,7 +136,30 @@ public class RoomEquipmentOnUpdateController extends BaseController {
         });
     }
 
+    @FXML
+    void onSaveButtonClicked(MouseEvent event) throws Exception {
+        Optional<RoomEquipment> optionalRoomEquipment = model.getDataholder().getRoomEquipments().stream().filter(roomEquipment-> roomEquipment.getRoomEquipmentID() == model.getSelectedRoomEquipmentProperty().getRoomEquipmentID()).findAny();
 
+        if(optionalRoomEquipment.isPresent()) {
+            RoomEquipment roomEquipment = optionalRoomEquipment.get();
+
+            roomEquipment.setRoom(roomComboBox.getValue());
+            roomEquipment.setEquipment(equipmentComboBox.getValue());
+
+            boolean isUpdated = Dataholder.roomEquipmentRepositoryJDBC.update(roomEquipment);
+
+            if(isUpdated){
+                showNewView(Constants.PATH_TO_SUCCESSFUL_UPDATE);
+                int index = model.getDataholder().getRoomEquipments().indexOf(roomEquipment);
+                model.getDataholder().updateRoomEquipment(index, roomEquipment);
+            }
+        }
+
+
+        Stage detailStage = (Stage) numberLabel.getScene().getWindow();
+        detailStage.close();
+
+    }
 
 
 

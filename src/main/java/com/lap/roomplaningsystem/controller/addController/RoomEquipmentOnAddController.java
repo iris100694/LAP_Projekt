@@ -60,11 +60,9 @@ public class RoomEquipmentOnAddController extends BaseController {
         roomComboBox.getSelectionModel().select(0);
 
         List<Equipment> notAvailableEquipments = model.getDataholder().getRoomEquipments().stream().map(RoomEquipment::getEquipment).toList();
-        System.out.println(notAvailableEquipments);
         List<Equipment> equipments = model.getDataholder().getEquipments();
         equipments.removeIf(e -> notAvailableEquipments.stream().anyMatch(equipment -> equipment.getEquipmentID() == e.getEquipmentID()));
 
-        System.out.println(equipments);
         equipmentComboBox.setItems(FXCollections.observableList(equipments));
         equipmentComboBox.getSelectionModel().select(0);
 

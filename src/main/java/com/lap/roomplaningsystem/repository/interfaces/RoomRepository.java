@@ -18,7 +18,9 @@ public interface RoomRepository {
 
     Room add(String description, Location location, String maxPersons, InputStream inputStream) throws SQLException;
 
-    void update(Room room) throws SQLException;
+    boolean update(Room room, InputStream inputStream) throws Exception;
 
     void delete(Room room) throws SQLException;
+
+
 }
