@@ -91,7 +91,11 @@ public class RoomDetailViewController extends BaseController {
 
 
     @FXML
-    private void onRoomDeleteButtonClicked(MouseEvent mouseEvent) {
+    private void onRoomDeleteButtonClicked(MouseEvent mouseEvent) throws IOException {
+        showNewView(Constants.PATH_TO_ROOM_ON_DELETE_VIEW);
+
+        Stage detailStage = (Stage) roomDetailViewNumberLabel.getScene().getWindow();
+        detailStage.close();
     }
 
     @FXML

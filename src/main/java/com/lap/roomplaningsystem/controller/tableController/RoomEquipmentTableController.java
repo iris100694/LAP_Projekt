@@ -53,9 +53,8 @@ public class RoomEquipmentTableController extends BaseController {
 
 
         roomEquipmentTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
-
+            System.out.println(nv.toString());
             try {
-
                 if(nv != null){
                     model.setSelectedRoomEquipmentProperty(nv);
                     showNewView(Constants.PATH_TO_ROOMEQUIPMENT_DETAIL_VIEW);

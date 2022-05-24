@@ -75,7 +75,19 @@ public class RoomEquipmentRepositoryJDBC extends Repository implements RoomEquip
 
 
     @Override
-    public void delete(RoomEquipment roomEquipment) throws SQLException {
+    public boolean delete(RoomEquipment roomEquipment) throws SQLException {
+
+        Connection connection = connect();
+
+        String query = "DELETE FROM roomequipment WHERE ROOMEQUIPMENTID = ?";
+
+        PreparedStatement stmt = connection.prepareStatement(query);
+        stmt.setInt(1, roomEquipment.getRoomEquipmentID());
+
+
+        int isDeleted = stmt.executeUpdate();
+
+        return isDeleted != 0;
 
     }
 

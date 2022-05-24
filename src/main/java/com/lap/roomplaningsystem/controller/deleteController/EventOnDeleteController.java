@@ -1,10 +1,12 @@
 package com.lap.roomplaningsystem.controller.deleteController;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.controller.BaseController;
+import com.lap.roomplaningsystem.model.Dataholder;
 import com.lap.roomplaningsystem.model.Event;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
@@ -63,9 +65,6 @@ public class EventOnDeleteController extends BaseController {
 
     }
 
-    private void initEvent() {
-
-    }
 
     @FXML
     void onNoButtonClicked(MouseEvent event) {
@@ -78,14 +77,25 @@ public class EventOnDeleteController extends BaseController {
     void onYesButtonClicked(MouseEvent event) {
         Optional <Event> optionalEvent = model.getDataholder().getEvents().stream().filter(e -> e == model.getSelectedEventProperty()).findAny();
         model.setSelectedEventProperty(null);
-        optionalEvent.ifPresent(e -> model.getDataholder().deleteEvent(e));
 
-        Stage stage = (Stage) deleteLabel.getScene().getWindow();
+        optionalEvent.ifPresent(e -> {
+            try {
+                boolean isDeleted = Dataholder.eventRepositoryJDBC.delete(e);
 
+                if(isDeleted){
+                    model.getDataholder().deleteEvent(e);
 
-        stage.close();
+                }
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+
+            Stage stage = (Stage) deleteLabel.getScene().getWindow();
+            stage.close();
+
+        });
+
 
     }
-
-
 }

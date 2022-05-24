@@ -1,7 +1,6 @@
 package com.lap.roomplaningsystem.repository.interfaces;
 
 import com.lap.roomplaningsystem.model.Location;
-import com.lap.roomplaningsystem.model.User;
 import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
@@ -15,7 +14,7 @@ public interface LocationRepository extends BaseRepository{
 
     Boolean update(Location location) throws SQLException;
 
-    void delete(Location location) throws SQLException;
+    boolean delete(Location location) throws SQLException;
 
 
 

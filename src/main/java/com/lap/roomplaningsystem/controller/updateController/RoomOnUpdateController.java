@@ -136,7 +136,7 @@ public class RoomOnUpdateController extends BaseController {
         } catch (Exception e){
             System.out.println("Kein Bild ausgewählt!");
         }
-        System.out.println(2);
+
     }
 
     @FXML
@@ -147,7 +147,7 @@ public class RoomOnUpdateController extends BaseController {
         } else if (!descriptionIsChange && !maxPersonsIsChange && !imageIsChange){
             errorLabel.setText("Es wurden keine Änderungen vorgenommen)");
         }else if(descriptionIsChange){
-            boolean exist = model.getDataholder().getLocations().stream().anyMatch(l-> l.getDescription().equals(descriptionInput.getText()));
+            boolean exist = model.getDataholder().getRooms().stream().anyMatch(r-> r.getDescription().equals(descriptionInput.getText()) && r.getRoomID() != model.getSelectedRoomProperty().getRoomID());
             if(exist){
                 errorLabel.setText("Bezeichung bereits vergeben!");
             } else{
@@ -185,7 +185,7 @@ public class RoomOnUpdateController extends BaseController {
                     }
 
                 }
-                System.out.println(inputStream);
+
                 boolean isUpdated = Dataholder.roomRepositoryJDBC.update(room, inputStream);
 
                 if(isUpdated){

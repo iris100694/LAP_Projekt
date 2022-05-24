@@ -25,22 +25,6 @@ public class RequestFilter {
     private  LocalTime endTime;
 
 
-    public void handleRequest(String location, String room, String user, String equipment,
-                                     String size, LocalDate startDate, LocalDate endDate,
-                                     LocalTime startTime, LocalTime endTime) {
-        this.location = location;
-        this.room = room;
-        this.user = user;
-        this.equipment = equipment;
-        this.size = size;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
-
-
-    }
-
     public Predicate<Room> filter(Model model) {
         List<Predicate<Room>> predicateList = new ArrayList<>();
 
@@ -54,9 +38,11 @@ public class RequestFilter {
         }
 
         if(!isBlank(size)){
-            predicateList.add(r -> r.getMaxPersons() == Integer.parseInt(size));
+            predicateList.add(r -> r.getMaxPersons() > Integer.parseInt(size));
 
         }
+
+        //TODO: Kursdaten müssen mit Veranstaltungsdatum Single und Serienbuchung übereinstimmen !!!!
 
         if(startDate != null){
             if(endDate != null){

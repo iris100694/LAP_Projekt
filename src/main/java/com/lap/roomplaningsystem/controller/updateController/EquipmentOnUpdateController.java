@@ -73,12 +73,10 @@ public class EquipmentOnUpdateController extends BaseController {
         } else if(!descriptionIsChange) {
             errorLabel.setText("Es wurden keine Änderungen vorgenommen!");
         }else{
-            boolean exist = model.getDataholder().getEquipments().stream().anyMatch(e-> e.getDescription().equals(descriptionInput.getText()));
+            boolean exist = model.getDataholder().getEquipments().stream().anyMatch(e-> e.getDescription().equals(descriptionInput.getText()) && e.getEquipmentID() != model.getSelectedEquipmentProperty().getEquipmentID());
             if(exist){
                 errorLabel.setText("Bezeichung bereits vergeben!");
             } else {
-
-                System.out.println("Hello");
                 Optional<Equipment> optionalEquipment = model.getDataholder().getEquipments().stream().filter(e-> e.getEquipmentID() == model.getSelectedEquipmentProperty().getEquipmentID()).findAny();
 
                 if(optionalEquipment.isPresent()){

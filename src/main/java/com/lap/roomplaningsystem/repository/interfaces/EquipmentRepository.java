@@ -14,7 +14,7 @@ public interface EquipmentRepository extends BaseRepository{
 
     boolean update(Equipment equipment) throws SQLException;
 
-    void delete(Equipment equipment) throws SQLException;
+    boolean delete(Equipment equipment) throws SQLException;
 
 
 }

@@ -6,8 +6,6 @@ import javafx.collections.ObservableList;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Optional;
 
 public interface EventRepository extends BaseRepository{
@@ -18,9 +16,9 @@ public interface EventRepository extends BaseRepository{
 
     Event add(User creator, Room room, Course course, User coach, LocalDate date, LocalDateTime start, LocalDateTime end) throws Exception;
 
-    void update(Event event) throws SQLException;
+    boolean update(Event event) throws SQLException;
 
-    void delete(Event event) throws SQLException;
+    boolean delete(Event event) throws SQLException;
 
 
     ObservableList<Event> seriesDaily(User creator, Room room, Course course, User coach, LocalDate startDate, LocalDate endDate, String startTime, String endTime);

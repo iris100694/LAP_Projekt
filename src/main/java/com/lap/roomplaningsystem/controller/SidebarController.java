@@ -8,6 +8,7 @@ import com.lap.roomplaningsystem.app.Constants;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 
@@ -24,6 +25,7 @@ public class SidebarController extends BaseController{
     private Label sidebarStammdataLabel;
 
 
+
     @FXML
     void initialize() {
         model.authorizationProperty().addListener(new ChangeListener<String>() {
@@ -34,6 +36,8 @@ public class SidebarController extends BaseController{
                 }
             }
         });
+
+
     }
 
     private void updateSidebarMenu(String newAuthorization) {

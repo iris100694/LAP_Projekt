@@ -132,7 +132,11 @@ public class UserDetailViewController extends BaseController {
 
 
     @FXML
-    void onUserDeleteButtonClicked(MouseEvent event) {
+    void onActivButtonClicked(MouseEvent event) throws IOException {
+        showNewView(Constants.PATH_TO_USER_ON_ACTIV_VIEW);
+
+        Stage detailStage = (Stage) userDetailViewNumberLabel.getScene().getWindow();
+        detailStage.close();
 
     }
 
@@ -143,5 +147,6 @@ public class UserDetailViewController extends BaseController {
         Stage detailStage = (Stage) editUser.getScene().getWindow();
         detailStage.close();
     }
+
 
 }

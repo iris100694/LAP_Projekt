@@ -22,7 +22,10 @@ public interface UserRepository extends BaseRepository {
 
     boolean update(User user, String password, InputStream inputStream) throws SQLException, IOException;
 
-    void delete(User user) throws SQLException;
+    boolean inActiv(User u) throws Exception;
 
+    boolean edit(User user) throws Exception;
+
+    boolean changeProfileImage(User user, InputStream inputStream) throws Exception;
 }
 

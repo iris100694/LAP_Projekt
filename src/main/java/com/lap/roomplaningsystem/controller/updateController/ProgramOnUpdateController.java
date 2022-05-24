@@ -6,10 +6,7 @@ import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
-import com.lap.roomplaningsystem.model.Dataholder;
-import com.lap.roomplaningsystem.model.Equipment;
-import com.lap.roomplaningsystem.model.Program;
-import com.lap.roomplaningsystem.model.RoomEquipment;
+import com.lap.roomplaningsystem.model.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -102,9 +99,10 @@ public class ProgramOnUpdateController extends BaseController {
 
 
                 //TODO: Change this two rows with a better method
-                Optional<ObservableList<Program>> optionalPrograms = Dataholder.programRepositoryJDBC.readAll();
-                optionalPrograms.ifPresent(programs -> model.getDataholder().setPrograms(programs));
-
+                Optional<ObservableList<Course>> optionalCourses = Dataholder.courseRepositoryJDBC.readAll();
+                Optional<ObservableList<Event>> optionalEvents = Dataholder.eventRepositoryJDBC.readAll();
+                optionalCourses.ifPresent(courses -> model.getDataholder().setCourses(courses));
+                optionalEvents.ifPresent(events -> model.getDataholder().setEvents(events));
 
                 Stage detailStage = (Stage) descriptionInput.getScene().getWindow();
                 detailStage.close();

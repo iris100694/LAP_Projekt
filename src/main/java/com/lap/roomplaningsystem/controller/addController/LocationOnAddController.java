@@ -68,7 +68,7 @@ public class LocationOnAddController extends BaseController {
     void onSaveButtonClicked(MouseEvent event) throws Exception {
         if(isBlank(descriptionInput.getText()) || isBlank(adressInput.getText()) || isBlank(cityInput.getText()) || isBlank(postCodeInput.getText()) || error){
             errorLabel.setText("Bitte alle Felder ausfüllen!");
-        } else{
+        } else if (!error){
             Location location = Dataholder.locationRepositoryJDBC.add(descriptionInput.getText(), adressInput.getText(),  postCodeInput.getText(), cityInput.getText());
             model.getDataholder().addLocation(location);
 

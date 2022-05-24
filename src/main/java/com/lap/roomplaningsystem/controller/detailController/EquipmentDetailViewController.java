@@ -52,13 +52,17 @@ public class EquipmentDetailViewController extends BaseController {
             equipmentDetailViewNumberLabel.setText("A" + String.valueOf(e.getEquipmentID()));
             equipmentDescriptionLabel.setText(e.getDescription());
         }
+
     }
 
 
 
     @FXML
-    void onEquipmentDeleteButtonClicked(MouseEvent event) {
+    void onEquipmentDeleteButtonClicked(MouseEvent event) throws IOException {
+        showNewView(Constants.PATH_TO_EQUIPMENT_ON_DELETE_VIEW);
 
+        Stage detailStage = (Stage) equipmentDescriptionLabel.getScene().getWindow();
+        detailStage.close();
     }
 
     @FXML

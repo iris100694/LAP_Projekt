@@ -70,6 +70,11 @@ public class LocationDetailViewController extends BaseController {
 
     @FXML
     void onLocationDeleteButtonClicked(MouseEvent event) throws IOException {
+        showNewView(Constants.PATH_TO_LOCATION_ON_DELETE_VIEW);
+
+        Stage detailStage = (Stage) locationDetailViewNumberLabel.getScene().getWindow();
+        detailStage.close();
+
 
     }
 

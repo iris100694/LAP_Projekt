@@ -4,6 +4,7 @@ module com.lap.roomplaningsystem {
     requires java.sql;
     requires org.slf4j;
     requires org.apache.commons.lang3;
+    requires com.calendarfx.view;
 
 
     opens com.lap.roomplaningsystem to javafx.fxml;

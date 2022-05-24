@@ -23,6 +23,7 @@ public class Model {
     private ObjectProperty<Equipment> selectedEquipmentProperty = new SimpleObjectProperty<>();
     private ObjectProperty<RoomEquipment> selectedRoomEquipmentProperty = new SimpleObjectProperty<>();
     private ObjectProperty<User> selectedUserProperty = new SimpleObjectProperty<>();
+    private boolean selectedIsDeleted;
 
     private ObservableList<Room> requestResult;
     private ObjectProperty<Room> selectedResultProperty = new SimpleObjectProperty<>();
@@ -51,6 +52,13 @@ public class Model {
         return false;
     }
 
+    public boolean isSelectedIsDeleted() {
+        return selectedIsDeleted;
+    }
+
+    public void setSelectedIsDeleted(boolean selectedIsDeleted) {
+        this.selectedIsDeleted = selectedIsDeleted;
+    }
 
     public String getHashedPassword() {
         return hashedPassword.get();

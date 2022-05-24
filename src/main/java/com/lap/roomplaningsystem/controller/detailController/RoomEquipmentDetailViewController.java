@@ -66,16 +66,19 @@ public class RoomEquipmentDetailViewController extends BaseController {
 
 
     @FXML
-    void onRoomEquipmentDeleteButtonClicked(MouseEvent event) {
+    void onRoomEquipmentDeleteButtonClicked(MouseEvent event) throws IOException {
+        showNewView(Constants.PATH_TO_ROOMEQUIPMENT_ON_DELETE_VIEW);
 
+        Stage detailStage = (Stage) deleteRoomEquipment.getScene().getWindow();
+        detailStage.close();
     }
 
     @FXML
     void onRoomEquipmentEditButtonClicked(MouseEvent event) throws IOException {
         showNewView(Constants.PATH_TO_ROOMEQUIPMENT_UPDATE_VIEW);
 
-//        Stage detailStage = (Stage) editRoomEquipment.getScene().getWindow();
-//        detailStage.close();
+        Stage detailStage = (Stage) editRoomEquipment.getScene().getWindow();
+        detailStage.close();
     }
 
 }

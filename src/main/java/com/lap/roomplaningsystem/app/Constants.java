@@ -8,6 +8,7 @@ public class Constants {
     public static final String PATH_TO_STAMMDATA_VIEW = "/com/lap/roomplaningsystem/views/stammdata-view.fxml";
     public static final String PATH_TO_LOGIN_VIEW = "/com/lap/roomplaningsystem/views/login-view.fxml";
     public static final String PATH_TO_CREATE_PASSWORD_VIEW = "/com/lap/roomplaningsystem/views/createPassword-view.fxml";
+    public static final String PATH_TO_PROFIL_VIEW = "/com/lap/roomplaningsystem/views/profile-view.fxml";
 
     public static final String PATH_TO_EVENT_DETAIL_VIEW = "/com/lap/roomplaningsystem/views/detailViews/eventDetail-view.fxml";
     public static final String PATH_TO_ROOM_DETAIL_VIEW = "/com/lap/roomplaningsystem/views/detailViews/roomDetail-view.fxml";
@@ -28,7 +29,16 @@ public class Constants {
     public static final String PATH_TO_USER_UPDATE_VIEW = "/com/lap/roomplaningsystem/views/detailViewsOnUpdate/userDetailOnUpdate-view.fxml";
     public static final String PATH_TO_SUCCESSFUL_UPDATE = "/com/lap/roomplaningsystem/views/detailViewsOnUpdate/successfulUpdate-view.fxml";
 
+
     public static final String PATH_TO_EVENT_ON_DELETE_VIEW = "/com/lap/roomplaningsystem/views/detailViewOnDelete/eventDetailOnDelete-view.fxml";
+    public static final String PATH_TO_ROOMEQUIPMENT_ON_DELETE_VIEW = "/com/lap/roomplaningsystem/views/detailViewOnDelete/roomEquipmentOnDelete-view.fxml";
+    public static final String PATH_TO_LOCATION_ON_DELETE_VIEW = "/com/lap/roomplaningsystem/views/detailViewOnDelete/locationDetailOnDelete-view.fxml";
+    public static final String PATH_TO_PROGRAM_ON_DELETE_VIEW = "/com/lap/roomplaningsystem/views/detailViewOnDelete/programDetailOnDelete-view.fxml";
+    public static final String PATH_TO_ROOM_ON_DELETE_VIEW = "/com/lap/roomplaningsystem/views/detailViewOnDelete/roomDetailOnDelete-view.fxml";
+    public static final String PATH_TO_USER_ON_ACTIV_VIEW = "/com/lap/roomplaningsystem/views/detailViewOnDelete/userDetailOnActiv-view.fxml";
+    public static final String PATH_TO_COURSE_ON_DELETE_VIEW = "/com/lap/roomplaningsystem/views/detailViewOnDelete/courseDetailOnDelete-view.fxml";
+    public static final String PATH_TO_EQUIPMENT_ON_DELETE_VIEW = "/com/lap/roomplaningsystem/views/detailViewOnDelete/equipmentDetailOnDelete-view.fxml";
+
 
     public static final String PATH_TO_PROGRAM_ADD_VIEW = "/com/lap/roomplaningsystem/views/detailViewsOnAdd/programDetailOnAdd-view.fxml";
     public static final String PATH_TO_COURSE_ADD_VIEW = "/com/lap/roomplaningsystem/views/detailViewsOnAdd/courseDetailOnAdd-view.fxml";
@@ -37,7 +47,7 @@ public class Constants {
     public static final String PATH_TO_ROOMEQUIPMENT_ADD_VIEW = "/com/lap/roomplaningsystem/views/detailViewsOnAdd/roomEquipmentDetailOnAdd-view.fxml";
     public static final String PATH_TO_USER_ADD_VIEW = "/com/lap/roomplaningsystem/views/detailViewsOnAdd/userDetailOnAdd-view.fxml";
     public static final String PATH_TO_ROOM_ADD_VIEW = "/com/lap/roomplaningsystem/views/detailViewsOnAdd/roomDetailOnAdd-view.fxml";
-
+    public static final String PATH_TO_EDIT_USER = "/com/lap/roomplaningsystem/views/detailViewsOnUpdate/userDetailOnEdit.fxml";
 
 
     public static final String PATH_TO_EVENT_TABLE_VIEW = "/com/lap/roomplaningsystem/views/tableViews/eventTable.fxml";

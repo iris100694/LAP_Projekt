@@ -87,8 +87,9 @@ public class EventsViewController extends BaseController{
         eventEndColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getEndTime().toString()));
 
         eventTable.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) ->  {
+
             try {
-//
+
                 if(nv != null){
                     model.setSelectedEventProperty(nv);
                     showNewView(Constants.PATH_TO_EVENT_DETAIL_VIEW);
@@ -205,11 +206,20 @@ public class EventsViewController extends BaseController{
         model.setPathToView(Constants.PATH_TO_LOGIN_VIEW);
     }
 
+
+
     private void onLogoutLabelClicked(MouseEvent mouseEvent){
         model.setAuthorization("standard");
         model.setUser(null);
         loginLabel.setText("Login");
         loginLabel.setOnMouseClicked(this::onLoginLabelClicked);
+    }
+
+    @FXML
+    private void onProfilIconClicked(MouseEvent mouseEvent) {
+        switch(model.getAuthorization()){
+            case "coach", "admin" -> model.setPathToView(Constants.PATH_TO_PROFIL_VIEW);
+        }
     }
 
     @FXML

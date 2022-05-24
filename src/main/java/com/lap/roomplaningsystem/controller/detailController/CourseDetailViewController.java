@@ -81,7 +81,11 @@ public class CourseDetailViewController extends BaseController {
 
 
     @FXML
-    void onCourseDeleteButtonClicked(MouseEvent event) {
+    void onCourseDeleteButtonClicked(MouseEvent event) throws IOException {
+        showNewView(Constants.PATH_TO_COURSE_ON_DELETE_VIEW);
+
+        Stage detailStage = (Stage) courseDetailViewDescriptionLabel.getScene().getWindow();
+        detailStage.close();
 
     }
 

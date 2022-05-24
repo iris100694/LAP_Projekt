@@ -170,6 +170,7 @@ public class RequestViewController extends BaseController{
         requestFilter.setEndDate(endDatePicker.getValue());
         requestFilter.setStartTime(startTimeComboBox.getValue());
         requestFilter.setEndTime(endTimeComboBox.getValue());
+        requestFilter.setCourse(courseComboBox.getValue());
 
 
         FilteredList<Room> filteredList = new FilteredList<Room>(model.getDataholder().getRooms());

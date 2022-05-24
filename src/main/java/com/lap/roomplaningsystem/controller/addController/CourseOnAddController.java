@@ -70,9 +70,12 @@ public class CourseOnAddController extends BaseController {
 
     @FXML
     void onSaveButtonClicked(MouseEvent event) throws Exception {
-        if(isBlank(descriptionInput.getText()) || isBlank(membersInput.getText()) || startDatePicker.getValue() == null ||
-                endDatePicker.getValue() == null || programComboBox.getValue() == null){
+        if (isBlank(descriptionInput.getText()) || isBlank(membersInput.getText()) || startDatePicker.getValue() == null ||
+                endDatePicker.getValue() == null || programComboBox.getValue() == null) {
             errorLabel.setText("Bitte alle Felder und Auswahlbox ausfüllen!");
+        }else if(model.getDataholder().getCourses().stream().anyMatch(c-> c.getTitle().equals(descriptionInput.getText()))) {
+            errorLabel.setText("Kursbezeichnung bereits vergeben!");
+
         } else if(getInt(membersInput.getText()) == null) {
             errorLabel.setText("Keine korrekte Teilnehmerzahl ausgefüllt!");
         } else if(endDatePicker.getValue().isBefore(startDatePicker.getValue())){

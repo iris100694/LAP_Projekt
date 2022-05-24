@@ -9,10 +9,7 @@ import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
-import com.lap.roomplaningsystem.model.Dataholder;
-import com.lap.roomplaningsystem.model.Program;
-import com.lap.roomplaningsystem.model.Room;
-import com.lap.roomplaningsystem.model.User;
+import com.lap.roomplaningsystem.model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -253,6 +250,10 @@ public class UserOnUpdateController extends BaseController {
                     }
 
                 }
+
+                Optional<ObservableList<Event>> optionalEvents = Dataholder.eventRepositoryJDBC.readAll();
+                optionalEvents.ifPresent(events -> model.getDataholder().setEvents(events));
+
 
                 Stage detailStage = (Stage) firstnameInput.getScene().getWindow();
                 detailStage.close();

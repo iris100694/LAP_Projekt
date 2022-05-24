@@ -91,6 +91,8 @@ public class UserOnAddController extends BaseController {
     @FXML
     private TextField passwordInput;
 
+    boolean error;
+
 
     @FXML
     void initialize() {
@@ -147,8 +149,10 @@ public class UserOnAddController extends BaseController {
             List<String> usernames = model.getDataholder().getUsers().stream().map(User::getUsername).toList();
             boolean exist = usernames.stream().anyMatch(username -> username.equals(usernameInput.getText()));
             if (exist) {
+                error = true;
                 errorUsernameLabel.setText("Username bereits vergeben!");
             } else {
+                error = false;
                 errorUsernameLabel.setText("");
             }
         });
@@ -181,7 +185,7 @@ public class UserOnAddController extends BaseController {
         } else if (!passwordInput.getText().equals(password2Input.getText())) {
             errorSaveLabel.setText("Bitte das Passwort wiederholen");
 
-        } else {
+        } else if(!error){
                 String authorize = authorizationCombobox.getValue().equals("Administrator") ? "admin" : "coach";
 
                 User user = Dataholder.userRepositoryJDBC.add(firstnameInput.getText(), lastnameInput.getText(), titleInput.getText(), usernameInput.getText(),

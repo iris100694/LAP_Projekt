@@ -9,10 +9,7 @@ import java.util.ResourceBundle;
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.matcher.LocationMatcher;
-import com.lap.roomplaningsystem.model.Dataholder;
-import com.lap.roomplaningsystem.model.Location;
-import com.lap.roomplaningsystem.model.Program;
-import com.lap.roomplaningsystem.model.Room;
+import com.lap.roomplaningsystem.model.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -128,7 +125,7 @@ public class LocationOnUpdateController extends BaseController {
         } else if(!descriptionIsChange && !adressIsChange && !postCodeIsChange && !cityIsChange) {
             errorLabel.setText("Es wurden keine Änderungen vorgenommen!");
         } else if(descriptionIsChange){
-            boolean exist = model.getDataholder().getLocations().stream().anyMatch(l-> l.getDescription().equals(descriptionInput.getText()));
+            boolean exist = model.getDataholder().getLocations().stream().anyMatch(l-> l.getDescription().equals(descriptionInput.getText()) && l.getLocationID() != model.getSelectedLocationProperty().getLocationID());
             if(exist){
                 errorLabel.setText("Bezeichung bereits vergeben!");
             } else{
@@ -173,7 +170,11 @@ public class LocationOnUpdateController extends BaseController {
 
             //TODO: Change this two rows with a better method
             Optional<ObservableList<Room>> optionalRooms = Dataholder.roomRepositoryJDBC.readAll();
+            Optional<ObservableList<RoomEquipment>> optionalRoomEquipments = Dataholder.roomEquipmentRepositoryJDBC.readAll();
+            Optional<ObservableList<Event>> optionalEvents = Dataholder.eventRepositoryJDBC.readAll();
             optionalRooms.ifPresent(rooms -> model.getDataholder().setRooms(rooms));
+            optionalRoomEquipments.ifPresent(roomEquipments -> model.getDataholder().setRoomEquipments(roomEquipments));
+            optionalEvents.ifPresent(events -> model.getDataholder().setEvents(events));
 
 
             Stage detailStage = (Stage) descriptionInput.getScene().getWindow();

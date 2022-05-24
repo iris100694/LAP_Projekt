@@ -95,7 +95,6 @@ public class RoomsViewController extends BaseController{
                 if(nv != null){
                     model.setSelectedRoomProperty(nv);
                     showNewView(Constants.PATH_TO_ROOM_DETAIL_VIEW);
-//                    Platform.runLater( ()-> {  roomTable.getSelectionModel().clearSelection();  });
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -187,6 +186,13 @@ public class RoomsViewController extends BaseController{
         model.setPathToView(Constants.PATH_TO_LOGIN_VIEW);
     }
 
+    @FXML
+    private void onProfilIconClicked(MouseEvent mouseEvent) {
+        switch(model.getAuthorization()){
+            case "coach", "admin" -> model.setPathToView(Constants.PATH_TO_PROFIL_VIEW);
+        }
+    }
+
     private void onLogoutLabelClicked(MouseEvent mouseEvent){
         model.setAuthorization("standard");
         model.setUser(null);
@@ -216,4 +222,6 @@ public class RoomsViewController extends BaseController{
             }
         }
     }
+
+
 }

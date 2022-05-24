@@ -58,8 +58,11 @@ public class ProgramDetailViewController extends BaseController {
 
 
     @FXML
-    void onProgramDeleteButtonClicked(MouseEvent event) {
+    void onProgramDeleteButtonClicked(MouseEvent event) throws IOException {
+        showNewView(Constants.PATH_TO_PROGRAM_ON_DELETE_VIEW);
 
+        Stage detailStage = (Stage) programDetailViewNumberLabel.getScene().getWindow();
+        detailStage.close();
     }
 
     @FXML

@@ -1,9 +1,7 @@
 package com.lap.roomplaningsystem.repository.interfaces;
 
-import com.lap.roomplaningsystem.model.Event;
 import com.lap.roomplaningsystem.model.Location;
 import com.lap.roomplaningsystem.model.Room;
-import com.lap.roomplaningsystem.model.User;
 import javafx.collections.ObservableList;
 
 import java.io.InputStream;
@@ -20,7 +18,7 @@ public interface RoomRepository {
 
     boolean update(Room room, InputStream inputStream) throws Exception;
 
-    void delete(Room room) throws SQLException;
+    boolean delete(Room room) throws SQLException;
 
 
 }

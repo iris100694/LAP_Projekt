@@ -1,12 +1,16 @@
 package com.lap.roomplaningsystem.controller.updateController;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
+import java.sql.SQLException;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.filterBoxes.FilterBox;
 import com.lap.roomplaningsystem.matcher.CourseMatcher;
@@ -21,6 +25,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import javafx.util.converter.LocalDateStringConverter;
 
@@ -82,18 +87,23 @@ public class EventOnUpdateController extends BaseController {
         Optional<Event> optionalEvent = model.getDataholder().getEvents().stream().filter(e -> e == model.getSelectedEventProperty()).findAny();
 
         if(optionalEvent.isPresent()){
+            Event event = optionalEvent.get();
             locationComboBox.setItems(model.getDataholder().getLocations());
             coachComboBox.setItems(model.getDataholder().getCoaches());
             courseComboBox.setItems(model.getDataholder().getCourses());
             roomComboBox.setItems(availableRooms(optionalEvent.get().getRoom().getLocation()));
+            startComboBox.setItems(createTimeList());
+            endComboBox.setItems(createTimeList());
 
-            locationComboBox.getSelectionModel().select(optionalEvent.get().getRoom().getLocation());
-            roomComboBox.getSelectionModel().select(optionalEvent.get().getRoom());
-            coachComboBox.getSelectionModel().select(optionalEvent.get().getCoach());
-            courseComboBox.getSelectionModel().select(optionalEvent.get().getCourse());
+
+            locationComboBox.getSelectionModel().select(event.getRoom().getLocation());
+            roomComboBox.getSelectionModel().select(event.getRoom());
+            coachComboBox.getSelectionModel().select(event.getCoach());
+            courseComboBox.getSelectionModel().select(event.getCourse());
 
             datePicker.setValue(optionalEvent.get().getDate());
-            startComboBox.setItems(createTimeList());
+            startComboBox.getSelectionModel().select(event.getStartTime().toLocalTime());
+            endComboBox.getSelectionModel().select(event.getEndTime().toLocalTime());
 
         }
 
@@ -170,8 +180,46 @@ public class EventOnUpdateController extends BaseController {
 
 
     @FXML
-    void onSaveButtonClicked(MouseEvent event) {
+    void onSaveButtonClicked(MouseEvent event) throws Exception {
+        if (courseComboBox.getValue() == null || locationComboBox.getValue() == null || roomComboBox.getValue() == null ||
+                datePicker.getValue() == null || startComboBox.getValue() == null || endComboBox.getValue() == null || coachComboBox.getValue() == null) {
+            errorLabel.setText("Bitte Felder ausfüllen!");
+        } else {
 
+            Optional<Event> optionalEvent = model.getDataholder().getEvents().stream().filter(e -> e.getEventID() == model.getSelectedEventProperty().getEventID()).findAny();
+
+            if (optionalEvent.isPresent()) {
+                Event e = optionalEvent.get();
+
+
+                e.setCourse(courseComboBox.getValue());
+                e.setRoom(roomComboBox.getValue());
+                e.setCoach(coachComboBox.getValue());
+                e.setDate(datePicker.getValue());
+                e.setStartTime(Time.valueOf(startComboBox.getValue()));
+                e.setEndTime(Time.valueOf(endComboBox.getValue()));
+
+
+                boolean isUpdated = Dataholder.eventRepositoryJDBC.update(e);
+
+                if (isUpdated) {
+                    showNewView(Constants.PATH_TO_SUCCESSFUL_UPDATE);
+                    int index = model.getDataholder().getEvents().indexOf(e);
+                    model.getDataholder().updateEvent(index, e);
+                }
+
+            }
+
+
+            //TODO: Change this two rows with a better method
+            Optional<ObservableList<RoomEquipment>> optionalRoomEquipments = Dataholder.roomEquipmentRepositoryJDBC.readAll();
+            optionalRoomEquipments.ifPresent(roomEquipments -> model.getDataholder().setRoomEquipments(roomEquipments));
+
+
+            Stage detailStage = (Stage) courseComboBox.getScene().getWindow();
+            detailStage.close();
+
+
+        }
     }
-
 }

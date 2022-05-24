@@ -309,13 +309,13 @@ public class CreateEventViewController extends BaseController{
                         coachComboBox.getValue(), singleDateDatePicker.getValue(), start, end);
 
                 model.getDataholder().addEvent(event);
-
+                errorLabel.setText("");
                 resultLabel.setText("Veranstaltung erfolgreich erfasst!");
             } else if(isSeries){
                 ObservableList<Event> events = handleSeries(typComboBox.getValue());
 
                 model.getDataholder().addEvents(events);
-
+                errorLabel.setText("");
                 resultLabel.setText("Veranstaltung erfolgreich erfasst!");
             }
 

@@ -2,7 +2,6 @@ package com.lap.roomplaningsystem.repository.JDBC;
 
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.model.Location;
-import com.lap.roomplaningsystem.model.Program;
 import com.lap.roomplaningsystem.model.Room;
 import com.lap.roomplaningsystem.repository.Repository;
 import com.lap.roomplaningsystem.repository.interfaces.RoomRepository;
@@ -12,8 +11,6 @@ import javafx.collections.ObservableList;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Optional;
 
 
@@ -104,8 +101,18 @@ public class RoomRepositoryJDBC extends Repository implements RoomRepository {
 
 
     @Override
-    public void delete(Room room) throws SQLException {
+    public boolean delete(Room room) throws SQLException {
 
+        Connection connection = connect();
+
+        String query = "DELETE FROM rooms WHERE ROOMID = ?";
+
+        PreparedStatement stmt = connection.prepareStatement(query);
+        stmt.setInt(1, room.getRoomID());
+
+        int isDeleted = stmt.executeUpdate();
+
+        return isDeleted != 0;
     }
 
     public String createFilterStatement(String id, String description, String size, String location, String equipment, boolean image) {

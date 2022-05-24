@@ -11,9 +11,7 @@ import java.sql.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
-import java.util.Calendar;
 import java.util.Optional;
 
 public class EventRepositoryJDBC extends Repository implements EventRepository {
@@ -69,12 +67,35 @@ public class EventRepositoryJDBC extends Repository implements EventRepository {
 
 
     @Override
-    public void update(Event event) throws SQLException {
+    public boolean update(Event event) throws SQLException {
+
+        String start = event.getDate().toString() + " " + event.getStartTime().toString();
+        String end = event.getDate().toString() + " " + event.getEndTime().toString();
+
+        Connection connection = connect();
+
+        String query = "UPDATE events SET COURSEID = ?, ROOMID = ?, COACHID = ?, START = ?, END = ? WHERE EVENTID = ?";
+
+        PreparedStatement stmt = null;
+
+        stmt = connection.prepareStatement(query);
+
+        stmt.setInt(1, event.getCourse().getCourseID());
+        stmt.setInt(2, event.getRoom().getRoomID());
+        stmt.setInt(3, event.getCoach().getId());
+        stmt.setString(4, start);
+        stmt.setString(5, end);
+        stmt.setInt(6, event.getEventID());
+
+
+        int isUpdated = stmt.executeUpdate();
+
+        return isUpdated != 0;
 
     }
 
     @Override
-    public void delete(Event e) throws SQLException {
+    public boolean delete(Event e) throws SQLException {
         Connection connection = connect();
 
         String query = "{CALL deleteEventStatement(?)}";
@@ -82,8 +103,9 @@ public class EventRepositoryJDBC extends Repository implements EventRepository {
         CallableStatement stmt = connection.prepareCall(query);
         stmt.setInt(1, e.getEventID());
 
-        ResultSet resultSet = stmt.executeQuery();
+        int isDeleted = stmt.executeUpdate();
 
+        return isDeleted != 0;
     }
 
     @Override

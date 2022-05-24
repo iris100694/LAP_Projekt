@@ -14,6 +14,6 @@ public interface ProgramRepository extends BaseRepository{
 
     boolean update(Program program) throws SQLException;
 
-    void delete(Program program) throws SQLException;
+    boolean delete(Program program) throws SQLException;
 
 }

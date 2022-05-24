@@ -39,7 +39,9 @@ public class EquipmentOnAddController extends BaseController {
     void onSaveButtonClicked(MouseEvent event) throws Exception {
         if (isBlank(descriptionInput.getText())) {
             errorLabel.setText("Bitte Feld ausfüllen!");
-        } else {
+        } else if(model.getDataholder().getEquipments().stream().anyMatch(e-> e.getDescription().equals(descriptionInput.getText()))){
+            errorLabel.setText("Ausstattungsbezeichnung bereits vergeben!");
+        }else{
             Equipment equipment = Dataholder.equipmentRepositoryJDBC.add(descriptionInput.getText());
 
             model.getDataholder().addEquipment(equipment);

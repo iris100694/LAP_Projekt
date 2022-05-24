@@ -8,6 +8,8 @@ import javafx.collections.transformation.FilteredList;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class Dataholder {
@@ -43,50 +45,20 @@ public class Dataholder {
         this.rooms = roomRepositoryJDBC.readAll().orElse(null);
         this.roomEquipments = roomEquipmentRepositoryJDBC.readAll().orElse(null);
 
-
-
-        initChangeListener();
-
     }
 
-    private void initChangeListener() {
-        events.addListener(new ListChangeListener<Event>() {
-            @Override
-            public void onChanged(Change<? extends Event> c) {
 
-                while (c.next()) {
-                    if (c.wasRemoved()) {
-                        try {
-                            eventRepositoryJDBC.delete(c.getRemoved().get(0));
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-
-                    } else if (c.wasUpdated()) {
-                        //update item
-                    }
-                }
-            }
-
-        });
-    }
 
 
     public ObservableList<User> getCoaches() {
-        ObservableList<User> coaches = FXCollections.observableArrayList();
-        for (User u : getUsers()){
-            if(u.isTrainer() && u.isActive()){
-                coaches.add(u);
-            }
-        }
-        return coaches;
+        List<User> coaches = users.stream().filter(User::isTrainer).toList();
+
+        return FXCollections.observableArrayList(coaches);
     }
 
 
 
-    public void deleteEvent(Event e) {
-        events.remove(e);
-    }
+
 
     public ObservableList<Event> getEvents() {
         return events;
@@ -220,5 +192,35 @@ public class Dataholder {
 
     public void updateProgram(int index, Program program) {
         this.programs.set(index,program);
+    }
+
+    public void deleteRoomEquipment(RoomEquipment e) {
+        this.roomEquipments.remove(e);
+    }
+
+    public void deleteEvent(Event e) {
+        this.events.remove(e);
+    }
+
+    public void deleteLocation(Location l) {
+        this.locations.remove(l);
+    }
+
+    public void deleteProgram(Program p) {
+        this.programs.remove(p);
+    }
+
+    public void deleteEquipment(Equipment e) {
+        this.equipments.remove(e);
+    }
+
+    public void deleteRoom(Room r) {
+        this.rooms.remove(r);
+    }
+
+    public void setUserInActiv(User u) {
+        Optional<User> userInactiv = this.users.stream().filter(user -> user.getId() == u.getId()).findAny();
+
+        userInactiv.ifPresent(user -> user.setActive(false));
     }
 }

@@ -110,14 +110,7 @@ public class EventDetailViewController extends BaseController {
 
     @FXML
     void onEventDeleteButtonClicked(MouseEvent event) throws IOException {
-       Optional<Event> optionalEvent = model.getDataholder().getEvents().stream().filter(e -> e == model.getSelectedEventProperty()).findAny();
-
-        FXMLLoader fxmlLoader = new FXMLLoader(RoomplaningsystemApplication.class.getResource(Constants.PATH_TO_EVENT_ON_DELETE_VIEW));
-        Parent root = (Parent) fxmlLoader.load();
-        Stage stage = new Stage();
-        stage.setTitle("V" + optionalEvent.get().getEventID());
-        stage.setScene(new Scene(root));
-        stage.show();
+        showNewView(Constants.PATH_TO_EVENT_ON_DELETE_VIEW);
 
         Stage detailStage = (Stage) editEvent.getScene().getWindow();
         detailStage.close();

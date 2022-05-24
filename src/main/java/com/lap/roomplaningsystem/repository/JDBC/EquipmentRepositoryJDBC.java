@@ -71,8 +71,18 @@ public class EquipmentRepositoryJDBC extends Repository implements EquipmentRepo
     }
 
     @Override
-    public void delete(Equipment equipment) throws SQLException {
+    public boolean delete(Equipment equipment) throws SQLException {
 
+        Connection connection = connect();
+
+        String query = "DELETE FROM equipment WHERE EQUIPMENTID = ?";
+
+        PreparedStatement stmt = connection.prepareStatement(query);
+        stmt.setInt(1, equipment.getEquipmentID());
+
+        int isDeleted = stmt.executeUpdate();
+
+        return isDeleted != 0;
     }
 
 

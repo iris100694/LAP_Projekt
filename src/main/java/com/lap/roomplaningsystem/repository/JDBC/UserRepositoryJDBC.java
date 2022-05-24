@@ -139,9 +139,9 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
                     "COACH = ?, TEXT = ?, TEXTVISABLE = ?, PHONE = ?, PHONEVISABLE = ?, EMAIL = ?, EMAILVISABLE = ?, PHOTOVISABLE = ? WHERE USERID = ?" : "UPDATE users SET ACTIVE = ?, " +
                 "TITLE = ?, FIRSTNAME = ?, LASTNAME = ?, USERNAME = ?, PASSWORD = ?, AUTHORIZATION = ?," +
                     "COACH = ?, TEXT = ?, TEXTVISABLE = ?, PHONE = ?, PHONEVISABLE = ?, EMAIL = ?, EMAILVISABLE = ?, PHOTO = ?, PHOTOVISABLE = ? WHERE USERID = ?";
-        System.out.println(query);
+
         PreparedStatement stmt = null;
-        System.out.println(user.toString());
+
         stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         stmt.setBoolean(1, user.isActive());
         stmt.setString(2, user.getTitle());
@@ -177,9 +177,53 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
     }
 
     @Override
-    public void delete(User user) throws SQLException {
+    public boolean inActiv(User u) throws Exception {
+        Connection connection = connect();
 
+        String query = "UPDATE users SET ACTIVE = ? WHERE USERID = ?";
+
+        PreparedStatement stmt = connection.prepareStatement(query);
+        stmt.setBoolean(1, false);
+        stmt.setInt(2, u.getId());
+
+        int isActiv = stmt.executeUpdate();
+
+        return isActiv != 0;
     }
+
+    @Override
+    public boolean edit(User user) throws Exception {
+        Connection connection = connect();
+
+        String query = "UPDATE users SET PHONE=?, EMAIL=?, TEXT=? WHERE USERID = ?";
+
+        PreparedStatement stmt = connection.prepareStatement(query);
+        stmt.setString(1, user.getPhone());
+        stmt.setString(2, user.getEmail());
+        stmt.setString(3, user.getText());
+        stmt.setInt(4, user.getId());
+
+        int isEdited = stmt.executeUpdate();
+
+        return isEdited != 0;
+    }
+
+    @Override
+    public boolean changeProfileImage(User user, InputStream inputStream) throws Exception {
+        Connection connection = connect();
+
+        String query = "UPDATE users SET PHOTO = ? WHERE USERID = ?";
+
+        PreparedStatement stmt = connection.prepareStatement(query);
+        stmt.setBlob(1, inputStream);
+
+        stmt.setInt(2, user.getId());
+
+        int isPhotoChanged = stmt.executeUpdate();
+
+        return isPhotoChanged != 0;
+    }
+
 
     private Optional<User> createUser(ResultSet resultSet) throws SQLException {
 

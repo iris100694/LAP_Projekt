@@ -1,8 +1,6 @@
 package com.lap.roomplaningsystem.repository.JDBC;
 
-import com.lap.roomplaningsystem.model.Equipment;
 import com.lap.roomplaningsystem.model.Location;
-import com.lap.roomplaningsystem.model.Program;
 import com.lap.roomplaningsystem.repository.Repository;
 import com.lap.roomplaningsystem.repository.interfaces.LocationRepository;
 import javafx.collections.FXCollections;
@@ -79,7 +77,18 @@ public class LocationRepositoryJDBC extends Repository implements LocationReposi
     }
 
     @Override
-    public void delete(Location location) throws SQLException {
+    public boolean delete(Location location) throws SQLException {
+
+        Connection connection = connect();
+
+        String query = "DELETE FROM locations WHERE LOCATIONID = ?";
+
+        PreparedStatement stmt = connection.prepareStatement(query);
+        stmt.setInt(1, location.getLocationID());
+
+        int isDeleted = stmt.executeUpdate();
+
+        return isDeleted != 0;
 
     }
 

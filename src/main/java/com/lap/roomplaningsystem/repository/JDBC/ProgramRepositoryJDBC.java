@@ -71,8 +71,18 @@ public class ProgramRepositoryJDBC extends Repository implements ProgramReposito
     }
 
     @Override
-    public void delete(Program program) throws SQLException {
+    public boolean delete(Program program) throws SQLException {
 
+        Connection connection = connect();
+
+        String query = "DELETE FROM program WHERE PROGRAMID = ?";
+
+        PreparedStatement stmt = connection.prepareStatement(query);
+        stmt.setInt(1, program.getProgramID());
+
+        int isDeleted = stmt.executeUpdate();
+
+        return isDeleted != 0;
     }
 
 

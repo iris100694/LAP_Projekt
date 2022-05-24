@@ -10,8 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lap.roomplaningsystem.controller.ProfilViewController">
    <children>
       <GridPane>
          <columnConstraints>
@@ -32,7 +31,7 @@
                   <Insets right="20.0" />
                </GridPane.margin>
             </ImageView>
-            <Label prefHeight="18.0" text="Logout" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="RIGHT">
+            <Label onMouseClicked="#onLogoutLabelClicked" prefHeight="18.0" text="Logout" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="RIGHT">
                <font>
                   <Font name="Century Gothic" size="14.0" />
                </font>
@@ -65,7 +64,7 @@
             <Insets top="30.0" />
          </VBox.margin>
          <children>
-            <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="RIGHT">
+            <ImageView fx:id="imageView" fitHeight="100.0" fitWidth="100.0" onMouseClicked="#onImageChangeClicked" pickOnBounds="true" preserveRatio="true" GridPane.halignment="RIGHT">
                <image>
                   <Image url="@../images/profilicon.png" />
                </image>
@@ -134,42 +133,42 @@
                   <Insets left="30.0" />
                </GridPane.margin>
             </Label>
-            <Label text="ohne" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <Label fx:id="titleLabel" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <font>
                   <Font name="Century Gothic" size="14.0" />
                </font>
             </Label>
-            <Label fx:id="profilViewEMailLabel" GridPane.columnIndex="2" GridPane.rowIndex="7">
+            <Label fx:id="emailLabel" GridPane.columnIndex="2" GridPane.rowIndex="7">
                <font>
                   <Font name="Century Gothic" size="14.0" />
                </font>
             </Label>
-            <Label fx:id="profilViewPhoneLabel" GridPane.columnIndex="2" GridPane.rowIndex="6">
+            <Label fx:id="phoneLabel" GridPane.columnIndex="2" GridPane.rowIndex="6">
                <font>
                   <Font name="Century Gothic" size="14.0" />
                </font>
             </Label>
-            <Label fx:id="profilViewAuthorizationLabel" GridPane.columnIndex="2" GridPane.rowIndex="5">
+            <Label fx:id="authorizationLabel" GridPane.columnIndex="2" GridPane.rowIndex="5">
                <font>
                   <Font name="Century Gothic" size="14.0" />
                </font>
             </Label>
-            <Label fx:id="profilViewUsernameLabel" GridPane.columnIndex="2" GridPane.rowIndex="4">
+            <Label fx:id="usernameLabel" GridPane.columnIndex="2" GridPane.rowIndex="4">
                <font>
                   <Font name="Century Gothic" size="14.0" />
                </font>
             </Label>
-            <Label fx:id="profilViewLastnameLabel" GridPane.columnIndex="2" GridPane.rowIndex="3">
+            <Label fx:id="lastnameLabel" GridPane.columnIndex="2" GridPane.rowIndex="3">
                <font>
                   <Font name="Century Gothic" size="14.0" />
                </font>
             </Label>
-            <Label fx:id="profilViewTitleLabel" GridPane.columnIndex="2" GridPane.rowIndex="2">
+            <Label fx:id="firstnameLabel" GridPane.columnIndex="2" GridPane.rowIndex="2">
                <font>
                   <Font name="Century Gothic" size="14.0" />
                </font>
             </Label>
-            <Label fx:id="profilViewTextLabel" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="9" GridPane.valignment="TOP">
+            <Label fx:id="textLabel" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="9" GridPane.valignment="TOP">
                <font>
                   <Font name="Century Gothic" size="14.0" />
                </font>
@@ -177,21 +176,16 @@
                   <Insets left="30.0" top="20.0" />
                </GridPane.margin>
             </Label>
-            <ImageView fitHeight="20.0" fitWidth="20.0" opacity="0.3" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="6">
+            <ImageView fitHeight="20.0" fitWidth="20.0" onMouseClicked="#onEditUserClicked" opacity="0.3" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="9">
                <image>
                   <Image url="@../images/edit.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="20.0" fitWidth="20.0" opacity="0.3" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="7">
-               <image>
-                  <Image url="@../images/edit.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="20.0" fitWidth="20.0" opacity="0.3" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="8">
-               <image>
-                  <Image url="@../images/edit.png" />
-               </image>
-            </ImageView>
+            <Label fx:id="errorLabel" textFill="#eb2828" GridPane.columnIndex="1">
+               <font>
+                  <Font name="Century Gothic" size="14.0" />
+               </font>
+            </Label>
          </children>
       </GridPane>
    </children>
