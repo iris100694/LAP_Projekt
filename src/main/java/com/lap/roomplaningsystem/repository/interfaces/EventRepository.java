@@ -26,4 +26,6 @@ public interface EventRepository extends BaseRepository{
     ObservableList<Event> seriesWeekly(User creator, Room room, Course course, User coach, LocalDate startDate, LocalDate endDate, String startTime, String endTime);
 
     ObservableList<Event> seriesMonthly(User creator, Room room, Course course, User coach, LocalDate startDate, LocalDate endDate, String startTime, String endTime);
+
+
 }

@@ -24,6 +24,7 @@ public class Model {
     private ObjectProperty<RoomEquipment> selectedRoomEquipmentProperty = new SimpleObjectProperty<>();
     private ObjectProperty<User> selectedUserProperty = new SimpleObjectProperty<>();
     private boolean selectedIsDeleted;
+    private boolean showInCalendar;
 
     private ObservableList<Room> requestResult;
     private ObjectProperty<Room> selectedResultProperty = new SimpleObjectProperty<>();
@@ -50,6 +51,14 @@ public class Model {
             return true;
         }
         return false;
+    }
+
+    public void setShowInCalendar(boolean showInCalendar) {
+        this.showInCalendar = showInCalendar;
+    }
+
+    public boolean isShowInCalendar() {
+        return showInCalendar;
     }
 
     public boolean isSelectedIsDeleted() {

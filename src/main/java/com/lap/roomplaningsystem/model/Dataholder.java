@@ -218,9 +218,7 @@ public class Dataholder {
         this.rooms.remove(r);
     }
 
-    public void setUserInActiv(User u) {
-        Optional<User> userInactiv = this.users.stream().filter(user -> user.getId() == u.getId()).findAny();
 
-        userInactiv.ifPresent(user -> user.setActive(false));
-    }
+
+
 }

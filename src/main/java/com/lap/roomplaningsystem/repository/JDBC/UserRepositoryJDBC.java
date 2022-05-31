@@ -104,29 +104,6 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
 
     }
 
-//    @Override
-//    public void add(User user){
-//        Connection connection;
-//        try(PreparedStatement prepareStatement = connection.prepareStatement("SELECT * FROM user")){
-//            prepareStatement.setLong(1, user.getId());
-//            prepareStatement.setString(2, user.getUsername());
-//
-//            InputStream inputStream = new ByteArrayInputStream(user.getPhoto());
-//            prepareStatement.setBlob(3, inputStream);
-//            prepareStatement.executeUpdate();
-//
-//            try(ResultSet resultSet = prepareStatement.getGeneratedKeys()){
-//                while(resultSet.next()){
-//                    long userID = resultSet.getLong("USERID");
-//                }
-//            }
-//
-//        } catch (Exception e){
-//            e.printStackTrace();
-//        }
-
-
-//    }
 
     @Override
     public boolean update(User user, String password, InputStream inputStream) throws SQLException, IOException {
@@ -274,7 +251,7 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
                     resultSet.getBoolean("EMAILVISABLE"),
                     resultSet.getBytes("PHOTO"),
                     resultSet.getBoolean("PHOTOVISABLE"));
-            System.out.println(user.toString());
+
             users.add(user);
         }
 

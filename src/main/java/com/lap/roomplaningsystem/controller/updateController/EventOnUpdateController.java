@@ -25,6 +25,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import javafx.util.converter.LocalDateStringConverter;
@@ -80,6 +81,7 @@ public class EventOnUpdateController extends BaseController {
         setConverterOnChoiceBoxes();
 
 
+
     }
 
 
@@ -88,6 +90,7 @@ public class EventOnUpdateController extends BaseController {
 
         if(optionalEvent.isPresent()){
             Event event = optionalEvent.get();
+            numberLabel.setText("V"+ String.valueOf(event.getEventID()));
             locationComboBox.setItems(model.getDataholder().getLocations());
             coachComboBox.setItems(model.getDataholder().getCoaches());
             courseComboBox.setItems(model.getDataholder().getCourses());
@@ -203,9 +206,20 @@ public class EventOnUpdateController extends BaseController {
                 boolean isUpdated = Dataholder.eventRepositoryJDBC.update(e);
 
                 if (isUpdated) {
-                    showNewView(Constants.PATH_TO_SUCCESSFUL_UPDATE);
                     int index = model.getDataholder().getEvents().indexOf(e);
                     model.getDataholder().updateEvent(index, e);
+
+                    if(!model.isShowInCalendar()){
+                        Stage detailStage = (Stage) courseComboBox.getScene().getWindow();
+                        detailStage.close();
+
+                        showNewView(Constants.PATH_TO_SUCCESSFUL_UPDATE);
+
+                    } else {
+                        model.setShowInCalendar(false);
+                        saveButton.setVisible(false);
+                    }
+
                 }
 
             }
@@ -216,8 +230,7 @@ public class EventOnUpdateController extends BaseController {
             optionalRoomEquipments.ifPresent(roomEquipments -> model.getDataholder().setRoomEquipments(roomEquipments));
 
 
-            Stage detailStage = (Stage) courseComboBox.getScene().getWindow();
-            detailStage.close();
+
 
 
         }

@@ -119,10 +119,12 @@ public class EventDetailViewController extends BaseController {
 
     @FXML
     void onEventEditButtonClicked(MouseEvent event) throws IOException {
+
         showNewView(Constants.PATH_TO_EVENT_ON_UPDATE_VIEW);
 
         Stage detailStage = (Stage) editEvent.getScene().getWindow();
         detailStage.close();
+
     }
 
 }

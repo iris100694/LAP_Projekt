@@ -66,9 +66,8 @@ public class UserOnActivController extends BaseController {
             try {
                 boolean isActiv = Dataholder.userRepositoryJDBC.inActiv(u);
                 if(isActiv){
-                    System.out.println("Hello");
-                    model.getDataholder().setUserInActiv(u);
-
+                    int index = model.getDataholder().getUsers().indexOf(u);
+                    model.getDataholder().updateUser(index, u);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

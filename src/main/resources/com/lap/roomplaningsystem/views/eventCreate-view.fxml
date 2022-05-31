@@ -13,20 +13,20 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lap.roomplaningsystem.controller.CreateEventViewController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lap.roomplaningsystem.controller.CreateEventViewController">
    <children>
       <GridPane>
          <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="213.5" minWidth="10.0" prefWidth="213.5" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="403.5" minWidth="10.0" prefWidth="363.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="294.0" minWidth="10.0" prefWidth="56.5" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="145.0" minWidth="6.0" prefWidth="44.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="343.5" minWidth="10.0" prefWidth="343.5" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="502.5" minWidth="10.0" prefWidth="372.5" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="294.0" minWidth="10.0" prefWidth="102.5" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="145.0" minWidth="6.0" prefWidth="39.5" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.halignment="RIGHT">
+            <ImageView fx:id="profilImage" fitHeight="35.0" fitWidth="35.0" onMouseClicked="#onProfilIconClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.halignment="LEFT">
                <image>
                   <Image url="@../images/profilicon.png" />
                </image>
@@ -34,14 +34,14 @@
                   <Insets right="20.0" />
                </GridPane.margin>
             </ImageView>
-            <Label onMouseClicked="#onLogoutLabelClicked" text="Logout" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="RIGHT">
+            <Button fx:id="logout" mnemonicParsing="false" onAction="#onLogoutButtonClicked" text="Logout" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER">
                <font>
-                  <Font name="Century Gothic" size="14.0" />
+                  <Font name="Century Gothic" size="12.0" />
                </font>
-               <GridPane.margin>
-                  <Insets right="20.0" />
-               </GridPane.margin>
-            </Label>
+               <padding>
+                  <Insets bottom="8.0" left="20.0" right="20.0" top="8.0" />
+               </padding>
+            </Button>
          </children>
       </GridPane>
       <Label maxWidth="1.7976931348623157E308" style="-fx-background-color: #4F60801a;" text="Veranstaltung erfassen">
@@ -142,7 +142,7 @@
                   <Insets left="30.0" />
                </GridPane.margin>
             </Label>
-            <Button mnemonicParsing="false" onMouseClicked="#onRequestButtonClicked" style="-fx-background-radius: 12; -fx-background-color: #303C52;" text="Abfrage" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="12" GridPane.valignment="BOTTOM">
+            <Button mnemonicParsing="false" onMouseClicked="#onRequestButtonClicked" text="Abfrage" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="12" GridPane.valignment="BOTTOM">
                <GridPane.margin>
                   <Insets bottom="20.0" />
                </GridPane.margin>
@@ -150,10 +150,10 @@
                   <Insets bottom="6.0" left="12.0" right="12.0" top="6.0" />
                </padding>
                <font>
-                  <Font name="Century Gothic" size="14.0" />
+                  <Font name="Century Gothic" size="12.0" />
                </font>
             </Button>
-            <Button fx:id="saveButton" mnemonicParsing="false" onMouseClicked="#onSaveButtonClicked" style="-fx-background-radius: 12; -fx-background-color: #303C52;" text="Erfassen" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="12" GridPane.valignment="BOTTOM">
+            <Button fx:id="saveButton" mnemonicParsing="false" onMouseClicked="#onSaveButtonClicked" text="Erfassen" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.rowIndex="12" GridPane.valignment="BOTTOM">
                <GridPane.margin>
                   <Insets bottom="20.0" left="20.0" />
                </GridPane.margin>
@@ -161,7 +161,7 @@
                   <Insets bottom="6.0" left="12.0" right="12.0" top="6.0" />
                </padding>
                <font>
-                  <Font name="Century Gothic" size="14.0" />
+                  <Font name="Century Gothic" size="12.0" />
                </font>
             </Button>
             <DatePicker fx:id="singleDateDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="7">
@@ -203,10 +203,10 @@
                   <Insets left="20.0" right="20.0" />
                </GridPane.margin>
             </DatePicker>
-            <ComboBox fx:id="roomComboBox" disable="true" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <ComboBox fx:id="courseComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-            <ComboBox fx:id="coachComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-            <ComboBox fx:id="typComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+            <ComboBox fx:id="roomComboBox" disable="true" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <ComboBox fx:id="courseComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <ComboBox fx:id="coachComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <ComboBox fx:id="typComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <Label text="Standort:" GridPane.rowIndex="1">
                <font>
                   <Font name="Century Gothic Bold" size="14.0" />
@@ -215,12 +215,12 @@
                   <Insets left="30.0" />
                </GridPane.margin>
             </Label>
-            <ComboBox fx:id="locationComboBox" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <ComboBox fx:id="locationComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <ComboBox fx:id="singleDateStartTimeComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="8" />
             <ComboBox fx:id="seriesDateStartTimeComboBox" disable="true" prefWidth="150.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="11" />
             <ComboBox fx:id="singleDateEndTimeComboBox" disable="true" prefWidth="150.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="8" />
             <ComboBox fx:id="seriesDateEndTimeComboBox" disable="true" prefWidth="150.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="11" />
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnSpan="2" GridPane.rowIndex="12">
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="12">
                <children>
                   <Label fx:id="errorLabel" textFill="#eb2828">
                      <font>

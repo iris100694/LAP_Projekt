@@ -22,8 +22,10 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -78,7 +80,8 @@ public class CreateEventViewController extends BaseController{
 
     boolean isSeries;
     boolean isOneTime = true;
-
+    @FXML
+    private ImageView profilImage;
 
 
     @FXML
@@ -95,6 +98,10 @@ public class CreateEventViewController extends BaseController{
         assert singleDateStartTimeComboBox != null : "fx:id=\"singeDateStartTimeComboBox\" was not injected: check your FXML file 'eventCreate-view.fxml'.";
         assert singleDateDatePicker != null : "fx:id=\"singleDateDatePicker\" was not injected: check your FXML file 'eventCreate-view.fxml'.";
         assert typComboBox != null : "fx:id=\"typComboBox\" was not injected: check your FXML file 'eventCreate-view.fxml'.";
+
+        if(model.getUser()!= null){
+            setProfilImage(profilImage);
+        }
 
         locationComboBox.setItems(model.getDataholder().getLocations());
         coachComboBox.setItems(model.getDataholder().getCoaches());
@@ -247,7 +254,7 @@ public class CreateEventViewController extends BaseController{
 
 
     @FXML
-    void onLogoutLabelClicked(MouseEvent event) {
+    void onLogoutButtonClicked(ActionEvent actionEvent) {
         model.setAuthorization("standard");
         model.setUser(null);
         model.setPathToView(Constants.PATH_TO_HOME_VIEW);
@@ -336,5 +343,12 @@ public class CreateEventViewController extends BaseController{
                     coachComboBox.getValue(), seriesDateStartDatePicker.getValue(), seriesDateEndDatePicker.getValue(), seriesDateStartTimeComboBox.getValue().toString(), seriesDateEndTimeComboBox.getValue().toString());
             default-> null;
         };
+    }
+
+    @FXML
+    private void onProfilIconClicked(MouseEvent mouseEvent) {
+        switch(model.getAuthorization()){
+            case "coach", "admin" -> model.setPathToView(Constants.PATH_TO_PROFIL_VIEW);
+        }
     }
 }

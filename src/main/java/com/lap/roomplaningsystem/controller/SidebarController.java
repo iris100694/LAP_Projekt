@@ -14,11 +14,7 @@ import javafx.scene.input.MouseEvent;
 
 public class SidebarController extends BaseController{
 
-    @FXML
-    private ResourceBundle resources;
 
-    @FXML
-    private URL location;
     @FXML
     private Label sidebarCreateEventLabel;
     @FXML
@@ -96,5 +92,6 @@ public class SidebarController extends BaseController{
     @FXML
     private void testLogin(MouseEvent mouseEvent) throws SQLException {
         model.validateLogin("admin", "test");
+        model.setPathToView(Constants.PATH_TO_HOME_VIEW);
     }
 }

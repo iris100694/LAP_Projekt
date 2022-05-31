@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="396.0" prefWidth="724.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lap.roomplaningsystem.controller.RequestResultViewController">
    <children>
       <Label text="buchbare Veranstaltungen">
@@ -49,9 +48,9 @@
             </Label>
             <HBox alignment="BOTTOM_RIGHT" prefHeight="40.0" prefWidth="388.0">
                <children>
-                  <Button mnemonicParsing="false" onMouseClicked="#onReturnButtonClicked" style="-fx-background-radius: 15; -fx-background-color: #303C52;" text="Zurück" textFill="WHITE">
+                  <Button mnemonicParsing="false" onMouseClicked="#onReturnButtonClicked" text="Zurück" textFill="WHITE">
                      <font>
-                        <Font name="Century Gothic" size="14.0" />
+                        <Font name="Century Gothic" size="12.0" />
                      </font>
                      <padding>
                         <Insets bottom="6.0" left="12.0" right="12.0" top="6.0" />

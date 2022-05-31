@@ -12,10 +12,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Time;
 import java.time.LocalTime;
 
@@ -89,6 +93,23 @@ public class BaseController {
             return Integer.parseInt(s);
         } catch (Exception e){
             return null;
+        }
+    }
+
+    protected Parent loadFXMLRootNode(String pathToFXML) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(RoomplaningsystemApplication.class.getResource(pathToFXML));
+            return fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    protected void setProfilImage(ImageView imageView){
+        if(model.getUser().getPhoto() != null){
+            imageView.setImage(new Image(new ByteArrayInputStream(model.getUser().getPhoto())));
         }
     }
 }

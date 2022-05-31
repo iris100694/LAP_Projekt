@@ -9,11 +9,13 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 
@@ -30,9 +32,16 @@ public class StammdataViewController extends BaseController{
     private BorderPane tableBorderPane;
     @FXML
     private Button newButton;
+    @FXML
+    private ImageView profilImage;
+
 
     @FXML
     void initialize() throws IOException {
+        if(model.getUser()!= null){
+            setProfilImage(profilImage);
+        }
+
         loadFXMLInBorderPaneCenter(Constants.PATH_TO_USER_TABLE_VIEW);
 
 
@@ -88,7 +97,7 @@ public class StammdataViewController extends BaseController{
     }
 
     @FXML
-    void onLogoutLabelClicked(MouseEvent event) {
+    void onLogoutButtonClicked(ActionEvent actionEvent) {
         model.setAuthorization("standard");
         model.setUser(null);
         model.setPathToView(Constants.PATH_TO_HOME_VIEW);
@@ -108,6 +117,13 @@ public class StammdataViewController extends BaseController{
             case "Ausstattung" -> showNewView(Constants.PATH_TO_EQUIPMENT_ADD_VIEW);
             case "Ausstattung - in Verwendung" -> showNewView(Constants.PATH_TO_ROOMEQUIPMENT_ADD_VIEW);
 
+        }
+    }
+
+    @FXML
+    private void onProfilIconClicked(MouseEvent mouseEvent) {
+        switch(model.getAuthorization()){
+            case "coach", "admin" -> model.setPathToView(Constants.PATH_TO_PROFIL_VIEW);
         }
     }
 }

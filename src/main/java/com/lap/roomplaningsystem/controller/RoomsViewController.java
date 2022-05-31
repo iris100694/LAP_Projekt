@@ -14,11 +14,13 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -63,26 +65,30 @@ public class RoomsViewController extends BaseController{
     @FXML
     private TableColumn<Room, String> roomTitleColumn;
 
-    @FXML
-    private Label loginLabel;
 
     private final Roomfilter filter = new Roomfilter();
 
 
     @FXML
     private TextField searchField;
+    @FXML
+    private ImageView profilImage;
+    @FXML
+    private Button loginButton;
 
 
     @FXML
     void initialize() throws SQLException {
         if(model.getUser() != null){
-            loginLabel.setText("Logout");
-            loginLabel.setOnMouseClicked(this::onLogoutLabelClicked);
+            loginButton.setText("Logout");
+            loginButton.setOnAction(this::onLogoutButtonClicked);
+            setProfilImage(profilImage);
         }
 
         initFilterItems();
 
         roomTable.setItems(model.getDataholder().getRooms());
+
 
         roomNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("R" + String.valueOf(dataFeatures.getValue().getRoomID())));
         roomTitleColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDescription()));
@@ -182,8 +188,15 @@ public class RoomsViewController extends BaseController{
 
 
     @FXML
-    private void onLoginLabelClicked(MouseEvent mouseEvent) {
+    private void onLoginButtonClicked(ActionEvent actionEvent) {
         model.setPathToView(Constants.PATH_TO_LOGIN_VIEW);
+    }
+
+    private void onLogoutButtonClicked(ActionEvent actionEvent){
+        model.setAuthorization("standard");
+        model.setUser(null);
+        loginButton.setText("Logout");
+        loginButton.setOnAction(this::onLoginButtonClicked);
     }
 
     @FXML
@@ -193,12 +206,7 @@ public class RoomsViewController extends BaseController{
         }
     }
 
-    private void onLogoutLabelClicked(MouseEvent mouseEvent){
-        model.setAuthorization("standard");
-        model.setUser(null);
-        loginLabel.setText("Login");
-        loginLabel.setOnMouseClicked(this::onLoginLabelClicked);
-    }
+
 
     @FXML
     private void onSearch(KeyEvent keyEvent) throws Exception {
@@ -222,6 +230,7 @@ public class RoomsViewController extends BaseController{
             }
         }
     }
+
 
 
 }

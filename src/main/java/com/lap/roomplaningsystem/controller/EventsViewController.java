@@ -19,11 +19,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -37,8 +39,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class EventsViewController extends BaseController{
-    @FXML
-    private Label loginLabel;
+
     @FXML
     private ChoiceBox<String> eventDescriptionChoiceBox;
     @FXML
@@ -66,12 +67,17 @@ public class EventsViewController extends BaseController{
     private ObjectProperty<Event> selectedEvent = new SimpleObjectProperty<>();
     @FXML
     private TextField searchField;
+    @FXML
+    private ImageView profilImage;
+    @FXML
+    private Button loginButton;
 
     @FXML
     void initialize() throws SQLException {
         if(model.getUser() != null){
-            loginLabel.setText("Logout");
-            loginLabel.setOnMouseClicked(this::onLogoutLabelClicked);
+            loginButton.setText("Logout");
+            loginButton.setOnAction(this::onLogoutButtonClicked);
+            setProfilImage(profilImage);
         }
 
 
@@ -202,17 +208,17 @@ public class EventsViewController extends BaseController{
 
 
     @FXML
-    private void onLoginLabelClicked(MouseEvent mouseEvent) {
+    private void onLoginButtonClicked(ActionEvent actionEvent) {
         model.setPathToView(Constants.PATH_TO_LOGIN_VIEW);
     }
 
 
 
-    private void onLogoutLabelClicked(MouseEvent mouseEvent){
+    private void onLogoutButtonClicked(ActionEvent actionEvent){
         model.setAuthorization("standard");
         model.setUser(null);
-        loginLabel.setText("Login");
-        loginLabel.setOnMouseClicked(this::onLoginLabelClicked);
+        loginButton.setText("Login");
+        loginButton.setOnAction(this::onLoginButtonClicked);
     }
 
     @FXML

@@ -9,8 +9,10 @@ import java.util.ResourceBundle;
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.model.Dataholder;
 import com.lap.roomplaningsystem.model.User;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -91,7 +93,7 @@ public class ProfilViewController extends BaseController{
     }
 
     @FXML
-    void onLogoutLabelClicked(MouseEvent event) {
+    void onLogoutButtonClicked(ActionEvent actionEvent) {
         model.setAuthorization("standard");
         model.setUser(null);
         model.setPathToView(Constants.PATH_TO_HOME_VIEW);
@@ -118,6 +120,9 @@ public class ProfilViewController extends BaseController{
         }
 
     }
+
+
+
 }
 
 
