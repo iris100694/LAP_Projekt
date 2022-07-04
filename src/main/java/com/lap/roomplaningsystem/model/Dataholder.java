@@ -51,7 +51,14 @@ public class Dataholder {
 
 
     public ObservableList<User> getCoaches() {
-        List<User> coaches = users.stream().filter(User::isTrainer).toList();
+        List<Predicate<User>> predicateList = new ArrayList<>();
+        FilteredList<User> coaches = new FilteredList<>(users);
+
+        predicateList.add(User::isTrainer);
+        predicateList.add(User::isActive);
+
+        Predicate<User> predicate = predicateList.stream().reduce(r -> true, Predicate::and);
+        coaches.setPredicate(predicate);
 
         return FXCollections.observableArrayList(coaches);
     }

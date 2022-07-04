@@ -43,7 +43,7 @@ public class BaseController {
 
 
     protected void setProfilImage(ImageView imageView){
-        if(model.getUser().getPhoto() != null){
+        if(model.getUser().getPhoto() != null && model.getUser().isPhoneVisable()){
             imageView.setImage(new Image(new ByteArrayInputStream(model.getUser().getPhoto())));
         }
     }

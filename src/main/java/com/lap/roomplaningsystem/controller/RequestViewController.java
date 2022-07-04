@@ -180,18 +180,20 @@ public class RequestViewController extends BaseController{
     }
 
     private boolean validateDate(){
-        if(DateValidator.validDate(datePicker.getValue())){
-            if(DateValidator.validTime(startTimeComboBox.getValue(), endTimeComboBox.getValue())){
-                return true;
-            } else {
-                errorLabel.setText("Endzeit darf nicht vor und zur gleichen Startzeit gewählt werden!");
+        if(datePicker.getValue() != null){
+            if(DateValidator.validDate(datePicker.getValue())){
+                if(DateValidator.validTime(startTimeComboBox.getValue(), endTimeComboBox.getValue())){
+                    return true;
+                } else {
+                    errorLabel.setText("Endzeit darf nicht vor und zur gleichen Startzeit gewählt werden!");
+                    return false;
+                }
+            } else{
+                errorLabel.setText("Datum darf nicht in der Vergangenheit gewählt werden!");
                 return false;
             }
-        } else{
-            errorLabel.setText("Datum darf nicht in der Vergangenheit gewählt werden!");
-            return false;
+        } else {
+            return true;
         }
-
     }
-
 }

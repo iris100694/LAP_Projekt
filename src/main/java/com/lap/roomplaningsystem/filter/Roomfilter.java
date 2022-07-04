@@ -117,16 +117,6 @@ public class Roomfilter {
         return model.getDataholder().getRoomEquipments().stream().filter(re -> re.getEquipment().getDescription().equals(equipment)).toList();
     }
 
-//    public Optional<ObservableList<Room>> getTableByFilterState(RoomRepositoryJDBC roomRepositoryJDBC) throws Exception {
-//        return roomRepositoryJDBC.filter(roomRepositoryJDBC.createFilterStatement(this.getId(), this.getDescription(), this.getSize(), this.getLocation(), this.getEquipment(), this.isImage()), isBlank(this.getEquipment()));
-//    }
-//
-//    public Optional<ObservableList<Room>> filterValueWithImage(RoomRepositoryJDBC roomRepositoryJDBC, boolean checkImage) throws Exception {
-//
-//        setImage(checkImage);
-//
-//        return roomRepositoryJDBC.filter(roomRepositoryJDBC.createFilterStatement(this.getId(), this.getDescription(), this.getSize(), this.getLocation(), this.getEquipment(), this.isImage()), isBlank(this.getEquipment()));
-//    }
 
     private boolean isBlank(String s){
         return s.equals("");

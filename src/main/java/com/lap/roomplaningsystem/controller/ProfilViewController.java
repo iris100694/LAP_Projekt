@@ -44,6 +44,9 @@ public class ProfilViewController extends BaseController{
     private ImageView imageView;
 
     @FXML
+    private ImageView profilImage;
+
+    @FXML
     private Label errorLabel;
 
     User user;
@@ -55,6 +58,10 @@ public class ProfilViewController extends BaseController{
 
     @FXML
     void initialize() {
+        if(model.getUser()!= null){
+            setProfilImage(profilImage);
+        }
+
         Optional<User> optionalUser = model.getDataholder().getUsers().stream().filter(user -> user.getId() == model.getUser().getId()).findAny();
 
         if (optionalUser.isPresent()) {

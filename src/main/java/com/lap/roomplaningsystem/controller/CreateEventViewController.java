@@ -205,7 +205,7 @@ public class CreateEventViewController extends BaseController{
     }
 
     private boolean validateFields() {
-        return !emptyFields() && !emptyDateFields() && validateDate();
+        return !emptyFields() && validateSize() && !emptyDateFields() && validateDate();
     }
 
     private boolean emptyFields() {
@@ -267,6 +267,16 @@ public class CreateEventViewController extends BaseController{
             errorLabel.setText("Datum darf nicht in der Vergangenheit gewählt werden!");
             return false;
         }
+    }
+
+    private boolean validateSize() {
+        boolean valid = courseComboBox.getValue().getMembers() <= roomComboBox.getValue().getMaxPersons();
+
+        if(!valid){
+            errorLabel.setText("Teilnehmerzahl größer als maximale Plätze im Raum!");
+            return false;
+        }
+        return valid;
     }
 
     private void execute() throws Exception {

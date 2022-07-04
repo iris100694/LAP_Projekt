@@ -123,8 +123,9 @@ public class EventOnAddController extends BaseController {
     }
 
     private boolean validateFields() {
-        return !emptyFields() && validateDate();
+        return !emptyFields() && validateDate() && validateSize();
     }
+
 
 
     private boolean emptyFields() {
@@ -151,6 +152,17 @@ public class EventOnAddController extends BaseController {
         }
 
     }
+
+    private boolean validateSize() {
+        boolean valid = courseComboBox.getValue().getMembers() <= roomComboBox.getValue().getMaxPersons();
+
+        if(!valid){
+            errorLabel.setText("Teilnehmerzahl größer als maximale Plätze im Raum!");
+            return false;
+        }
+        return valid;
+    }
+
 
 
 
