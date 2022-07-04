@@ -7,9 +7,12 @@ import java.util.ResourceBundle;
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.Location;
+import com.lap.roomplaningsystem.model.Room;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -17,11 +20,6 @@ import javafx.scene.control.TableView;
 
 public class LocationTableController extends BaseController {
 
-    @FXML
-    private ResourceBundle resources;
-
-    @FXML
-    private URL location;
 
     @FXML
     private TableColumn<Location, String> locationAdressColumn;
@@ -41,35 +39,55 @@ public class LocationTableController extends BaseController {
     @FXML
     private TableView<Location> locationTableView;
 
+    @FXML
+    private TableColumn<Location, String> adressColumn;
+
+    @FXML
+    private TableColumn<Location, String> cityColumn;
+
+    @FXML
+    private TableColumn<Location, String> descriptionColumn;
+
+    @FXML
+    private TableColumn<Location, String> numberColumn;
+
+    @FXML
+    private TableColumn<Location, String> postCodeColumn;
+
+    @FXML
+    private TableView<Location> tableView;
+
 
 
     @FXML
     void initialize() {
-        assert locationAdressColumn != null : "fx:id=\"locationAdressColumn\" was not injected: check your FXML file 'locationTable.fxml'.";
-        assert locationCityColumn != null : "fx:id=\"locationCityColumn\" was not injected: check your FXML file 'locationTable.fxml'.";
-        assert locationDescriptionColumn != null : "fx:id=\"locationDescriptionColumn\" was not injected: check your FXML file 'locationTable.fxml'.";
-        assert locationNumberColumn != null : "fx:id=\"locationNumberColumn\" was not injected: check your FXML file 'locationTable.fxml'.";
-        assert locationPostCodeColumn != null : "fx:id=\"locationPostCodeColumn\" was not injected: check your FXML file 'locationTable.fxml'.";
-        assert locationTableView != null : "fx:id=\"locationTableView\" was not injected: check your FXML file 'locationTable.fxml'.";
+        tableView.setItems(model.getDataholder().getLocations());
 
-        locationTableView.setItems(model.getDataholder().getLocations());
+        numberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("S" + String.valueOf(dataFeatures.getValue().getLocationID())));
+        descriptionColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDescription()));
+        adressColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getAdress()));
+        postCodeColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getPostCode()));
+        cityColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getCity()));
 
-        locationNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("S" + String.valueOf(dataFeatures.getValue().getLocationID())));
-        locationDescriptionColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDescription()));
-        locationAdressColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getAdress()));
-        locationPostCodeColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getPostCode()));
-        locationCityColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getCity()));
-
-        locationTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
+        tableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
 
             try {
-                if(nv != null){
+                if(nv != null && !model.isDetailView()){
                     model.setSelectedLocationProperty(nv);
                     showNewView(Constants.PATH_TO_LOCATION_DETAIL_VIEW);
                 }
 
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        });
+
+        model.selectedLocationProperty().addListener(new ChangeListener<Location>() {
+            @Override
+            public void changed(ObservableValue<? extends Location> observableValue, Location oldLocation, Location newLocation) {
+                if(newLocation == null){
+                    tableView.getSelectionModel().clearSelection();
+                }
             }
         });
     }

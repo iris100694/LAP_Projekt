@@ -9,11 +9,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="396.0" prefWidth="724.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lap.roomplaningsystem.controller.RequestResultViewController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="724.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lap.roomplaningsystem.controller.RequestResultViewController">
    <children>
-      <Label text="buchbare Veranstaltungen">
+      <Label fx:id="label" text="buchbare Veranstaltungen">
          <font>
-            <Font name="Century Gothic Bold" size="24.0" />
+            <Font name="Century Gothic" size="36.0" />
          </font>
       </Label>
       <Label text="(Wähle einen freien Raum)">
@@ -30,7 +30,7 @@
           <TableColumn fx:id="descriptionColumn" prefWidth="294.0" text="Bezeichnung" />
             <TableColumn fx:id="sizeColumn" prefWidth="56.0" text="Größe" />
             <TableColumn fx:id="locationColumn" prefWidth="156.0" text="Standort" />
-            <TableColumn prefWidth="124.0" text="Trainer" />
+            <TableColumn fx:id="coachColumn" prefWidth="124.0" text="Trainer" />
         </columns>
          <VBox.margin>
             <Insets top="20.0" />
@@ -48,7 +48,7 @@
             </Label>
             <HBox alignment="BOTTOM_RIGHT" prefHeight="40.0" prefWidth="388.0">
                <children>
-                  <Button mnemonicParsing="false" onMouseClicked="#onReturnButtonClicked" text="Zurück" textFill="WHITE">
+                  <Button mnemonicParsing="false" onAction="#onReturnButtonClicked" styleClass="custom-button" text="Zurück" textFill="WHITE">
                      <font>
                         <Font name="Century Gothic" size="12.0" />
                      </font>

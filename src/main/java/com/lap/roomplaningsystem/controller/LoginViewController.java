@@ -19,12 +19,6 @@ import javafx.scene.layout.VBox;
 public class LoginViewController extends BaseController{
 
     @FXML
-    private ResourceBundle resources;
-
-    @FXML
-    private URL location;
-
-    @FXML
     private PasswordField textFieldPassword;
 
     @FXML
@@ -37,8 +31,6 @@ public class LoginViewController extends BaseController{
 
     @FXML
     void initialize() {
-        assert textFieldPassword != null : "fx:id=\"textFieldPassword\" was not injected: check your FXML file 'login-view.fxml'.";
-        assert textFieldUsername != null : "fx:id=\"textFieldUsername\" was not injected: check your FXML file 'login-view.fxml'.";
 
         loginView.sceneProperty().addListener(new InvalidationListener() {
             @Override
@@ -73,8 +65,7 @@ public class LoginViewController extends BaseController{
     }
 
     private void checkLogin() throws SQLException {
-        if(!textFieldUsername.getText().isBlank() && !textFieldPassword.getText().isBlank()){
-
+        if(validateFields()){
             boolean loginResult = model.validateLogin(textFieldUsername.getText(), textFieldPassword.getText());
 
             if(!loginResult){
@@ -85,6 +76,14 @@ public class LoginViewController extends BaseController{
         } else {
             errorLabel.setText("Bitte Username und Passwort eingeben!");
         }
+    }
+
+    private boolean validateFields(){
+        return !emptyFields();
+    }
+
+    private boolean emptyFields() {
+        return textFieldUsername.getText().isBlank() && textFieldPassword.getText().isBlank();
     }
 
 }

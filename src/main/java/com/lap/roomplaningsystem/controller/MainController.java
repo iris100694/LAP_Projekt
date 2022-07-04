@@ -1,11 +1,16 @@
 package com.lap.roomplaningsystem.controller;
 
+import com.lap.roomplaningsystem.model.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Window;
 
 import java.io.IOException;
 
@@ -37,5 +42,28 @@ public class MainController extends BaseController{
             }
         });
 
+        Window.getWindows().addListener(new ListChangeListener<Window>() {
+            @Override
+            public void onChanged(Change<? extends Window> change) {
+                if(Window.getWindows().size() > 1){
+                    model.setDetailView(true);
+                } else {
+                    removeSelection();
+                    model.setDetailView(false);
+                }
+            }
+        });
+
+    }
+
+    private void removeSelection() {
+        model.setSelectedEventProperty(null);
+        model.setSelectedRoomProperty(null);
+        model.setSelectedCourseProperty(null);
+        model.setSelectedProgramProperty(null);
+        model.setSelectedLocationProperty(null);
+        model.setSelectedRoomEquipmentProperty(null);
+        model.setSelectedEquipmentProperty(null);
+        model.setSelectedUserProperty(null);
     }
 }

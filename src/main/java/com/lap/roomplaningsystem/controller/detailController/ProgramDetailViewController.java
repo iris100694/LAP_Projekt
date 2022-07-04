@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.Program;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,60 +18,38 @@ import javafx.stage.Stage;
 public class ProgramDetailViewController extends BaseController {
 
     @FXML
-    private ResourceBundle resources;
+    private Label descriptionLabel;
 
     @FXML
-    private URL location;
+    private Label numberLabel;
 
-    @FXML
-    private Button deleteProgram;
-
-    @FXML
-    private Button editProgram;
-
-    @FXML
-    private Label programDetailViewDescriptionLabel;
-
-    @FXML
-    private Label programDetailViewNumberLabel;
+    private Program program;
 
 
 
     @FXML
     void initialize() {
-        assert deleteProgram != null : "fx:id=\"deletePorgram\" was not injected: check your FXML file 'programDetail-view.fxml'.";
-        assert editProgram != null : "fx:id=\"editProgram\" was not injected: check your FXML file 'programDetail-view.fxml'.";
-        assert programDetailViewDescriptionLabel != null : "fx:id=\"programDetailViewDescriptionLabel\" was not injected: check your FXML file 'programDetail-view.fxml'.";
-        assert programDetailViewNumberLabel != null : "fx:id=\"programDetailViewNumberLabel\" was not injected: check your FXML file 'programDetail-view.fxml'.";
 
         Optional<Program> optionalProgram = model.getDataholder().getPrograms().stream().filter(program -> program == model.getSelectedProgramProperty()).findAny();
 
         if(optionalProgram.isPresent()) {
-            Program p = optionalProgram.get();
-            programDetailViewNumberLabel.setText("P" + String.valueOf(p.getProgramID()));
-            programDetailViewDescriptionLabel.setText(p.getDescription());
+            program = optionalProgram.get();
+            numberLabel.setText("P" + String.valueOf(program.getProgramID()));
+            descriptionLabel.setText(program.getDescription());
         }
     }
 
-    private void initView() {
-
-    }
-
 
     @FXML
-    void onProgramDeleteButtonClicked(MouseEvent event) throws IOException {
+    void onDeleteButtonClicked(ActionEvent event) throws IOException {
         showNewView(Constants.PATH_TO_PROGRAM_ON_DELETE_VIEW);
-
-        Stage detailStage = (Stage) programDetailViewNumberLabel.getScene().getWindow();
-        detailStage.close();
+        closeStage(numberLabel);
     }
 
     @FXML
-    void onProgramEditButtonClicked(MouseEvent event) throws IOException {
+    void onUpdateButtonClicked(ActionEvent event) throws IOException {
         showNewView(Constants.PATH_TO_PROGRAM_UPDATE_VIEW);
-
-        Stage detailStage = (Stage) editProgram.getScene().getWindow();
-        detailStage.close();
+        closeStage(numberLabel);
     }
 
 }

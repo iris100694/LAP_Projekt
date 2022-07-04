@@ -19,6 +19,9 @@ public class RoomEquipmentRepositoryJDBC extends Repository implements RoomEquip
         CallableStatement stmt = connection.prepareCall(query);
         ResultSet resultSet = stmt.executeQuery();
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return createRoomEquipment(resultSet);
     }
 
@@ -48,6 +51,9 @@ public class RoomEquipmentRepositoryJDBC extends Repository implements RoomEquip
             roomEquipment = new RoomEquipment(roomEquipmentID, room, equipment);
         }
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return roomEquipment;
     }
 
@@ -70,6 +76,9 @@ public class RoomEquipmentRepositoryJDBC extends Repository implements RoomEquip
 
         int isUpdated = stmt.executeUpdate();
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return isUpdated != 0;
     }
 
@@ -86,6 +95,9 @@ public class RoomEquipmentRepositoryJDBC extends Repository implements RoomEquip
 
 
         int isDeleted = stmt.executeUpdate();
+
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
 
         return isDeleted != 0;
 

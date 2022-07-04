@@ -1,16 +1,13 @@
 package com.lap.roomplaningsystem.controller.tableController;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.RoomEquipment;
-import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ObservableList;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -18,49 +15,48 @@ import javafx.scene.control.TableView;
 public class RoomEquipmentTableController extends BaseController {
 
     @FXML
-    private ResourceBundle resources;
+    private TableColumn<RoomEquipment, String> equipmentColumn;
 
     @FXML
-    private URL location;
+    private TableColumn<RoomEquipment, String> numberColumn;
 
     @FXML
-    private TableColumn<RoomEquipment, String> roomEquipmentEquipmentColumn;
+    private TableColumn<RoomEquipment, String> roomColumn;
 
     @FXML
-    private TableColumn<RoomEquipment, String> roomEquipmentNumberColumn;
+    private TableView<RoomEquipment> tableView;
 
-    @FXML
-    private TableColumn<RoomEquipment, String> roomEquipmentRoomColumn;
-
-    @FXML
-    private TableView<RoomEquipment> roomEquipmentTableView;
 
 
 
     @FXML
     void initialize() {
-        assert roomEquipmentEquipmentColumn != null : "fx:id=\"roomEquipmentEquipmentColumn\" was not injected: check your FXML file 'roomEquipmentTable.fxml'.";
-        assert roomEquipmentNumberColumn != null : "fx:id=\"roomEquipmentNumberColumn\" was not injected: check your FXML file 'roomEquipmentTable.fxml'.";
-        assert roomEquipmentRoomColumn != null : "fx:id=\"roomEquipmentRoomColumn\" was not injected: check your FXML file 'roomEquipmentTable.fxml'.";
-        assert roomEquipmentTableView != null : "fx:id=\"roomEquipmentTableView\" was not injected: check your FXML file 'roomEquipmentTable.fxml'.";
+
+        tableView.setItems(model.getDataholder().getRoomEquipments());
+
+        numberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("RA" + String.valueOf(dataFeatures.getValue().getRoomEquipmentID())));
+        roomColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getRoom().getDescription()));
+        equipmentColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getEquipment().getDescription()));
 
 
-        roomEquipmentTableView.setItems(model.getDataholder().getRoomEquipments());
-
-        roomEquipmentNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("RA" + String.valueOf(dataFeatures.getValue().getRoomEquipmentID())));
-        roomEquipmentRoomColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getRoom().getDescription()));
-        roomEquipmentEquipmentColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getEquipment().getDescription()));
-
-
-        roomEquipmentTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
+        tableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
             System.out.println(nv.toString());
             try {
-                if(nv != null){
+                if(nv != null && !model.isDetailView()){
                     model.setSelectedRoomEquipmentProperty(nv);
                     showNewView(Constants.PATH_TO_ROOMEQUIPMENT_DETAIL_VIEW);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        });
+
+        model.selectedRoomEquipmentProperty().addListener(new ChangeListener<RoomEquipment>() {
+            @Override
+            public void changed(ObservableValue<? extends RoomEquipment> observableValue, RoomEquipment oldRoomEquipment, RoomEquipment newRoomEquipment) {
+                if(newRoomEquipment == null){
+                    tableView.getSelectionModel().clearSelection();
+                }
             }
         });
     }

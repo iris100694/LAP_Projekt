@@ -9,17 +9,21 @@
 
 <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="300.0" style="-fx-background-color: #4F6080;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lap.roomplaningsystem.controller.SidebarController">
    <children>
-      <Label text="Raumplanungssystem" textFill="WHITE">
-         <font>
-            <Font name="Brush Script MT Italic" size="36.0" />
-         </font>
-         <VBox.margin>
-            <Insets top="20.0" />
-         </VBox.margin>
-      </Label>
       <VBox prefHeight="200.0" prefWidth="100.0">
          <children>
-            <Label graphicTextGap="15.0" maxWidth="1.7976931348623157E308" onMouseClicked="#onMouseClickedHome" styleClass="menuItem" text="Home" textFill="WHITE">
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <ImageView fitHeight="180.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/logoWeiss.png" />
+                     </image>
+                  </ImageView>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="80.0" />
+               </VBox.margin>
+            </VBox>
+            <Label fx:id="homeLabel" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" onMouseClicked="#onMouseClickedHome" onMouseEntered="#menuItemHover" onMouseExited="#menuItemExited" styleClass="menu-Item" text="Home" textFill="WHITE">
                <padding>
                   <Insets bottom="15.0" left="20.0" top="15.0" />
                </padding>
@@ -34,7 +38,7 @@
                   </ImageView>
                </graphic>
             </Label>
-            <Label graphicTextGap="15.0" maxWidth="1.7976931348623157E308" onMouseClicked="#onMouseClickedRooms" styleClass="menuItem" text="Räume" textFill="WHITE">
+            <Label fx:id="roomsLabel" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" onMouseClicked="#onMouseClickedRooms" onMouseEntered="#menuItemHover" onMouseExited="#menuItemExited" styleClass="menu-Item" text="Räume" textFill="WHITE">
                <padding>
                   <Insets bottom="15.0" left="20.0" top="15.0" />
                </padding>
@@ -49,7 +53,7 @@
                   </ImageView>
                </graphic>
             </Label>
-            <Label graphicTextGap="15.0" maxWidth="1.7976931348623157E308" onMouseClicked="#onMouseClickedEvents" styleClass="menuItem" text="Veranstaltungen" textFill="WHITE">
+            <Label fx:id="eventLabel" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" onMouseClicked="#onMouseClickedEvents" onMouseEntered="#menuItemHover" onMouseExited="#menuItemExited" styleClass="menu-Item" text="Veranstaltungen" textFill="WHITE">
                <padding>
                   <Insets bottom="15.0" left="20.0" top="15.0" />
                </padding>
@@ -64,7 +68,7 @@
                   </ImageView>
                </graphic>
             </Label>
-            <Label fx:id="sidebarCreateEventLabel" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" onMouseClicked="#onMouseClickedCreateEvents" styleClass="menuItem" text="Veranstaltungen erfassen" textFill="WHITE" visible="false">
+            <Label fx:id="createEventLabel" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" onMouseClicked="#onMouseClickedCreateEvents" onMouseEntered="#menuItemHover" onMouseExited="#menuItemExited" styleClass="menu-Item" text="Veranstaltungen erfassen" textFill="WHITE" visible="false">
                <padding>
                   <Insets bottom="15.0" left="20.0" top="15.0" />
                </padding>
@@ -79,7 +83,7 @@
                   </ImageView>
                </graphic>
             </Label>
-            <Label fx:id="sidebarStammdataLabel" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" onMouseClicked="#onMouseClickedStammdata" styleClass="menuItem" text="Stammdaten verwalten" textFill="WHITE" visible="false">
+            <Label fx:id="stammdataLabel" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" onMouseClicked="#onMouseClickedStammdata" onMouseEntered="#menuItemHover" onMouseExited="#menuItemExited" styleClass="menu-Item" text="Stammdaten verwalten" textFill="WHITE" visible="false">
                <padding>
                   <Insets bottom="15.0" left="20.0" top="15.0" />
                </padding>
@@ -101,7 +105,7 @@
             </Label>
          </children>
          <VBox.margin>
-            <Insets top="50.0" />
+            <Insets />
          </VBox.margin>
       </VBox>
    </children>

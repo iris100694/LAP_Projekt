@@ -19,53 +19,43 @@ import javafx.scene.control.TableView;
 
 public class EventTableController extends BaseController {
 
-    @FXML
-    private ResourceBundle resources;
+
 
     @FXML
-    private URL location;
+    private TableColumn<Event, String> dateColumn;
 
     @FXML
-    private TableColumn<Event, String> eventDateColumn;
+    private TableColumn<Event, String> endColumn;
 
     @FXML
-    private TableColumn<Event, String> eventTitleColumn;
+    private TableColumn<Event, String> numberColumn;
 
     @FXML
-    private TableColumn<Event, String> eventEndColumn;
+    private TableColumn<Event, String> startColumn;
 
     @FXML
-    private TableColumn<Event, String> eventNumberColumn;
+    private TableView<Event> tableView;
 
     @FXML
-    private TableColumn<Event, String> eventStartColumn;
+    private TableColumn<Event, String> titleColumn;
 
-    @FXML
-    private TableView<Event> eventTableView;
 
 
 
     @FXML
     void initialize() {
-        assert eventDateColumn != null : "fx:id=\"eventDateColumn\" was not injected: check your FXML file 'eventTable.fxml'.";
-        assert eventTitleColumn != null : "fx:id=\"eventDescriptionColumn\" was not injected: check your FXML file 'eventTable.fxml'.";
-        assert eventEndColumn != null : "fx:id=\"eventEndColumn\" was not injected: check your FXML file 'eventTable.fxml'.";
-        assert eventNumberColumn != null : "fx:id=\"eventNumberColumn\" was not injected: check your FXML file 'eventTable.fxml'.";
-        assert eventStartColumn != null : "fx:id=\"eventStartColumn\" was not injected: check your FXML file 'eventTable.fxml'.";
-        assert eventTableView != null : "fx:id=\"eventTableView\" was not injected: check your FXML file 'eventTable.fxml'.";
+        tableView.setItems(model.getDataholder().getEvents());
 
-        eventTableView.setItems(model.getDataholder().getEvents());
+        numberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("V" + String.valueOf(dataFeatures.getValue().getEventID())));
+        titleColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getCourse().getTitle() + "   " + dataFeatures.getValue().getCourse().getProgram().getDescription()));
+        dateColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDate().toString()));
+        startColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getStartTime().toString()));
+        endColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getEndTime().toString()));
 
-        eventNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("V" + String.valueOf(dataFeatures.getValue().getEventID())));
-        eventTitleColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getCourse().getTitle() + "   " + dataFeatures.getValue().getCourse().getProgram().getDescription()));
-        eventDateColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDate().toString()));
-        eventStartColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getStartTime().toString()));
-        eventEndColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getEndTime().toString()));
-
-        eventTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) ->  {
+        tableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) ->  {
 
             try {
-                if(nv != null){
+                if(nv != null && !model.isDetailView()){
                     model.setSelectedEventProperty(nv);
                     showNewView(Constants.PATH_TO_EVENT_DETAIL_VIEW);
                 }
@@ -79,15 +69,12 @@ public class EventTableController extends BaseController {
             @Override
             public void changed(ObservableValue<? extends Event> observableValue, Event oldEvent, Event newEvent) {
                 if(newEvent == null){
-                    eventTableView.getSelectionModel().clearSelection();
+                    tableView.getSelectionModel().clearSelection();
                 }
             }
         });
 
     }
 
-    private void initEventTable(ObservableList<Event> events) {
-        eventTableView.setItems(events);
 
-    }
 }

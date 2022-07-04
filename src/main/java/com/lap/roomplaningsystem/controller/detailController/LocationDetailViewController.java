@@ -8,83 +8,62 @@ import java.util.ResourceBundle;
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.Location;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class LocationDetailViewController extends BaseController {
 
     @FXML
-    private ResourceBundle resources;
+    private Label adressLabel;
 
     @FXML
-    private URL location;
+    private Label cityLabel;
 
     @FXML
-    private Button deleteEvent;
+    private Label descriptionLabel;
 
     @FXML
-    private Button editLocation;
+    private Label numberLabel;
 
     @FXML
-    private Label locationDetailViewAdressLabel;
+    private Label postCodeLabel;
 
-    @FXML
-    private Label locationDetailViewCityLabel;
+    private Location location;
 
-    @FXML
-    private Label locationDetailViewDescriptionLabel;
 
-    @FXML
-    private Label locationDetailViewNumberLabel;
-
-    @FXML
-    private Label locationDetailViewPostCodeLabel;
 
 
     @FXML
     void initialize() {
-        assert deleteEvent != null : "fx:id=\"deleteEvent\" was not injected: check your FXML file 'locationDetail-view.fxml'.";
-        assert editLocation != null : "fx:id=\"editLocation\" was not injected: check your FXML file 'locationDetail-view.fxml'.";
-        assert locationDetailViewAdressLabel != null : "fx:id=\"locationDetailViewAdressLabel\" was not injected: check your FXML file 'locationDetail-view.fxml'.";
-        assert locationDetailViewCityLabel != null : "fx:id=\"locationDetailViewCityLabel\" was not injected: check your FXML file 'locationDetail-view.fxml'.";
-        assert locationDetailViewDescriptionLabel != null : "fx:id=\"locationDetailViewDescriptionLabel\" was not injected: check your FXML file 'locationDetail-view.fxml'.";
-        assert locationDetailViewNumberLabel != null : "fx:id=\"locationDetailViewNumberLabel\" was not injected: check your FXML file 'locationDetail-view.fxml'.";
-        assert locationDetailViewPostCodeLabel != null : "fx:id=\"locationDetailViewPostCodeLabel\" was not injected: check your FXML file 'locationDetail-view.fxml'.";
 
         Optional<Location> optionalLocation = model.getDataholder().getLocations().stream().filter(location -> location == model.getSelectedLocationProperty()).findAny();
 
         if(optionalLocation.isPresent()) {
-            Location l = optionalLocation.get();
-            locationDetailViewNumberLabel.setText("S" + String.valueOf(l.getLocationID()));
-            locationDetailViewDescriptionLabel.setText(l.getDescription());
-            locationDetailViewAdressLabel.setText(l.getAdress());
-            locationDetailViewPostCodeLabel.setText(l.getPostCode());
-            locationDetailViewCityLabel.setText(l.getCity());
+            location = optionalLocation.get();
+
+            numberLabel.setText("S" + String.valueOf(location.getLocationID()));
+            descriptionLabel.setText(location.getDescription());
+            adressLabel.setText(location.getAdress());
+            postCodeLabel.setText(location.getPostCode());
+            cityLabel.setText(location.getCity());
         }
     }
 
 
 
     @FXML
-    void onLocationDeleteButtonClicked(MouseEvent event) throws IOException {
+    void onDeleteButtonClicked(ActionEvent event)  throws IOException {
         showNewView(Constants.PATH_TO_LOCATION_ON_DELETE_VIEW);
-
-        Stage detailStage = (Stage) locationDetailViewNumberLabel.getScene().getWindow();
-        detailStage.close();
-
-
+        closeStage(numberLabel);
     }
 
     @FXML
-    void onLocationEditButtonClicked(MouseEvent event) throws IOException {
+    void  onUpdateButtonClicked(ActionEvent event) throws IOException {
         showNewView(Constants.PATH_TO_LOCATION_UPDATE_VIEW);
-
-        Stage detailStage = (Stage) editLocation.getScene().getWindow();
-        detailStage.close();
-
+        closeStage(numberLabel);
     }
 
 

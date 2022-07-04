@@ -1,6 +1,5 @@
 package com.lap.roomplaningsystem.controller;
 
-import com.lap.roomplaningsystem.RoomplaningsystemApplication;
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.filter.EventFilter;
 import com.lap.roomplaningsystem.filterBoxes.FilterBox;
@@ -8,8 +7,10 @@ import com.lap.roomplaningsystem.filterBoxes.FilterBox;
 import com.lap.roomplaningsystem.model.Dataholder;
 import com.lap.roomplaningsystem.model.Event;
 
-import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
+import com.lap.roomplaningsystem.searcher.EventSearcher;
+import com.lap.roomplaningsystem.searcher.Searcher;
+import com.lap.roomplaningsystem.utility.ListUtility;
+import com.lap.roomplaningsystem.utility.StringUtility;
 import javafx.beans.property.SimpleObjectProperty;
 
 
@@ -19,52 +20,45 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
-
 
 
 import java.io.IOException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Optional;
 
 public class EventsViewController extends BaseController{
 
     @FXML
-    private ChoiceBox<String> eventDescriptionChoiceBox;
+    private ChoiceBox<String> descriptionChoiceBox;
     @FXML
-    private ChoiceBox<String> eventEndChoiceBox;
+    private ChoiceBox<String> endChoiceBox;
     @FXML
-    private ChoiceBox<String> eventDateChoiceBox;
+    private ChoiceBox<String> dateChoiceBox;
     @FXML
-    private ChoiceBox<String> eventNumberChoiceBox;
+    private ChoiceBox<String> numberChoiceBox;
     @FXML
-    private ChoiceBox<String> eventStartChoiceBox;
+    private ChoiceBox<String> startChoiceBox;
     @FXML
     private TableView<Event> eventTable;
     @FXML
-    private TableColumn<Event, String> eventNumberColumn;
+    private TableColumn<Event, String> numberColumn;
     @FXML
-    private TableColumn<Event, String> eventTitleColumn;
+    private TableColumn<Event, String> titleColumn;
     @FXML
-    private TableColumn<Event, String> eventDateColumn;
+    private TableColumn<Event, String> dateColumn;
     @FXML
-    private TableColumn<Event, String> eventStartColumn;
+    private TableColumn<Event, String> startColumn;
     @FXML
-    private TableColumn<Event, String> eventEndColumn;
+    private TableColumn<Event, String> endColumn;
 
-    private final EventFilter filter = new EventFilter();
-    private ObjectProperty<Event> selectedEvent = new SimpleObjectProperty<>();
     @FXML
     private TextField searchField;
     @FXML
@@ -72,36 +66,28 @@ public class EventsViewController extends BaseController{
     @FXML
     private Button loginButton;
 
+    private final EventFilter filter = new EventFilter();
+
     @FXML
     void initialize() throws SQLException {
         if(model.getUser() != null){
-            loginButton.setText("Logout");
-            loginButton.setOnAction(this::onLogoutButtonClicked);
-            setProfilImage(profilImage);
+            isLooged();
         }
-
-
-
-        initFilter();
 
         eventTable.setItems(model.getDataholder().getEvents());
 
-        eventNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("V" + String.valueOf(dataFeatures.getValue().getEventID())));
-        eventTitleColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getCourse().getTitle() + "   " + dataFeatures.getValue().getCourse().getProgram().getDescription()));
-        eventDateColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDate().toString()));
-        eventStartColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getStartTime().toString()));
-        eventEndColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getEndTime().toString()));
+        numberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("V" + String.valueOf(dataFeatures.getValue().getEventID())));
+        titleColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getCourse().getTitle() + "   " + dataFeatures.getValue().getCourse().getProgram().getDescription()));
+        dateColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDate().toString()));
+        startColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getStartTime().toString()));
+        endColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getEndTime().toString()));
 
         eventTable.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) ->  {
-
             try {
-
-                if(nv != null){
+                if(nv != null && !model.isDetailView()){
                     model.setSelectedEventProperty(nv);
                     showNewView(Constants.PATH_TO_EVENT_DETAIL_VIEW);
                 }
-
-//
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -116,52 +102,32 @@ public class EventsViewController extends BaseController{
             }
         });
 
+        initFilter();
+    }
 
+    private void isLooged() {
+        loginButton.setText("Logout");
+        loginButton.setOnAction(this::onLogoutButtonClicked);
+        setProfilImage(profilImage);
     }
 
     private void initFilter() throws SQLException {
         ArrayList<ObservableList<String>> list = Dataholder.eventRepositoryJDBC.listsForChoiceBox(Constants.CALL_LISTS_FOR_CHOICEBOX_EVENT_FILTER);
-        ObservableList<String> times = createTimeValues();
+        ObservableList<String> times = ListUtility.createTimeValues();
 
-        filter.addFilterBox(new FilterBox(eventNumberChoiceBox, "Nr." , list.get(0)));
-        filter.addFilterBox(new FilterBox(eventDescriptionChoiceBox, "Veranstaltung" , list.get(1)));
-        filter.addFilterBox(new FilterBox(eventDateChoiceBox, "Datum" , createDateValues(list.get(2))));
-        filter.addFilterBox(new FilterBox(eventStartChoiceBox, "Beginn" , times));
-        filter.addFilterBox(new FilterBox(eventEndChoiceBox, "Ende" , times));
+        filter.addFilterBox(new FilterBox(numberChoiceBox, "Nr." , list.get(0)));
+        filter.addFilterBox(new FilterBox(descriptionChoiceBox, "Veranstaltung" , list.get(1)));
+        filter.addFilterBox(new FilterBox(dateChoiceBox, "Datum" , ListUtility.createDateValues(list.get(2))));
+        filter.addFilterBox(new FilterBox(startChoiceBox, "Beginn" , times));
+        filter.addFilterBox(new FilterBox(endChoiceBox, "Ende" , times));
 
         setFilterListenerChoiceBox();
 
     }
 
-    private ObservableList<String> createTimeValues() {
-        ObservableList<String> time = FXCollections.observableArrayList();
-        time.add("");
-        for(int i = 0; i<24; i++){
-            if(i<10){
-                time.add("0" + i + ":00:00");
-            } else {
-                time.add(i + ":00:00");
-            }
-        }
 
-        return time;
-    }
 
-    private ObservableList<String> createDateValues(ObservableList<String> datetime) {
-        ObservableList<String> dates = FXCollections.observableArrayList();
 
-        for(String d : datetime){
-            if(!isBlank(d)) {
-                dates.add(d.substring(0, 10));
-            }else {
-                dates.add(d);
-            }
-
-        }
-
-        return dates;
-
-    }
 
     private void setFilterListenerChoiceBox() {
         filter.getFilterBoxes().addListener(new ListChangeListener<FilterBox>() {
@@ -172,24 +138,16 @@ public class EventsViewController extends BaseController{
                     FilterBox box = filter.getFilterBoxes().get(c.getFrom());
 
                     if (c.wasUpdated()) {
-
-                        if(!isBlank(box.getValue())){
+                        if(!StringUtility.isBlank(box.getValue())){
                             if(!box.getValue().equals(box.getDefaultValue())){
-                                try {
-                                    Optional<ObservableList<Event>> events = filter.filterValue(Dataholder.eventRepositoryJDBC, box.getChoiceBox().getId(), box.getValue());
-                                    initEventTable(events.orElse(null));
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+                                FilteredList<Event> events = filter.setFilterValue(model.getDataholder().getEvents(), box.getChoiceBox().getId(), box.getValue());
+                                initEventTable(events);
                             }
                         } else{
-                            try {
-                                Optional<ObservableList<Event>> events = filter.filterValue(Dataholder.eventRepositoryJDBC, box.getChoiceBox().getId(), box.getValue());
-                                initEventTable(events.orElse(null));
-                                box.getChoiceBox().setValue(box.getDefaultValue());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            FilteredList<Event> events = filter.setFilterValue(model.getDataholder().getEvents(), box.getChoiceBox().getId(), box.getValue());
+                            initEventTable(events);
+                            box.getChoiceBox().setValue(box.getDefaultValue());
+
                         }
                     }
                 }
@@ -203,7 +161,6 @@ public class EventsViewController extends BaseController{
 
     private void initEventTable(ObservableList<Event> events) {
         eventTable.setItems(events);
-
     }
 
 
@@ -215,10 +172,7 @@ public class EventsViewController extends BaseController{
 
 
     private void onLogoutButtonClicked(ActionEvent actionEvent){
-        model.setAuthorization("standard");
-        model.setUser(null);
-        loginButton.setText("Login");
-        loginButton.setOnAction(this::onLoginButtonClicked);
+        logout();
     }
 
     @FXML
@@ -230,25 +184,15 @@ public class EventsViewController extends BaseController{
 
     @FXML
     private void onSearch(KeyEvent keyEvent) throws Exception {
-        String searchFor = searchField.getText();
-        ObservableList<Event> searchResults = FXCollections.observableArrayList();
-        Optional<ObservableList<Event>> events = filter.getTableByFilterState(Dataholder.eventRepositoryJDBC);
+        String search = searchField.getText();
+        ObservableList<Event> events = filter.getFilteredList(model.getDataholder().getEvents());
 
-        if(events.isPresent()) {
-            if (!searchFor.equals("")) {
-                for (Event e : events.get()) {
-                    if (("V" + String.valueOf(e.getEventID())).toLowerCase().contains(searchFor.toLowerCase()) || e.getCourse().getTitle().toLowerCase().contains(searchFor.toLowerCase()) ||
-                            e.getCourse().getProgram().getDescription().toLowerCase().contains(searchFor.toLowerCase()) || String.valueOf(e.getDate()).toLowerCase().contains(searchFor.toLowerCase()) ||
-                            String.valueOf(e.getStartTime()).toLowerCase().contains(searchFor.toLowerCase()) || String.valueOf(e.getEndTime()).toLowerCase().contains(searchFor.toLowerCase())) {
-                        searchResults.add(e);
-                    }
-                }
-
-                initEventTable(searchResults);
-            } else {
-
-                initEventTable(events.get());
-            }
+        if (!isBlank(search)) {
+            Searcher<Event> searcher = new EventSearcher();
+            ObservableList<Event> searchResults = searcher.search(search, events);
+            initEventTable(searchResults);
+        } else {
+            initEventTable(events);
         }
     }
 

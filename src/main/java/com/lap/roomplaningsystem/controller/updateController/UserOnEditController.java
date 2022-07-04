@@ -11,6 +11,7 @@ import com.lap.roomplaningsystem.model.Dataholder;
 import com.lap.roomplaningsystem.model.Event;
 import com.lap.roomplaningsystem.model.User;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -36,9 +37,6 @@ public class UserOnEditController extends BaseController {
     private TextField phoneInput;
 
     @FXML
-    private Button saveButton;
-
-    @FXML
     private TextArea textInput;
 
     private User user;
@@ -48,13 +46,6 @@ public class UserOnEditController extends BaseController {
 
     @FXML
     void initialize() {
-        assert emailInput != null : "fx:id=\"emailInput\" was not injected: check your FXML file 'userDetailOnEdit.fxml'.";
-        assert errorLabel != null : "fx:id=\"errorLabel\" was not injected: check your FXML file 'userDetailOnEdit.fxml'.";
-        assert numberLabel != null : "fx:id=\"numberLabel\" was not injected: check your FXML file 'userDetailOnEdit.fxml'.";
-        assert phoneInput != null : "fx:id=\"phoneInput\" was not injected: check your FXML file 'userDetailOnEdit.fxml'.";
-        assert saveButton != null : "fx:id=\"saveButton\" was not injected: check your FXML file 'userDetailOnEdit.fxml'.";
-        assert textInput != null : "fx:id=\"textInput\" was not injected: check your FXML file 'userDetailOnEdit.fxml'.";
-
         Optional<User> optionalUser = model.getDataholder().getUsers().stream().filter(user -> user.getId() == model.getUser().getId()).findAny();
 
         if(optionalUser.isPresent()){
@@ -70,29 +61,31 @@ public class UserOnEditController extends BaseController {
     }
 
     @FXML
-    void onSaveButtonClicked(MouseEvent event) throws Exception {
+    void onSaveButtonClicked(ActionEvent event) throws Exception {
         user.setPhone(phoneInput.getText());
         user.setEmail(emailInput.getText());
         user.setText(textInput.getText());
 
-        boolean isEdited = Dataholder.userRepositoryJDBC.edit(user);
+        boolean isUpdated = updateUserByJDBC();
 
-        if (isEdited) {
+        if (isUpdated) {
             int index = model.getDataholder().getUsers().indexOf(user);
             model.getDataholder().updateUser(index, user);
 
+            //TODO: Test ob notwendig!!!
             if(user.getId() == model.getUser().getId()){
                 model.setUser(user);
             }
+
+            model.getDataholder().updateEvents();
+            closeStage(errorLabel);
         }
 
 
-        Optional<ObservableList<Event>> optionalEvents = Dataholder.eventRepositoryJDBC.readAll();
-        optionalEvents.ifPresent(events -> model.getDataholder().setEvents(events));
+    }
 
-
-        Stage detailStage = (Stage) numberLabel.getScene().getWindow();
-        detailStage.close();
+    private boolean updateUserByJDBC() throws Exception {
+        return Dataholder.userRepositoryJDBC.edit(user);
     }
 
 

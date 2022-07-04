@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.*;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -27,63 +28,47 @@ public class LocationOnDeleteController extends BaseController {
     @FXML
     private Label postCodeLabel;
 
+    private Location location;
+
 
 
     @FXML
     void initialize() {
-        assert adressLabel != null : "fx:id=\"adressLabel\" was not injected: check your FXML file 'locationDetailOnDelete-view.fxml'.";
-        assert cityLabel != null : "fx:id=\"cityLabel\" was not injected: check your FXML file 'locationDetailOnDelete-view.fxml'.";
-        assert descriptionLabel != null : "fx:id=\"descriptionLabel\" was not injected: check your FXML file 'locationDetailOnDelete-view.fxml'.";
-        assert postCodeLabel != null : "fx:id=\"postCodeLabel\" was not injected: check your FXML file 'locationDetailOnDelete-view.fxml'.";
-
         Optional<Location> optionalLocation = model.getDataholder().getLocations().stream().filter(l -> l.getLocationID() == model.getSelectedLocationProperty().getLocationID()).findAny();
 
         if(optionalLocation.isPresent()){
-            Location location = optionalLocation.get();
+            location = optionalLocation.get();
+
             descriptionLabel.setText("S" + location.getLocationID() + " " + location.getDescription());
             adressLabel.setText(location.getAdress());
             postCodeLabel.setText(location.getPostCode());
             cityLabel.setText(location.getCity());
 
         }
+    }
+
+    @FXML
+    void onNoButtonClicked(ActionEvent event) {
+        closeStage(descriptionLabel);
 
     }
 
     @FXML
-    void onNoButtonClicked(MouseEvent event) {
-        Stage stage = (Stage) descriptionLabel.getScene().getWindow();
-        stage.close();
-
-    }
-
-    @FXML
-    void onYesButtonClicked(MouseEvent event) throws Exception {
-
-        Optional <Location> optionalLocation = model.getDataholder().getLocations().stream().filter(l -> l.getLocationID() == model.getSelectedLocationProperty().getLocationID()).findAny();
+    void onYesButtonClicked(ActionEvent event) throws Exception {
         model.setSelectedLocationProperty(null);
 
-        optionalLocation.ifPresent(l -> {
-            try {
-                boolean isDeleted = Dataholder.locationRepositoryJDBC.delete(l);
+        if(deleteLocationByJDBC()){
+            model.getDataholder().deleteLocation(location);
+            model.getDataholder().updateRooms();
+            model.getDataholder().updateEvents();
+            model.getDataholder().updateEquipments();
+        }
 
-                if(isDeleted){
-                    model.getDataholder().deleteLocation(l);
+        closeStage(descriptionLabel);
 
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        });
+    }
 
-        Optional<ObservableList<Room>> optionalRooms = Dataholder.roomRepositoryJDBC.readAll();
-        Optional<ObservableList<RoomEquipment>> optionalRoomEquipments = Dataholder.roomEquipmentRepositoryJDBC.readAll();
-        Optional<ObservableList<Event>> optionalEvents = Dataholder.eventRepositoryJDBC.readAll();
-        optionalRooms.ifPresent(rooms -> model.getDataholder().setRooms(rooms));
-        optionalRoomEquipments.ifPresent(roomEquipments -> model.getDataholder().setRoomEquipments(roomEquipments));
-        optionalEvents.ifPresent(events -> model.getDataholder().setEvents(events));
-
-        Stage stage = (Stage) descriptionLabel.getScene().getWindow();
-        stage.close();
-
+    private boolean deleteLocationByJDBC() throws SQLException {
+        return Dataholder.locationRepositoryJDBC.delete(location);
     }
 }

@@ -10,6 +10,7 @@ import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.Event;
 import com.lap.roomplaningsystem.model.Location;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,113 +18,99 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 import javafx.util.StringConverter;
 
 public class EventDetailViewController extends BaseController {
 
     @FXML
-    private ResourceBundle resources;
+    private Label coachLabel;
 
     @FXML
-    private URL location;
+    private Label courseLabel;
 
     @FXML
-    private Label eventDetailViewCoachLabel;
+    private Label dateLabel;
 
     @FXML
-    private Label eventDetailViewDateLabel;
+    private Label endLabel;
 
     @FXML
-    private Label eventDetailViewEndLabel;
+    private Label locationLabel;
 
     @FXML
-    private Label eventDetailViewLocationLabel;
+    private Label numberLabel;
 
     @FXML
-    private Label eventDetailViewNumberLabel;
+    private Label roomLabel;
 
     @FXML
-    private Label eventDetailViewRoomLabel;
+    private Label startLabel;
 
     @FXML
-    private Label eventDetailViewStartLabel;
+    private Button deleteButton;
 
     @FXML
-    private Label eventDetailViewCourseLabel;
-    @FXML
-    private Button deleteEvent;
-    @FXML
-    private Button editEvent;
+    private Button updateButton;
+
+    private Event event;
+
 
 
     @FXML
     void initialize() {
-        assert eventDetailViewCoachLabel != null : "fx:id=\"eventDetailViewCoachLabel\" was not injected: check your FXML file 'eventDetail-view.fxml'.";
-        assert eventDetailViewDateLabel != null : "fx:id=\"eventDetailViewDateLabel\" was not injected: check your FXML file 'eventDetail-view.fxml'.";
-        assert eventDetailViewEndLabel != null : "fx:id=\"eventDetailViewEndLabel\" was not injected: check your FXML file 'eventDetail-view.fxml'.";
-        assert eventDetailViewLocationLabel != null : "fx:id=\"eventDetailViewLocationLabel\" was not injected: check your FXML file 'eventDetail-view.fxml'.";
-        assert eventDetailViewNumberLabel != null : "fx:id=\"eventDetailViewNumberLabel\" was not injected: check your FXML file 'eventDetail-view.fxml'.";
-        assert eventDetailViewRoomLabel != null : "fx:id=\"eventDetailViewRoomLabel\" was not injected: check your FXML file 'eventDetail-view.fxml'.";
-        assert eventDetailViewStartLabel != null : "fx:id=\"eventDetailViewStartLabel\" was not injected: check your FXML file 'eventDetail-view.fxml'.";
-        assert eventDetailViewCourseLabel != null : "fx:id=\"eventDetailViewTitleLabel\" was not injected: check your FXML file 'eventDetail-view.fxml'.";
 
         Optional<Event> optionalEvent = model.getDataholder().getEvents().stream().filter(event -> event == model.getSelectedEventProperty()).findAny();
 
-
-
         if(optionalEvent.isPresent()){
-            Event e = optionalEvent.get();
-            eventDetailViewNumberLabel.setText("V" + e.getEventID());
-            eventDetailViewCourseLabel.setText(e.getCourse().getTitle() + " " + e.getCourse().getProgram().getDescription());
-            eventDetailViewLocationLabel.setText(e.getRoom().getLocation().getDescription());
-            eventDetailViewRoomLabel.setText(e.getRoom().getDescription());
-            eventDetailViewDateLabel.setText(e.getDate().toString());
-            eventDetailViewStartLabel.setText(e.getStartTime().toString());
-            eventDetailViewEndLabel.setText(e.getEndTime().toString());
-            eventDetailViewCoachLabel.setText(e.getCoach().getLastname());
+            event = optionalEvent.get();
+
+            numberLabel.setText("V" + event.getEventID());
+            courseLabel.setText(event.getCourse().getTitle() + " " + event.getCourse().getProgram().getDescription());
+            locationLabel.setText(event.getRoom().getLocation().getDescription());
+            roomLabel.setText(event.getRoom().getDescription());
+            dateLabel.setText(event.getDate().toString());
+            startLabel.setText(event.getStartTime().toString());
+            endLabel.setText(event.getEndTime().toString());
+            coachLabel.setText(event.getCoach().getLastname());
         }
 
-        editAuthorization();
+        initAuthorization();
 
     }
 
 
-    private void editAuthorization() {
+    private void initAuthorization() {
         switch(model.getAuthorization()){
-            case "coach" -> editEventCoachAuthorization();
-            case "admin" -> editEventAdminAuthorization();
+            case "coach" -> initCoachAuthorization();
+            case "admin" -> initAdminAuthorization();
         }
     }
 
-    private void editEventAdminAuthorization() {
-        editEvent.setVisible(true);
-        deleteEvent.setVisible(true);
+    private void initAdminAuthorization() {
+        updateButton.setVisible(true);
+        deleteButton.setVisible(true);
     }
 
-    private void editEventCoachAuthorization() {
-        Optional <Event> e = model.getDataholder().getEvents().stream().filter(event -> event == model.getSelectedEventProperty()).findAny();
-        if(e.get().getCreator().getId() == model.getUser().getId()){
-            editEvent.setVisible(true);
-            deleteEvent.setVisible(true);
+    private void initCoachAuthorization() {
+        if(event.getCreator().getId() == model.getUser().getId()){
+            updateButton.setVisible(true);
+            deleteButton.setVisible(true);
         }
     }
 
     @FXML
-    void onEventDeleteButtonClicked(MouseEvent event) throws IOException {
+    void onDeleteButtonClicked(ActionEvent event) throws IOException {
         showNewView(Constants.PATH_TO_EVENT_ON_DELETE_VIEW);
-
-        Stage detailStage = (Stage) editEvent.getScene().getWindow();
-        detailStage.close();
+        closeStage(numberLabel);
 
     }
 
     @FXML
-    void onEventEditButtonClicked(MouseEvent event) throws IOException {
-
+    void onUpdateButtonClicked(ActionEvent event) throws IOException {
         showNewView(Constants.PATH_TO_EVENT_ON_UPDATE_VIEW);
-
-        Stage detailStage = (Stage) editEvent.getScene().getWindow();
-        detailStage.close();
+        closeStage(numberLabel);
 
     }
 

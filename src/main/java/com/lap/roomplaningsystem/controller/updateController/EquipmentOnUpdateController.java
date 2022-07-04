@@ -12,6 +12,7 @@ import com.lap.roomplaningsystem.model.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -33,80 +34,71 @@ public class EquipmentOnUpdateController extends BaseController {
     @FXML
     private Label errorLabel;
 
-    boolean descriptionIsChange;
+    private Equipment equipment;
 
     @FXML
     void initialize() {
-        assert descriptionInput != null : "fx:id=\"descriptionInput\" was not injected: check your FXML file 'equipmentDetailOnUpdate-view.fxml'.";
-        assert numberLabel != null : "fx:id=\"numberLabel\" was not injected: check your FXML file 'equipmentDetailOnUpdate-view.fxml'.";
-        assert saveButton != null : "fx:id=\"saveButton\" was not injected: check your FXML file 'equipmentDetailOnUpdate-view.fxml'.";
 
         Optional<Equipment> optionalEquipment = model.getDataholder().getEquipments().stream().filter(equipment -> equipment == model.getSelectedEquipmentProperty()).findAny();
 
         if(optionalEquipment.isPresent()){
-            Equipment e = optionalEquipment.get();
+            equipment = optionalEquipment.get();
 
-            numberLabel.setText("A" + String.valueOf(e.getEquipmentID()));
-            descriptionInput.setText(e.getDescription());
+            numberLabel.setText("A" + String.valueOf(equipment.getEquipmentID()));
+            descriptionInput.setText(equipment.getDescription());
 
-            descriptionInput.textProperty().addListener(new ChangeListener<String>() {
-                @Override
-                public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-                    if(!newValue.equals(e.getDescription())){
-                        descriptionIsChange = true;
-                    }else {
-                        descriptionIsChange= false;
-                    }
-                }
-            });
         }
-
-
     }
 
 
 
     @FXML
-    void onSaveButtonClicked(MouseEvent event) throws Exception {
-        if(isBlank(descriptionInput.getText())){
-            errorLabel.setText("Bitte Feld ausfüllen!");
-        } else if(!descriptionIsChange) {
-            errorLabel.setText("Es wurden keine Änderungen vorgenommen!");
-        }else{
-            boolean exist = model.getDataholder().getEquipments().stream().anyMatch(e-> e.getDescription().equals(descriptionInput.getText()) && e.getEquipmentID() != model.getSelectedEquipmentProperty().getEquipmentID());
-            if(exist){
-                errorLabel.setText("Bezeichung bereits vergeben!");
-            } else {
-                Optional<Equipment> optionalEquipment = model.getDataholder().getEquipments().stream().filter(e-> e.getEquipmentID() == model.getSelectedEquipmentProperty().getEquipmentID()).findAny();
+    void onSaveButtonClicked(ActionEvent event) throws Exception {
 
-                if(optionalEquipment.isPresent()){
-                    Equipment equipment = optionalEquipment.get();
+        if(validateFields()){
+            equipment.setDescription(descriptionInput.getText());
 
+            boolean isUpdated = updateEquipmentByJDBC();
 
-                    equipment.setDescription(descriptionInput.getText());
+            if(isUpdated){
+                showNewView(Constants.PATH_TO_SUCCESSFUL_UPDATE);
+                int index = model.getDataholder().getEquipments().indexOf(equipment);
+                model.getDataholder().updateEquipment(index, equipment);
 
-
-
-                    boolean isUpdated = Dataholder.equipmentRepositoryJDBC.update(equipment);
-
-                    if(isUpdated){
-                        showNewView(Constants.PATH_TO_SUCCESSFUL_UPDATE);
-                        int index = model.getDataholder().getEquipments().indexOf(equipment);
-                        model.getDataholder().updateEquipment(index, equipment);
-                    }
-
-                }
-
-
-                //TODO: Change this two rows with a better method
-                Optional<ObservableList<RoomEquipment>> optionalRoomEquipments = Dataholder.roomEquipmentRepositoryJDBC.readAll();
-                optionalRoomEquipments.ifPresent(roomEquipments -> model.getDataholder().setRoomEquipments(roomEquipments));
-
-
-                Stage detailStage = (Stage) descriptionInput.getScene().getWindow();
-                detailStage.close();
+                model.getDataholder().updateRoomEquipments();
+                closeStage(errorLabel);
             }
-
         }
+    }
+
+
+
+    private boolean validateFields() {
+        return !emptyFields() && explicitDescription();
+    }
+
+
+    private boolean emptyFields() {
+        boolean empty = isBlank(descriptionInput.getText());
+
+        if(empty){
+            errorLabel.setText("Bitte Feld ausfüllen!");
+        }
+
+        return empty;
+    }
+
+    private boolean explicitDescription() {
+        boolean explicit = model.getDataholder().getEquipments().stream().noneMatch(e-> e.getDescription().equals(descriptionInput.getText()));
+
+        if(!explicit){
+            errorLabel.setText("Ausstattungsbezeichnung bereits vergeben!");
+        }
+
+        return explicit;
+    }
+
+    private boolean updateEquipmentByJDBC() throws Exception {
+        return Dataholder.equipmentRepositoryJDBC.update(equipment);
     }
 }

@@ -5,6 +5,7 @@ module com.lap.roomplaningsystem {
     requires org.slf4j;
     requires org.apache.commons.lang3;
     requires com.calendarfx.view;
+    requires spring.security.crypto;
 
 
     opens com.lap.roomplaningsystem to javafx.fxml;

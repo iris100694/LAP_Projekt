@@ -1,34 +1,26 @@
 package com.lap.roomplaningsystem.controller.updateController;
 
-import java.io.IOException;
-import java.net.URL;
-import java.sql.Date;
-import java.sql.SQLException;
 import java.sql.Time;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
+import com.calendarfx.model.Entry;
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
-import com.lap.roomplaningsystem.filterBoxes.FilterBox;
-import com.lap.roomplaningsystem.matcher.CourseMatcher;
-import com.lap.roomplaningsystem.matcher.LocationMatcher;
-import com.lap.roomplaningsystem.matcher.RoomMatcher;
-import com.lap.roomplaningsystem.matcher.UserMatcher;
+import com.lap.roomplaningsystem.converter.CourseConverter;
+import com.lap.roomplaningsystem.converter.LocationConverter;
+import com.lap.roomplaningsystem.converter.RoomConverter;
+import com.lap.roomplaningsystem.converter.UserConverter;
 import com.lap.roomplaningsystem.model.*;
+import com.lap.roomplaningsystem.utility.ListUtility;
+import com.lap.roomplaningsystem.validation.DateValidator;
+import com.lap.roomplaningsystem.validation.EventValidator;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Paint;
-import javafx.stage.Stage;
-import javafx.util.StringConverter;
-import javafx.util.converter.LocalDateStringConverter;
 
 public class EventOnUpdateController extends BaseController {
 
@@ -54,185 +46,139 @@ public class EventOnUpdateController extends BaseController {
     private Label numberLabel;
 
     @FXML
-    private ComboBox<Room> roomComboBox;
+    private Button saveButton;
 
     @FXML
-    private Button saveButton;
+    private ComboBox<Room> roomComboBox;
 
     @FXML
     private ComboBox<LocalTime> startComboBox;
 
+    private Event event;
+
 
     @FXML
     void initialize() {
-        assert coachComboBox != null : "fx:id=\"coachComboBox\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
-        assert courseComboBox != null : "fx:id=\"courseComboBox\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
-        assert datePicker != null : "fx:id=\"datePicker\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
-        assert endComboBox != null : "fx:id=\"endComboBox\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
-        assert errorLabel != null : "fx:id=\"errorLabel\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
-        assert locationComboBox != null : "fx:id=\"locationComboBox\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
-        assert numberLabel != null : "fx:id=\"numberLabel\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
-        assert roomComboBox != null : "fx:id=\"roomComboBox\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
-        assert saveButton != null : "fx:id=\"saveButton\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
-        assert startComboBox != null : "fx:id=\"startComboBox\" was not injected: check your FXML file 'eventDetailOnUpdate-view.fxml'.";
 
-
-        initComboBoxes();
-        setConverterOnChoiceBoxes();
-
-
-
-    }
-
-
-    private void initComboBoxes() {
         Optional<Event> optionalEvent = model.getDataholder().getEvents().stream().filter(e -> e == model.getSelectedEventProperty()).findAny();
 
-        if(optionalEvent.isPresent()){
-            Event event = optionalEvent.get();
-            numberLabel.setText("V"+ String.valueOf(event.getEventID()));
-            locationComboBox.setItems(model.getDataholder().getLocations());
-            coachComboBox.setItems(model.getDataholder().getCoaches());
-            courseComboBox.setItems(model.getDataholder().getCourses());
-            roomComboBox.setItems(availableRooms(optionalEvent.get().getRoom().getLocation()));
-            startComboBox.setItems(createTimeList());
-            endComboBox.setItems(createTimeList());
+        if (optionalEvent.isPresent()) {
+            event = optionalEvent.get();
 
+            initFields();
+            initConverter();
 
-            locationComboBox.getSelectionModel().select(event.getRoom().getLocation());
-            roomComboBox.getSelectionModel().select(event.getRoom());
-            coachComboBox.getSelectionModel().select(event.getCoach());
-            courseComboBox.getSelectionModel().select(event.getCourse());
-
-            datePicker.setValue(optionalEvent.get().getDate());
-            startComboBox.getSelectionModel().select(event.getStartTime().toLocalTime());
-            endComboBox.getSelectionModel().select(event.getEndTime().toLocalTime());
-
-        }
-
-
-        locationComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Location>() {
-            @Override
-            public void changed(ObservableValue<? extends Location> observableValue, Location location, Location newLocation) {
-                roomComboBox.setItems(availableRooms(newLocation));
-                roomComboBox.getSelectionModel().select(null);
-                roomComboBox.setPromptText("Raum");
-
-            }
-        });
-
-    }
-
-
-    private void setConverterOnChoiceBoxes() {
-        courseComboBox.setConverter(new StringConverter<Course>() {
-            @Override
-            public String toString(Course course) {
-                return course == null ? "": course.getTitle() + " " + course.getProgram().getDescription();
-            }
-
-            @Override
-            public Course fromString(String s) {
-                CourseMatcher courseMatcher = new CourseMatcher();
-
-                return courseMatcher.matchByString(s, model.getDataholder().getCourses());
-            }
-        });
-
-        locationComboBox.setConverter(new StringConverter<Location>() {
-            @Override
-            public String toString(Location location) {
-                return location == null ? "" : location.getDescription();
-            }
-
-            @Override
-            public Location fromString(String s) {
-                LocationMatcher locationMatcher = new LocationMatcher();
-
-                return locationMatcher.matchByString(s, model.getDataholder().getLocations());
-            }
-        });
-
-        coachComboBox.setConverter(new StringConverter<User>() {
-            @Override
-            public String toString(User user) {
-                return user == null ? "" : user.getFirstname() + " " + user.getLastname();
-            }
-
-            @Override
-            public User fromString(String s) {
-                UserMatcher userMatcher = new UserMatcher();
-                return userMatcher.matchByString(s, model.getDataholder().getUsers());
-            }
-        });
-
-        roomComboBox.setConverter(new StringConverter<Room>() {
-            @Override
-            public String toString(Room room) {
-                return room == null ? "" : room.getDescription();
-            }
-
-            @Override
-            public Room fromString(String s) {
-                RoomMatcher roomMatcher = new RoomMatcher(locationComboBox.getValue());
-                return roomMatcher.matchByString(s, model.getDataholder().getRooms());
-            }
-        });
-
-    }
-
-
-    @FXML
-    void onSaveButtonClicked(MouseEvent event) throws Exception {
-        if (courseComboBox.getValue() == null || locationComboBox.getValue() == null || roomComboBox.getValue() == null ||
-                datePicker.getValue() == null || startComboBox.getValue() == null || endComboBox.getValue() == null || coachComboBox.getValue() == null) {
-            errorLabel.setText("Bitte Felder ausfüllen!");
-        } else {
-
-            Optional<Event> optionalEvent = model.getDataholder().getEvents().stream().filter(e -> e.getEventID() == model.getSelectedEventProperty().getEventID()).findAny();
-
-            if (optionalEvent.isPresent()) {
-                Event e = optionalEvent.get();
-
-
-                e.setCourse(courseComboBox.getValue());
-                e.setRoom(roomComboBox.getValue());
-                e.setCoach(coachComboBox.getValue());
-                e.setDate(datePicker.getValue());
-                e.setStartTime(Time.valueOf(startComboBox.getValue()));
-                e.setEndTime(Time.valueOf(endComboBox.getValue()));
-
-
-                boolean isUpdated = Dataholder.eventRepositoryJDBC.update(e);
-
-                if (isUpdated) {
-                    int index = model.getDataholder().getEvents().indexOf(e);
-                    model.getDataholder().updateEvent(index, e);
-
-                    if(!model.isShowInCalendar()){
-                        Stage detailStage = (Stage) courseComboBox.getScene().getWindow();
-                        detailStage.close();
-
-                        showNewView(Constants.PATH_TO_SUCCESSFUL_UPDATE);
-
-                    } else {
-                        model.setShowInCalendar(false);
-                        saveButton.setVisible(false);
-                    }
+            locationComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Location>() {
+                @Override
+                public void changed(ObservableValue<? extends Location> observableValue, Location location, Location newLocation) {
+                    roomComboBox.setItems(ListUtility.availableRoomAtLocation(newLocation));
+                    roomComboBox.getSelectionModel().select(null);
+                    roomComboBox.setPromptText("Raum");
 
                 }
-
-            }
-
-
-            //TODO: Change this two rows with a better method
-            Optional<ObservableList<RoomEquipment>> optionalRoomEquipments = Dataholder.roomEquipmentRepositoryJDBC.readAll();
-            optionalRoomEquipments.ifPresent(roomEquipments -> model.getDataholder().setRoomEquipments(roomEquipments));
-
-
-
-
+            });
 
         }
+    }
+
+    private void initFields() {
+        ObservableList<LocalTime> timeList = ListUtility.createTimeList();
+        numberLabel.setText("V" + String.valueOf(event.getEventID()));
+        locationComboBox.setItems(model.getDataholder().getLocations());
+        coachComboBox.setItems(model.getDataholder().getCoaches());
+        courseComboBox.setItems(model.getDataholder().getCourses());
+        roomComboBox.setItems(ListUtility.availableRoomAtLocation(event.getRoom().getLocation()));
+        startComboBox.setItems(timeList);
+        endComboBox.setItems(timeList);
+        locationComboBox.getSelectionModel().select(event.getRoom().getLocation());
+        roomComboBox.getSelectionModel().select(event.getRoom());
+        coachComboBox.getSelectionModel().select(event.getCoach());
+        courseComboBox.getSelectionModel().select(event.getCourse());
+        datePicker.setValue(event.getDate());
+        startComboBox.getSelectionModel().select(event.getStartTime().toLocalTime());
+        endComboBox.getSelectionModel().select(event.getEndTime().toLocalTime());
+    }
+
+
+    private void initConverter(){
+        CourseConverter courseConverter = new CourseConverter();
+        courseConverter.setConverter(courseComboBox);
+        LocationConverter locationConverter = new LocationConverter();
+        locationConverter.setConverter(locationComboBox);
+        RoomConverter roomConverter = new RoomConverter(locationComboBox);
+        roomConverter.setConverter(roomComboBox);
+        UserConverter userConverter = new UserConverter();
+        userConverter.setConverter(coachComboBox);
+    }
+
+    @FXML
+    void onSaveButtonClicked(ActionEvent event) throws Exception {
+        EventValidator eventValidator = new EventValidator(model.getDataholder().getEvents());
+        eventValidator.setUpdateEvent(this.event);
+
+        if(validateFields() && eventValidator.validSingle(roomComboBox.getValue(), courseComboBox.getValue(), datePicker.getValue(), startComboBox.getValue(),endComboBox.getValue())){
+
+            this.event.setCourse(courseComboBox.getValue());
+            this.event.setRoom(roomComboBox.getValue());
+            this.event.setCoach(coachComboBox.getValue());
+            this.event.setDate(datePicker.getValue());
+            this.event.setStartTime(Time.valueOf(startComboBox.getValue()));
+            this.event.setEndTime(Time.valueOf(endComboBox.getValue()));
+
+
+            boolean isUpdated = updateEventByJDBC();
+
+            if(isUpdated){
+                int index = model.getDataholder().getEvents().indexOf(this.event);
+                model.getDataholder().updateEvent(index, this.event);
+
+                if(!model.isShowInCalendar()){
+                    showNewView(Constants.PATH_TO_SUCCESSFUL_UPDATE);
+                    closeStage(errorLabel);
+
+                } else {
+                    model.setShowInCalendar(false);
+                    saveButton.setDisable(true);
+//                    model.getCalendarView().
+                }
+            }
+        }
+    }
+
+    private boolean validateFields() {
+        return !emptyFields() && validateDate();
+    }
+
+
+    private boolean emptyFields() {
+        boolean empty = courseComboBox.getValue() == null || locationComboBox.getValue() == null || roomComboBox.getValue() == null ||
+                datePicker.getValue() == null || startComboBox.getValue() == null || endComboBox.getValue() == null || coachComboBox.getValue() == null;
+
+        if(empty){
+            errorLabel.setText("Bitte Felder ausfüllen!");
+        }
+
+        return empty;
+    }
+
+    private boolean validateDate(){
+        if(DateValidator.validDate(datePicker.getValue())){
+            if(DateValidator.validTime(startComboBox.getValue(), endComboBox.getValue())){
+                return true;
+            } else {
+                errorLabel.setText("Endzeit darf nicht vor und zur gleichen Startzeit gewählt werden!");
+                return false;
+            }
+        } else{
+            errorLabel.setText("Datum darf nicht in der Vergangenheit gewählt werden!");
+            return false;
+        }
+
+    }
+
+
+
+    private boolean updateEventByJDBC() throws Exception {
+        return Dataholder.eventRepositoryJDBC.update(event);
     }
 }

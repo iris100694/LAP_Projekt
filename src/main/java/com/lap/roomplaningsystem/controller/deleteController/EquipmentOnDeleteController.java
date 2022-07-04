@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.*;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -15,25 +16,25 @@ import javafx.stage.Stage;
 
 public class EquipmentOnDeleteController extends BaseController {
 
-
-
     @FXML
     private Label descriptionLabel;
 
     @FXML
     private Label numberLabel;
 
+    private Equipment equipment;
+
 
 
     @FXML
     void initialize() {
-        assert descriptionLabel != null : "fx:id=\"descriptionLabel\" was not injected: check your FXML file 'equipmentDetailOnDelete-view.fxml'.";
-        assert numberLabel != null : "fx:id=\"numberLabel\" was not injected: check your FXML file 'equipmentDetailOnDelete-view.fxml'.";
+        assert descriptionLabel != null : "fx:id=\"descriptionLabel\" was not injected: check your FXML file 'equipmentOnDelete-view.fxml'.";
+        assert numberLabel != null : "fx:id=\"numberLabel\" was not injected: check your FXML file 'equipmentOnDelete-view.fxml'.";
 
         Optional<Equipment> optionalEquipment = model.getDataholder().getEquipments().stream().filter(e -> e.getEquipmentID() == model.getSelectedEquipmentProperty().getEquipmentID()).findAny();
 
         if(optionalEquipment.isPresent()){
-            Equipment equipment = optionalEquipment.get();
+            equipment = optionalEquipment.get();
             numberLabel.setText("A" + equipment.getEquipmentID());
             descriptionLabel.setText(equipment.getDescription());
         }
@@ -41,35 +42,25 @@ public class EquipmentOnDeleteController extends BaseController {
     }
 
     @FXML
-    void onNoButtonClicked(MouseEvent event) {
-        Stage stage = (Stage) descriptionLabel.getScene().getWindow();
-        stage.close();
+    void onNoButtonClicked(ActionEvent event) {
+        closeStage(numberLabel);
     }
 
     @FXML
-    void onYesButtonClicked(MouseEvent event) throws Exception {
+    void onYesButtonClicked(ActionEvent event) throws Exception {
+        model.setSelectedEquipmentProperty(null);
 
-        Optional<Equipment> optionalEquipment = model.getDataholder().getEquipments().stream().filter(e -> e.getEquipmentID() == model.getSelectedEquipmentProperty().getEquipmentID()).findAny();
-        model.setSelectedProgramProperty(null);
+        if(deleteEventByJDBC()){
+            model.getDataholder().deleteEquipment(equipment);
+            model.getDataholder().updateUsers();
+        }
 
-        optionalEquipment.ifPresent(e -> {
-            try {
-                boolean isDeleted = Dataholder.equipmentRepositoryJDBC.delete(e);
-                if(isDeleted){
-                    model.getDataholder().deleteEquipment(e);
+        closeStage(numberLabel);
 
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        });
+    }
 
-        Optional<ObservableList<RoomEquipment>> optionalRoomEquipments = Dataholder.roomEquipmentRepositoryJDBC.readAll();
-        optionalRoomEquipments.ifPresent(roomEquipments -> model.getDataholder().setRoomEquipments(roomEquipments));
-
-        Stage stage = (Stage) descriptionLabel.getScene().getWindow();
-        stage.close();
-
+    private boolean deleteEventByJDBC() throws Exception{
+        return Dataholder.equipmentRepositoryJDBC.delete(equipment);
     }
 
 }

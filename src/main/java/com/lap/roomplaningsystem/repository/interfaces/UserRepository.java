@@ -18,14 +18,16 @@ public interface UserRepository extends BaseRepository {
 
     User add(String firstname, String lastname, String title, String username, String authorization, String password, Boolean trainer,
              Boolean textVisable, String phone, Boolean phoneVisable, String email, Boolean emailVisable, Boolean photoVisable,
-             String text, InputStream inputStream) throws Exception;
+             String text, byte[] photo) throws Exception;
 
-    boolean update(User user, String password, InputStream inputStream) throws SQLException, IOException;
+    boolean update(User user, String password) throws SQLException, IOException;
 
-    boolean inActiv(User u) throws Exception;
+    boolean deActivateUser(User u) throws Exception;
 
     boolean edit(User user) throws Exception;
 
-    boolean changeProfileImage(User user, InputStream inputStream) throws Exception;
+    boolean updateProfileImage(User user, InputStream inputStream) throws Exception;
+
+
 }
 

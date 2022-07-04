@@ -1,14 +1,16 @@
 package com.lap.roomplaningsystem.app;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.security.SecureRandom;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Password {
 
     public static String regex_pattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,24}$";
-    public static String salt = BCrypt.gensalt();
-
+    public static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 
     public Password() {
@@ -25,12 +27,11 @@ public class Password {
 
 
     public static String hash(String password) {
-        //TODO: Passwort hash and verify
-        return password;
-
+        return encoder.encode(password);
     }
 
-    public static String verify(String password) {
-        return null;
+    public static boolean verify(String fromDB, String password) {
+        return encoder.matches(password, fromDB);
+
     }
 }

@@ -218,7 +218,40 @@ public class Dataholder {
         this.rooms.remove(r);
     }
 
+    public void deleteCourse(Course c) {
+        this.courses.remove(c);
+    }
 
+    public void updateUsers() throws Exception {
+        this.users = userRepositoryJDBC.readAll().orElse(null);
+    }
 
+    public void updateCourses() throws Exception {
+        this.courses = courseRepositoryJDBC.readAll().orElse(null);
+    }
+
+    public void updateLocations() throws Exception {
+        this.locations = locationRepositoryJDBC.readAll().orElse(null);
+    }
+
+    public void updatePrograms() throws Exception {
+        this.programs = programRepositoryJDBC.readAll().orElse(null);
+    }
+
+    public void updateEquipments() throws Exception {
+        this.equipments = equipmentRepositoryJDBC.readAll().orElse(null);
+    }
+
+    public void updateRooms() throws Exception {
+        this.rooms = roomRepositoryJDBC.readAll().orElse(null);
+    }
+
+    public void updateEvents() throws Exception {
+        this.events = eventRepositoryJDBC.readAll().orElse(null);
+    }
+
+    public void updateRoomEquipments() throws Exception {
+        this.roomEquipments = roomEquipmentRepositoryJDBC.readAll().orElse(null);
+    }
 
 }

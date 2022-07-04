@@ -41,7 +41,7 @@
                   <Insets right="20.0" />
                </GridPane.margin>
             </ImageView>
-            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#onLoginButtonClicked" text="Login" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER">
+            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#onLoginButtonClicked" styleClass="custom-button" text="Login" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER">
                <font>
                   <Font name="Century Gothic" size="12.0" />
                </font>
@@ -75,32 +75,32 @@
       </Label>
       <HBox alignment="CENTER" prefWidth="200.0">
          <children>
-            <ChoiceBox id="roomID" fx:id="roomNumberChoiceBox" prefWidth="120.0">
+            <ChoiceBox id="roomID" fx:id="numberChoiceBox" prefWidth="120.0">
                <HBox.margin>
                   <Insets left="5.0" right="5.0" />
                </HBox.margin>
             </ChoiceBox>
-            <ChoiceBox id="roomDescription" fx:id="roomDescriptionChoiceBox" prefWidth="200.0">
+            <ChoiceBox id="roomDescription" fx:id="descriptionChoiceBox" prefWidth="200.0">
                <HBox.margin>
                   <Insets left="5.0" right="5.0" />
                </HBox.margin>
             </ChoiceBox>
-            <ChoiceBox id="roomSize" fx:id="roomMembersChoiceBox" prefWidth="150.0">
+            <ChoiceBox id="roomSize" fx:id="membersChoiceBox" prefWidth="150.0">
                <HBox.margin>
                   <Insets left="5.0" right="5.0" />
                </HBox.margin>
             </ChoiceBox>
-            <ChoiceBox id="roomLocation" fx:id="roomLocationChoiceBox" prefWidth="130.0">
+            <ChoiceBox id="roomLocation" fx:id="locationChoiceBox" prefWidth="130.0">
                <HBox.margin>
                   <Insets left="5.0" right="5.0" />
                </HBox.margin>
             </ChoiceBox>
-            <ChoiceBox id="roomEquipment" fx:id="roomEquipmentChoiceBox" prefWidth="150.0">
+            <ChoiceBox id="roomEquipment" fx:id="equipmentChoiceBox" prefWidth="150.0">
                <HBox.margin>
                   <Insets left="5.0" right="5.0" />
                </HBox.margin>
             </ChoiceBox>
-            <CheckBox id="roomImage" fx:id="roomImageCheckBox" mnemonicParsing="false" prefWidth="120.0" text="Raumbild">
+            <CheckBox id="roomImage" fx:id="imageCheckBox" mnemonicParsing="false" prefWidth="120.0" text="Raumbild">
                <HBox.margin>
                   <Insets left="5.0" right="5.0" />
                </HBox.margin>
@@ -115,10 +115,10 @@
       </HBox>
       <TableView fx:id="roomTable" styleClass="table">
         <columns>
-          <TableColumn fx:id="roomNumberColumn" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="100.0" styleClass="tableColumn" text="Raum-Nr." />
-          <TableColumn fx:id="roomTitleColumn" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="412.5" styleClass="tableColumn" text="Raumbezeichnung" />
-            <TableColumn fx:id="roomSizeColumn" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="110.0" styleClass="tableColumn" text="Größe" />
-            <TableColumn fx:id="roomLocationColumn" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="238.0" styleClass="tableColumn" text="Standort" />
+          <TableColumn fx:id="numberColumn" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="100.0" styleClass="tableColumn" text="Raum-Nr." />
+          <TableColumn fx:id="titleColumn" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="412.5" styleClass="tableColumn" text="Raumbezeichnung" />
+            <TableColumn fx:id="sizeColumn" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="110.0" styleClass="tableColumn" text="Größe" />
+            <TableColumn fx:id="locationColumn" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="238.0" styleClass="tableColumn" text="Standort" />
         </columns>
          <VBox.margin>
             <Insets top="40.0" />

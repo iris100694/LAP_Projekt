@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.app.Constants;
+import com.lap.roomplaningsystem.utility.ListUtility;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -21,17 +22,12 @@ import javafx.scene.layout.BorderPane;
 
 public class StammdataViewController extends BaseController{
 
-    @FXML
-    private ResourceBundle resources;
 
-    @FXML
-    private URL location;
     @FXML
     private ChoiceBox<String> choiceBoxForTables;
     @FXML
     private BorderPane tableBorderPane;
-    @FXML
-    private Button newButton;
+
     @FXML
     private ImageView profilImage;
 
@@ -45,7 +41,7 @@ public class StammdataViewController extends BaseController{
         loadFXMLInBorderPaneCenter(Constants.PATH_TO_USER_TABLE_VIEW);
 
 
-        choiceBoxForTables.setItems(initItems());
+        choiceBoxForTables.setItems(ListUtility.initItems());
         choiceBoxForTables.setValue("Benutzer");
 
         choiceBoxForTables.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
@@ -68,20 +64,6 @@ public class StammdataViewController extends BaseController{
         tableBorderPane.setCenter(view);
     }
 
-    private ObservableList<String> initItems() {
-        ObservableList<String> items = FXCollections.observableArrayList();
-
-        items.add("Benutzer");
-        items.add("Räume");
-        items.add("Veranstaltungen");
-        items.add("Kurse");
-        items.add("Programme");
-        items.add("Standorte");
-        items.add("Ausstattung");
-        items.add("Ausstattung - in Verwendung");
-
-        return items;
-    }
 
     private void vaildateTable(String newValue) throws IOException {
         switch(newValue){
@@ -92,7 +74,7 @@ public class StammdataViewController extends BaseController{
             case "Programme" -> loadFXMLInBorderPaneCenter(Constants.PATH_TO_PROGRAM_TABLE_VIEW);
             case "Standorte" -> loadFXMLInBorderPaneCenter(Constants.PATH_TO_LOCATION_TABLE_VIEW);
             case "Ausstattung" -> loadFXMLInBorderPaneCenter(Constants.PATH_TO_EQUIPMENT_TABLE_VIEW);
-            case "Ausstattung - in Verwendung" -> loadFXMLInBorderPaneCenter(Constants.PATH_TO_ROOMEQUIPMENT_TABLE_VIEW);
+            case "Raumausstattung" -> loadFXMLInBorderPaneCenter(Constants.PATH_TO_ROOMEQUIPMENT_TABLE_VIEW);
         }
     }
 
@@ -115,7 +97,7 @@ public class StammdataViewController extends BaseController{
             case "Programme" -> showNewView(Constants.PATH_TO_PROGRAM_ADD_VIEW);
             case "Standorte" -> showNewView(Constants.PATH_TO_LOCATION_ADD_VIEW);
             case "Ausstattung" -> showNewView(Constants.PATH_TO_EQUIPMENT_ADD_VIEW);
-            case "Ausstattung - in Verwendung" -> showNewView(Constants.PATH_TO_ROOMEQUIPMENT_ADD_VIEW);
+            case "Raumausstattung" -> showNewView(Constants.PATH_TO_ROOMEQUIPMENT_ADD_VIEW);
 
         }
     }

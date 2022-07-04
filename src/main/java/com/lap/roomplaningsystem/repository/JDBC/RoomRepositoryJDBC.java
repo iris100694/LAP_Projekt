@@ -26,6 +26,9 @@ public class RoomRepositoryJDBC extends Repository implements RoomRepository {
         CallableStatement stmt = connection.prepareCall(query);
         ResultSet resultSet = stmt.executeQuery();
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return createRooms(resultSet);
 
     }
@@ -33,16 +36,9 @@ public class RoomRepositoryJDBC extends Repository implements RoomRepository {
 
 
     @Override
-    public Room add(String description, Location location, String maxPersons, InputStream inputStream) throws SQLException {
+    public Room add(String description, Location location, int maxPersons, byte[] photo) throws SQLException {
 
-        byte[] photo= new byte[0];
-        if (inputStream != null) {
-            try {
-                photo = inputStream.readAllBytes();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+
         Connection connection = connect();
 
         String query = "INSERT INTO rooms (DESCRIPTION, LOCATIONID, MAXPERSONS, PHOTO) VALUES (?,?,?,?)";
@@ -52,8 +48,8 @@ public class RoomRepositoryJDBC extends Repository implements RoomRepository {
         stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         stmt.setString(1, description);
         stmt.setInt(2, location.getLocationID());
-        stmt.setInt(3, Integer.parseInt(maxPersons));
-        stmt.setBlob(4, inputStream);
+        stmt.setInt(3, maxPersons);
+        stmt.setBytes(4, photo);
 
         stmt.executeQuery();
 
@@ -64,8 +60,11 @@ public class RoomRepositoryJDBC extends Repository implements RoomRepository {
         while(resultSet.next()){
 
             int roomID  = resultSet.getInt(1);
-            room = new Room(roomID, description, location, Integer.parseInt(maxPersons), photo);
+            room = new Room(roomID, description, location, maxPersons, photo);
         }
+
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
 
         return room;
 
@@ -73,7 +72,7 @@ public class RoomRepositoryJDBC extends Repository implements RoomRepository {
     }
 
     @Override
-    public boolean update(Room room, InputStream inputStream) throws Exception {
+    public boolean update(Room room) throws Exception {
         Connection connection = connect();
 
         String query = "UPDATE rooms SET DESCRIPTION = ?, LOCATIONID = ?, MAXPERSONS = ?, PHOTO = ? WHERE ROOMID = ?";
@@ -89,11 +88,10 @@ public class RoomRepositoryJDBC extends Repository implements RoomRepository {
         stmt.setInt(5, room.getRoomID());
 
 
-
-
-
-
         int isUpdated = stmt.executeUpdate();
+
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
 
         return isUpdated != 0;
 
@@ -111,6 +109,9 @@ public class RoomRepositoryJDBC extends Repository implements RoomRepository {
         stmt.setInt(1, room.getRoomID());
 
         int isDeleted = stmt.executeUpdate();
+
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
 
         return isDeleted != 0;
     }

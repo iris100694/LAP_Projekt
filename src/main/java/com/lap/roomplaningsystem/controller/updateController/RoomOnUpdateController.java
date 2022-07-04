@@ -1,35 +1,31 @@
 package com.lap.roomplaningsystem.controller.updateController;
 
 import java.io.*;
-import java.net.URL;
-import java.sql.SQLException;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
-import com.lap.roomplaningsystem.matcher.LocationMatcher;
-import com.lap.roomplaningsystem.matcher.RoomMatcher;
+import com.lap.roomplaningsystem.converter.LocationConverter;
+
 import com.lap.roomplaningsystem.model.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
+
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import javafx.util.StringConverter;
+
 
 public class RoomOnUpdateController extends BaseController {
-
-    @FXML
-    private Button changeImage;
 
     @FXML
     private TextField descriptionInput;
@@ -49,76 +45,31 @@ public class RoomOnUpdateController extends BaseController {
     @FXML
     private Label numberLabel;
 
+    private Room room;
+
     FileChooser fileChooser = new FileChooser();
     InputStream inputStream = null;
-
-    boolean descriptionIsChange;
-    boolean maxPersonsIsChange;
-    boolean imageIsChange;
-    boolean locationIsChange;
-    boolean validChange;
+    byte[] photo = null;
 
 
     @FXML
     void initialize() {
-        assert changeImage != null : "fx:id=\"changeImage\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
-        assert descriptionInput != null : "fx:id=\"descriptionInput\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
-        assert errorLabel != null : "fx:id=\"errorLabel\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
-        assert imageView != null : "fx:id=\"imageView\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
-        assert locationComboBox != null : "fx:id=\"locationComboBox\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
-        assert numberLabel != null : "fx:id=\"numberLabel\" was not injected: check your FXML file 'roomDetailOnUpdate-view.fxml'.";
-
         Optional<Room> optionalRoom = model.getDataholder().getRooms().stream().filter(room -> room == model.getSelectedRoomProperty()).findAny();
 
         if (optionalRoom.isPresent()){
-            Room r = optionalRoom.get();
+            room = optionalRoom.get();
 
-            numberLabel.setText("R" + String.valueOf(r.getRoomID()));
-            descriptionInput.setText(r.getDescription());
-            maxPersonsInput.setText(String.valueOf(r.getMaxPersons()));
+            numberLabel.setText("R" + String.valueOf(room.getRoomID()));
+            descriptionInput.setText(room.getDescription());
+            maxPersonsInput.setText(String.valueOf(room.getMaxPersons()));
+            locationComboBox.setValue(room.getLocation());
 
-            if(r.getPhoto() != null){
-                imageView.setImage(new Image(new ByteArrayInputStream(r.getPhoto())));
+            if(room.getPhoto() != null){
+                imageView.setImage(new Image(new ByteArrayInputStream(room.getPhoto())));
             }
 
-            locationComboBox.setItems(model.getDataholder().getLocations());
-            locationComboBox.getSelectionModel().select(r.getLocation());
-
-            locationComboBox.setConverter(new StringConverter<Location>() {
-                @Override
-                public String toString(Location location) {
-                    return location.getDescription();
-                }
-
-                @Override
-                public Location fromString(String s) {
-                    LocationMatcher locationMatcher = new LocationMatcher();
-                    return locationMatcher.matchByString(s, model.getDataholder().getLocations());
-                }
-            });
-
-            descriptionInput.textProperty().addListener(new ChangeListener<String>() {
-                @Override
-                public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-                    if(!newValue.equals(r.getDescription())){
-                        descriptionIsChange = true;
-                    }else {
-                        descriptionIsChange= false;
-                    }
-                }
-            });
-
-            maxPersonsInput.textProperty().addListener(new ChangeListener<String>() {
-                @Override
-                public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-                    if(!newValue.equals(r.getMaxPersons())){
-                        maxPersonsIsChange = true;
-                    }else {
-                        maxPersonsIsChange= false;
-                    }
-                }
-            });
-
+            LocationConverter converter = new LocationConverter();
+            converter.setConverter(locationComboBox);
 
         }
 
@@ -126,88 +77,47 @@ public class RoomOnUpdateController extends BaseController {
 
 
     @FXML
-    void onChangeImageButtonClicked(MouseEvent event)  {
+    void onUpdateImageButtonClicked(ActionEvent event) throws IOException {
         File file = fileChooser.showOpenDialog(imageView.getScene().getWindow());
-
         try{
             inputStream = new FileInputStream(file);
             imageView.setImage(new Image(inputStream));
-            imageIsChange = true;
+            photo = Files.newInputStream(Path.of(file.getAbsolutePath())).readAllBytes();
         } catch (Exception e){
             System.out.println("Kein Bild ausgewählt!");
         }
-
     }
+
 
     @FXML
-    void onSaveButtonClicked(MouseEvent event) throws Exception {
-        if(isBlank(descriptionInput.getText())  || isBlank(maxPersonsInput.getText())){
-            errorLabel.setText("Bitte alle Felder ausfüllen!");
+    void onSaveButtonClicked(ActionEvent event) throws Exception {
+        room.setDescription(descriptionInput.getText());
+        room.setMaxPersons(Integer.parseInt(maxPersonsInput.getText()));
+        room.setPhoto(photo != null ? photo: null);
 
-        } else if (!descriptionIsChange && !maxPersonsIsChange && !imageIsChange){
-            errorLabel.setText("Es wurden keine Änderungen vorgenommen)");
-        }else if(descriptionIsChange){
-            boolean exist = model.getDataholder().getRooms().stream().anyMatch(r-> r.getDescription().equals(descriptionInput.getText()) && r.getRoomID() != model.getSelectedRoomProperty().getRoomID());
-            if(exist){
-                errorLabel.setText("Bezeichung bereits vergeben!");
-            } else{
-                if(maxPersonsIsChange){
-                    validChange = checkMaxPersons();
-                }
-            }
-        } else if (maxPersonsIsChange){
-            validChange = checkMaxPersons();
+        if (validateFields()) {
 
-        } else {
-            validChange = true;
-        }
+            boolean isUpdated = updateRoomByJDBC();
 
-        if(validChange){
-            Optional<Room> optionalRoom = model.getDataholder().getRooms().stream().filter(l-> l.getRoomID() == model.getSelectedRoomProperty().getRoomID()).findAny();
-
-            if(optionalRoom.isPresent()){
-                Room room = optionalRoom.get();
-
-                if(descriptionIsChange){
-                    room.setDescription(descriptionInput.getText());
-                }
-
-
-                if(maxPersonsIsChange){
-                    room.setMaxPersons(Integer.parseInt(maxPersonsInput.getText()));
-                }
-
-                if(imageIsChange){
-                    try{
-                        room.setPhoto(inputStream.readAllBytes());
-                    } catch (Exception e){
-                        e.printStackTrace();
-                    }
-
-                }
-
-                boolean isUpdated = Dataholder.roomRepositoryJDBC.update(room, inputStream);
-
-                if(isUpdated){
-                    showNewView(Constants.PATH_TO_SUCCESSFUL_UPDATE);
-                    int index = model.getDataholder().getRooms().indexOf(room);
-                    model.getDataholder().updateRoom(index, room);
-                }
-
+            if (isUpdated) {
+                showNewView(Constants.PATH_TO_SUCCESSFUL_UPDATE);
+                int index = model.getDataholder().getRooms().indexOf(room);
+                model.getDataholder().updateRoom(index, room);
+                model.getDataholder().updateEvents();
+                model.getDataholder().updateRoomEquipments();
+                closeStage(errorLabel);
             }
 
-            //TODO: Change this four rows with a better method
-            Optional<ObservableList<Event>> optionalEvents = Dataholder.eventRepositoryJDBC.readAll();
-            Optional<ObservableList<RoomEquipment>> optionalRoomEquipments = Dataholder.roomEquipmentRepositoryJDBC.readAll();
-            optionalEvents.ifPresent(events -> model.getDataholder().setEvents(events));
-            optionalRoomEquipments.ifPresent(roomEquipments -> model.getDataholder().setRoomEquipments(roomEquipments));
 
-            Stage detailStage = (Stage) descriptionInput.getScene().getWindow();
-            detailStage.close();
         }
+
     }
 
-    private boolean checkMaxPersons() {
+    private boolean validateFields() {
+        return !emptyFields() && explicitDescription() && validInteger();
+    }
+
+    private boolean validInteger() {
         try{
             Integer.parseInt(maxPersonsInput.getText());
             return true;
@@ -216,5 +126,32 @@ public class RoomOnUpdateController extends BaseController {
             return false;
         }
     }
+
+    private boolean explicitDescription() {
+        List<Room> rooms = model.getDataholder().getRooms().stream().filter(r-> r !=room).toList();
+        boolean explicit = rooms.stream().noneMatch(r-> r.getDescription().equals(descriptionInput.getText()));
+
+        if(!explicit){
+            errorLabel.setText("Raumbezeichung bereits vergeben!");
+        }
+
+        return explicit;
+    }
+
+    private boolean emptyFields() {
+        boolean empty = isBlank(descriptionInput.getText())  || isBlank(maxPersonsInput.getText());
+
+        if(empty){
+            errorLabel.setText("Bitte Felder ausfüllen!");
+        }
+
+        return empty;
+    }
+
+    private boolean updateRoomByJDBC() throws Exception {
+        return Dataholder.roomRepositoryJDBC.update(room);
+    }
+
+
 
 }

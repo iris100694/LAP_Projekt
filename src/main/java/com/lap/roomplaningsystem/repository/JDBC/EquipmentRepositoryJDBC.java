@@ -16,8 +16,11 @@ public class EquipmentRepositoryJDBC extends Repository implements EquipmentRepo
 
         String query = "{CALL equipmentListStatement()}";
 
-        CallableStatement stmt = connection.prepareCall(query);;
-        ResultSet resultSet = stmt.executeQuery();;
+        CallableStatement stmt = connection.prepareCall(query);
+        ResultSet resultSet = stmt.executeQuery();
+
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
 
         return createEquipment(resultSet);
     }
@@ -44,6 +47,9 @@ public class EquipmentRepositoryJDBC extends Repository implements EquipmentRepo
             equipment = new Equipment(equipmentID, description);
         }
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return equipment;
     }
 
@@ -65,6 +71,9 @@ public class EquipmentRepositoryJDBC extends Repository implements EquipmentRepo
 
         int isUpdated = stmt.executeUpdate();
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return isUpdated != 0;
 
 
@@ -81,6 +90,9 @@ public class EquipmentRepositoryJDBC extends Repository implements EquipmentRepo
         stmt.setInt(1, equipment.getEquipmentID());
 
         int isDeleted = stmt.executeUpdate();
+
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
 
         return isDeleted != 0;
     }

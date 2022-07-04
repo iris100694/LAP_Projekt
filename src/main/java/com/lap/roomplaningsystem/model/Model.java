@@ -1,6 +1,8 @@
 package com.lap.roomplaningsystem.model;
 
+import com.calendarfx.view.CalendarView;
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
@@ -23,13 +25,26 @@ public class Model {
     private ObjectProperty<Equipment> selectedEquipmentProperty = new SimpleObjectProperty<>();
     private ObjectProperty<RoomEquipment> selectedRoomEquipmentProperty = new SimpleObjectProperty<>();
     private ObjectProperty<User> selectedUserProperty = new SimpleObjectProperty<>();
-    private boolean selectedIsDeleted;
+
+    private boolean detailView;
     private boolean showInCalendar;
+    private boolean addEventInCalendar;
+    private boolean isLogout;
+
+    private CalendarView calendarView;
+
+    private ObjectProperty<Event> newEvent = new SimpleObjectProperty<>();
+
+    private ObservableList<Event> bookedEvents = FXCollections.observableArrayList();
+    private ObservableList<Event> notBookedEvents = FXCollections.observableArrayList();
 
     private ObservableList<Room> requestResult;
-    private ObjectProperty<Room> selectedResultProperty = new SimpleObjectProperty<>();
+    private ObservableList<User> requestResultCoaches;
+    private ObjectProperty<Result> selectedResultProperty = new SimpleObjectProperty<>();
 
     private StringProperty hashedPassword=  new SimpleStringProperty();
+
+
 
     public Model()  {
 
@@ -53,6 +68,14 @@ public class Model {
         return false;
     }
 
+    public ObservableList<Event> getBookedEvents() {
+        return bookedEvents;
+    }
+
+    public void setBookedEvents(ObservableList<Event> bookedEvents) {
+        this.bookedEvents = bookedEvents;
+    }
+
     public void setShowInCalendar(boolean showInCalendar) {
         this.showInCalendar = showInCalendar;
     }
@@ -61,12 +84,12 @@ public class Model {
         return showInCalendar;
     }
 
-    public boolean isSelectedIsDeleted() {
-        return selectedIsDeleted;
+    public boolean isDetailView() {
+        return detailView;
     }
 
-    public void setSelectedIsDeleted(boolean selectedIsDeleted) {
-        this.selectedIsDeleted = selectedIsDeleted;
+    public void setDetailView(boolean detailView) {
+        this.detailView = detailView;
     }
 
     public String getHashedPassword() {
@@ -89,15 +112,15 @@ public class Model {
         this.selectedEventProperty.set(selectedEventProperty);
     }
 
-    public Room getSelectedResultProperty() {
+    public Result getSelectedResultProperty() {
         return selectedResultProperty.get();
     }
 
-    public ObjectProperty<Room> selectedResultProperty() {
+    public ObjectProperty<Result> selectedResultProperty() {
         return selectedResultProperty;
     }
 
-    public void setSelectedResultProperty(Room selectedResultProperty) {
+    public void setSelectedResultProperty(Result selectedResultProperty) {
         this.selectedResultProperty.set(selectedResultProperty);
     }
 
@@ -237,5 +260,55 @@ public class Model {
         this.requestResult = requestResult;
     }
 
+    public ObservableList<Event> getNotBookedEvents() {
+        return notBookedEvents;
+    }
 
+    public void setNotBookedEvents(ObservableList<Event> notBookedEvents) {
+        this.notBookedEvents = notBookedEvents;
+    }
+
+    public boolean isAddEventInCalendar() {
+        return addEventInCalendar;
+    }
+
+    public void setAddEventInCalendar(boolean addEventInCalendar) {
+        this.addEventInCalendar = addEventInCalendar;
+    }
+
+    public Event getNewEvent() {
+        return newEvent.get();
+    }
+
+    public ObjectProperty<Event> newEventProperty() {
+        return newEvent;
+    }
+
+    public void setNewEvent(Event newEvent) {
+        this.newEvent.set(newEvent);
+    }
+
+    public boolean isLogout() {
+        return isLogout;
+    }
+
+    public void setLogout(boolean logout) {
+        isLogout = logout;
+    }
+
+    public ObservableList<User> getRequestResultCoaches() {
+        return requestResultCoaches;
+    }
+
+    public void setRequestResultCoaches(ObservableList<User> requestResultCoaches) {
+        this.requestResultCoaches = requestResultCoaches;
+    }
+
+    public CalendarView getCalendarView() {
+        return calendarView;
+    }
+
+    public void setCalendarView(CalendarView calendarView) {
+        this.calendarView = calendarView;
+    }
 }

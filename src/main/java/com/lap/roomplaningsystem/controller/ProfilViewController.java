@@ -1,18 +1,15 @@
 package com.lap.roomplaningsystem.controller;
 
 import java.io.*;
-import java.net.URL;
-import java.util.Objects;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.model.Dataholder;
 import com.lap.roomplaningsystem.model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.chart.PieChart;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -52,23 +49,14 @@ public class ProfilViewController extends BaseController{
     User user;
 
     FileChooser fileChooser = new FileChooser();
-    InputStream inputStream = null;
+    byte[] bytes;
 
 
 
     @FXML
     void initialize() {
-        assert authorizationLabel != null : "fx:id=\"authorizationLabel\" was not injected: check your FXML file 'profile-view.fxml'.";
-        assert emailLabel != null : "fx:id=\"emailLabel\" was not injected: check your FXML file 'profile-view.fxml'.";
-        assert lastnameLabel != null : "fx:id=\"lastnameLabel\" was not injected: check your FXML file 'profile-view.fxml'.";
-        assert phoneLabel != null : "fx:id=\"phoneLabel\" was not injected: check your FXML file 'profile-view.fxml'.";
-        assert textLabel != null : "fx:id=\"textLabel\" was not injected: check your FXML file 'profile-view.fxml'.";
-        assert firstnameLabel != null : "fx:id=\"fristnameLabel\" was not injected: check your FXML file 'profile-view.fxml'.";
-        assert usernameLabel != null : "fx:id=\"usernameLabel\" was not injected: check your FXML file 'profile-view.fxml'.";
-
-
         Optional<User> optionalUser = model.getDataholder().getUsers().stream().filter(user -> user.getId() == model.getUser().getId()).findAny();
-        System.out.println(optionalUser.isPresent());
+
         if (optionalUser.isPresent()) {
             user = optionalUser.get();
 
@@ -88,7 +76,7 @@ public class ProfilViewController extends BaseController{
     }
 
     @FXML
-    void onEditUserClicked(MouseEvent event) throws IOException {
+    void onUpdateButtonClicked(ActionEvent actionEvent) throws IOException {
         showNewView(Constants.PATH_TO_EDIT_USER);
     }
 
@@ -100,27 +88,30 @@ public class ProfilViewController extends BaseController{
     }
 
     @FXML
-    private void onImageChangeClicked(MouseEvent mouseEvent) {
+    private void onUpdateImageClicked(MouseEvent mouseEvent) {
         File file = fileChooser.showOpenDialog(imageView.getScene().getWindow());
 
         try{
-            inputStream = new FileInputStream(file);
-            user.setPhoto(inputStream.readAllBytes());
-            boolean isChanged = Dataholder.userRepositoryJDBC.changeProfileImage(user, inputStream);
+            bytes = Files.newInputStream(Path.of(file.getAbsolutePath())).readAllBytes();
+            user.setPhoto(bytes);
+            boolean isChanged = updateProfilImageBYJDBC();
 
             if (isChanged) {
-                imageView.setImage(new Image(inputStream));
+                imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
             } else {
                 errorLabel.setText("Foto konnte nicht aktualisiert werden! (max. Größe: 16 Mb)");
             }
 
 
         } catch (Exception e){
-            System.out.println("Kein Bild ausgewählt!");
+            errorLabel.setText("Kein Bild ausgewählt!");
         }
 
     }
 
+    private boolean updateProfilImageBYJDBC() throws Exception {
+        return Dataholder.userRepositoryJDBC.updateProfileImage(user, new ByteArrayInputStream(bytes));
+    }
 
 
 }

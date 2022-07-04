@@ -1,19 +1,20 @@
 package com.lap.roomplaningsystem.controller;
 
 import java.io.IOException;
-import java.net.URL;
 import java.sql.SQLException;
-import java.sql.Time;
+
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
+
 
 import com.lap.roomplaningsystem.app.Constants;
-import com.lap.roomplaningsystem.filter.RequestFilter;
+import com.lap.roomplaningsystem.validation.DateValidator;
+import com.lap.roomplaningsystem.validation.RequestValidator;
 import com.lap.roomplaningsystem.filterBoxes.FilterComboBox;
-import com.lap.roomplaningsystem.matcher.*;
+
 import com.lap.roomplaningsystem.model.*;
-import com.lap.roomplaningsystem.repository.Repository;
+
+import com.lap.roomplaningsystem.utility.ListUtility;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -21,23 +22,18 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
-import javafx.scene.input.InputMethodEvent;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
 public class RequestViewController extends BaseController{
 
     @FXML
     private ComboBox<String> coachComboBox;
-
-    @FXML
-    private DatePicker endDatePicker;
 
     @FXML
     private ComboBox<LocalTime> endTimeComboBox;
@@ -58,35 +54,22 @@ public class RequestViewController extends BaseController{
     private ComboBox<String> sizeComboBox;
 
     @FXML
-    private DatePicker startDatePicker;
+    private DatePicker datePicker;
 
     @FXML
     private ComboBox<LocalTime> startTimeComboBox;
 
+    @FXML
+    private Label errorLabel;
+
     ObservableList<FilterComboBox> filterComboBoxes = FXCollections.observableArrayList();
-    RequestFilter requestFilter = new RequestFilter();
+    RequestValidator requestValidator = new RequestValidator();
+
 
 
     @FXML
     void initialize() throws SQLException {
-        assert coachComboBox != null : "fx:id=\"coachComboBox\" was not injected: check your FXML file 'request-view.fxml'.";
-        assert endDatePicker != null : "fx:id=\"endDatePicker\" was not injected: check your FXML file 'request-view.fxml'.";
-        assert endTimeComboBox != null : "fx:id=\"endTimeComboBox\" was not injected: check your FXML file 'request-view.fxml'.";
-        assert equipmentComboBox != null : "fx:id=\"equipmentComboBox\" was not injected: check your FXML file 'request-view.fxml'.";
-        assert courseComboBox != null : "fx:id=\"eventComboBox\" was not injected: check your FXML file 'request-view.fxml'.";
-        assert locationComboBox != null : "fx:id=\"locationComboBox\" was not injected: check your FXML file 'request-view.fxml'.";
-        assert roomComboBox != null : "fx:id=\"roomComboBox\" was not injected: check your FXML file 'request-view.fxml'.";
-        assert sizeComboBox != null : "fx:id=\"sizeComboBox\" was not injected: check your FXML file 'request-view.fxml'.";
-        assert startDatePicker != null : "fx:id=\"startDatePicker\" was not injected: check your FXML file 'request-view.fxml'.";
-        assert startTimeComboBox != null : "fx:id=\"startTimeComboBox\" was not injected: check your FXML file 'request-view.fxml'.";
 
-        initView();
-
-    }
-
-
-
-    private void initView() throws SQLException {
         ArrayList<ObservableList<String>> list = Dataholder.roomRepositoryJDBC.listsForChoiceBox(Constants.CALL_LISTS_FOR_REQUEST_COMBOBOXES);
 
         filterComboBoxes.add(new FilterComboBox(locationComboBox, "Standort", list.get(0), false));
@@ -94,8 +77,9 @@ public class RequestViewController extends BaseController{
         filterComboBoxes.add(new FilterComboBox(courseComboBox, "Kurs", list.get(2), true));
         filterComboBoxes.add(new FilterComboBox(coachComboBox, "Trainer", list.get(3),true));
 
-        startTimeComboBox.setItems(createTimeList());
-        endTimeComboBox.setItems(createTimeList());
+        ObservableList<LocalTime> timeList = ListUtility.createTimeList();
+        startTimeComboBox.setItems(timeList);
+        endTimeComboBox.setItems(timeList);
 
 
         locationComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
@@ -105,13 +89,12 @@ public class RequestViewController extends BaseController{
                 if(newLocation.equals("")){
                     locationComboBox.setPromptText("Standort");
                     roomComboBox.setDisable(true);
-                    requestFilter.setRoomDisable(true);
+                    requestValidator.setRoomDisable(true);
                     sizeComboBox.setDisable(true);
-
 
                 } else {
                     roomComboBox.setDisable(false);
-                    requestFilter.setRoomDisable(false);
+                    requestValidator.setRoomDisable(false);
                     sizeComboBox.setDisable(false);
 
                     try {
@@ -127,21 +110,19 @@ public class RequestViewController extends BaseController{
             }
         });
 
-        startDatePicker.setOnAction(new EventHandler<ActionEvent>() {
+
+
+        datePicker.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
 
-                if(startDatePicker.getValue() != null){
-                    endDatePicker.setDisable(false);
-                } else{
-                    endDatePicker.setDisable(true);
+                if(datePicker.getValue() != null){
+                    startTimeComboBox.setDisable(false);
+                } else {
+                    startTimeComboBox.setDisable(true);
                 }
             }
-
         });
-
-
-
 
         startTimeComboBox.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -157,30 +138,60 @@ public class RequestViewController extends BaseController{
 
     }
 
-
-
     @FXML
     void onRequestButtonClicked(MouseEvent event) throws IOException {
-        requestFilter.setLocation(locationComboBox.getValue());
-        requestFilter.setRoom(roomComboBox.getValue());
-        requestFilter.setUser(coachComboBox.getValue());
-        requestFilter.setEquipment(equipmentComboBox.getValue());
-        requestFilter.setSize(sizeComboBox.getValue());
-        requestFilter.setStartDate(startDatePicker.getValue());
-        requestFilter.setEndDate(endDatePicker.getValue());
-        requestFilter.setStartTime(startTimeComboBox.getValue());
-        requestFilter.setEndTime(endTimeComboBox.getValue());
-        requestFilter.setCourse(courseComboBox.getValue());
+        if(validateFields()){
+            requestValidator.setLocation(locationComboBox.getValue());
+            requestValidator.setRoom(roomComboBox.getValue());
+            requestValidator.setUser(coachComboBox.getValue());
+            requestValidator.setEquipment(equipmentComboBox.getValue());
+            requestValidator.setSize(sizeComboBox.getValue());
+            requestValidator.setDate(datePicker.getValue());
+            requestValidator.setStartTime(startTimeComboBox.getValue());
+            requestValidator.setEndTime(endTimeComboBox.getValue());
+            requestValidator.setCourse(courseComboBox.getValue());
 
 
-        FilteredList<Room> filteredList = new FilteredList<Room>(model.getDataholder().getRooms());
-        filteredList.setPredicate(requestFilter.filter(model));
-        model.setRequestResult(filteredList);
+            FilteredList<Room> filteredList = new FilteredList<Room>(model.getDataholder().getRooms());
+            filteredList.setPredicate(requestValidator.filter());
+            model.setRequestResult(filteredList);
 
-        showNewView(Constants.PATH_TO_ROOM_REQUEST_RESULT_VIEW);
+            showNewView(Constants.PATH_TO_ROOM_REQUEST_RESULT_VIEW);
 
-        Stage stage = (Stage) locationComboBox.getScene().getWindow();
-        stage.close();
+            Stage stage = (Stage) locationComboBox.getScene().getWindow();
+            stage.close();
+
+        }
+
+    }
+
+    private boolean validateFields() {
+        return !emptyFields() && validateDate();
+    }
+
+    private boolean emptyFields() {
+        boolean valid = startTimeComboBox.getValue() != null && (endTimeComboBox.getValue() == null);
+
+        if(valid){
+            errorLabel.setText("Bitte Endzeit angeben!");
+        }
+        return valid;
+
+    }
+
+    private boolean validateDate(){
+        if(DateValidator.validDate(datePicker.getValue())){
+            if(DateValidator.validTime(startTimeComboBox.getValue(), endTimeComboBox.getValue())){
+                return true;
+            } else {
+                errorLabel.setText("Endzeit darf nicht vor und zur gleichen Startzeit gewählt werden!");
+                return false;
+            }
+        } else{
+            errorLabel.setText("Datum darf nicht in der Vergangenheit gewählt werden!");
+            return false;
+        }
+
     }
 
 }

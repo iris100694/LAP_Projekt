@@ -40,7 +40,7 @@
                   <Insets right="20.0" />
                </GridPane.margin>
             </ImageView>
-            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#onLoginButtonClicked" text="Login" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER">
+            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#onLoginButtonClicked" styleClass="custom-button" text="Login" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER">
                <font>
                   <Font name="Century Gothic" size="12.0" />
                </font>
@@ -61,7 +61,7 @@
             </TextField>
          </children>
       </GridPane>
-      <Label maxWidth="1.7976931348623157E308" style="-fx-background-color: #4F60801a;" text="Veranstaltungen">
+      <Label graphicTextGap="15.0" maxWidth="1.7976931348623157E308" style="-fx-background-color: #4F60801a;" text="Veranstaltungen">
          <font>
             <Font name="Century Gothic" size="36.0" />
          </font>
@@ -74,27 +74,27 @@
       </Label>
       <HBox prefWidth="200.0">
          <children>
-            <ChoiceBox id="eventID" fx:id="eventNumberChoiceBox" prefWidth="100.0">
+            <ChoiceBox id="eventID" fx:id="numberChoiceBox" prefWidth="100.0">
                <HBox.margin>
                   <Insets left="5.0" right="5.0" />
                </HBox.margin>
             </ChoiceBox>
-            <ChoiceBox id="eventDescription" fx:id="eventDescriptionChoiceBox" prefWidth="250.0">
+            <ChoiceBox id="eventDescription" fx:id="descriptionChoiceBox" prefWidth="250.0">
                <HBox.margin>
                   <Insets left="5.0" right="5.0" />
                </HBox.margin>
             </ChoiceBox>
-            <ChoiceBox id="eventDate" fx:id="eventDateChoiceBox" prefWidth="150.0">
+            <ChoiceBox id="eventDate" fx:id="dateChoiceBox" prefWidth="150.0">
                <HBox.margin>
                   <Insets left="5.0" right="5.0" />
                </HBox.margin>
             </ChoiceBox>
-            <ChoiceBox id="eventStart" fx:id="eventStartChoiceBox" maxHeight="200.0" prefWidth="150.0">
+            <ChoiceBox id="eventStart" fx:id="startChoiceBox" maxHeight="200.0" prefWidth="150.0">
                <HBox.margin>
                   <Insets left="5.0" right="5.0" />
                </HBox.margin>
             </ChoiceBox>
-            <ChoiceBox id="eventEnd" fx:id="eventEndChoiceBox" prefWidth="150.0">
+            <ChoiceBox id="eventEnd" fx:id="endChoiceBox" prefWidth="150.0">
                <HBox.margin>
                   <Insets left="5.0" right="5.0" />
                </HBox.margin>
@@ -106,11 +106,11 @@
       </HBox>
       <TableView fx:id="eventTable" prefHeight="393.0" styleClass="table">
          <columns>
-            <TableColumn fx:id="eventNumberColumn" prefWidth="37.0" resizable="false" styleClass="tableColumn" text="Nr." />
-            <TableColumn fx:id="eventTitleColumn" prefWidth="200.0" resizable="false" styleClass="tableColumn" text="Veranstaltung" />
-            <TableColumn fx:id="eventDateColumn" minWidth="0.0" prefWidth="100.0" styleClass="tableColumn" text="Datum" />
-            <TableColumn fx:id="eventStartColumn" styleClass="tableColumn" text="Beginn" />
-            <TableColumn fx:id="eventEndColumn" styleClass="tableColumn" text="Ende" />
+            <TableColumn fx:id="numberColumn" prefWidth="60.0" resizable="false" styleClass="tableColumn" text="Nr." />
+            <TableColumn fx:id="titleColumn" prefWidth="250.0" resizable="false" styleClass="tableColumn" text="Veranstaltung" />
+            <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="100.0" styleClass="tableColumn" text="Datum" />
+            <TableColumn fx:id="startColumn" styleClass="tableColumn" text="Beginn" />
+            <TableColumn fx:id="endColumn" styleClass="tableColumn" text="Ende" />
          </columns>
          <VBox.margin>
             <Insets top="40.0" />

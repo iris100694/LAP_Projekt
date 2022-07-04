@@ -10,16 +10,13 @@ package com.lap.roomplaningsystem.controller.deleteController;
         import com.lap.roomplaningsystem.model.Dataholder;
         import com.lap.roomplaningsystem.model.Event;
         import com.lap.roomplaningsystem.model.RoomEquipment;
+        import javafx.event.ActionEvent;
         import javafx.fxml.FXML;
         import javafx.scene.control.Label;
         import javafx.scene.input.MouseEvent;
         import javafx.stage.Stage;
 
 public class RoomEquipmentOnDeleteController extends BaseController {
-
-
-    @FXML
-    private URL location;
 
     @FXML
     private Label equipmentLabel;
@@ -30,18 +27,17 @@ public class RoomEquipmentOnDeleteController extends BaseController {
     @FXML
     private Label roomLabel;
 
+    private RoomEquipment roomEquipment;
+
 
 
     @FXML
     void initialize() {
-        assert equipmentLabel != null : "fx:id=\"equipmentLabel\" was not injected: check your FXML file 'roomEquipmentOnDelete-view.fxml'.";
-        assert numberLabel != null : "fx:id=\"numberLabel\" was not injected: check your FXML file 'roomEquipmentOnDelete-view.fxml'.";
-        assert roomLabel != null : "fx:id=\"roomLabel\" was not injected: check your FXML file 'roomEquipmentOnDelete-view.fxml'.";
 
         Optional<RoomEquipment> optionalRoomEquipment = model.getDataholder().getRoomEquipments().stream().filter(e -> e.getRoomEquipmentID() == model.getSelectedRoomEquipmentProperty().getRoomEquipmentID()).findAny();
 
         if(optionalRoomEquipment.isPresent()){
-            RoomEquipment roomEquipment = optionalRoomEquipment.get();
+            roomEquipment = optionalRoomEquipment.get();
             numberLabel.setText("RA" + roomEquipment.getRoomEquipmentID());
             roomLabel.setText(roomEquipment.getRoom().getDescription());
             equipmentLabel.setText(roomEquipment.getEquipment().getDescription());
@@ -50,33 +46,25 @@ public class RoomEquipmentOnDeleteController extends BaseController {
     }
 
     @FXML
-    void onNoButtonClicked(MouseEvent event) {
-        Stage stage = (Stage) numberLabel.getScene().getWindow();
-        stage.close();
+    void onNoButtonClicked(ActionEvent event) {
+        closeStage(numberLabel);
 
     }
 
     @FXML
-    void onYesButtonClicked(MouseEvent event) {
-
-        Optional <RoomEquipment> optionalRoomEquipment = model.getDataholder().getRoomEquipments().stream().filter(e -> e.getRoomEquipmentID() == model.getSelectedRoomEquipmentProperty().getRoomEquipmentID()).findAny();
+    void onYesButtonClicked(ActionEvent event) throws SQLException {
         model.setSelectedRoomEquipmentProperty(null);
 
-        optionalRoomEquipment.ifPresent(e -> {
-            try {
-                boolean isDeleted = Dataholder.roomEquipmentRepositoryJDBC.delete(e);
-                if(isDeleted){
-                    model.getDataholder().deleteRoomEquipment(e);
+        if(deleteRoomEquipmentByJDBC()){
+            model.getDataholder().deleteRoomEquipment(roomEquipment);
+        }
 
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        });
+        closeStage(numberLabel);
 
-        Stage stage = (Stage) numberLabel.getScene().getWindow();
-        stage.close();
+    }
 
+    private boolean deleteRoomEquipmentByJDBC() throws SQLException {
+        return Dataholder.roomEquipmentRepositoryJDBC.delete(roomEquipment);
     }
 
 }

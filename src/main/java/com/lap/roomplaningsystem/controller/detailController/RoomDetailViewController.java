@@ -10,6 +10,9 @@ import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.Event;
 import com.lap.roomplaningsystem.model.Room;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,91 +21,84 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 
 public class RoomDetailViewController extends BaseController {
 
-    @FXML
-    private ResourceBundle resources;
 
     @FXML
-    private URL location;
+    private Button deleteButton;
 
     @FXML
-    private Button deleteRoom;
+    private ImageView imageView;
 
     @FXML
-    private Button editRoom;
-
-
-    @FXML
-    private Label roomDetailViewNumberLabel;
+    private Label locationLabel;
 
     @FXML
-    private ImageView roomDetailImageView;
+    private Label membersLabel;
 
     @FXML
-    private Label roomDetailLocationLabel;
+    private Label numberLabel;
 
     @FXML
-    private Label roomDetailMembersLabel;
+    private Label titleLabel;
 
     @FXML
-    private Label roomDetailTitleLabel;
+    private Button updateButton;
+
+    private Room room;
+
+    private Stage stage;
 
 
 
     @FXML
     void initialize() {
-        assert deleteRoom != null : "fx:id=\"deleteRoom\" was not injected: check your FXML file 'roomDetail-view.fxml'.";
-        assert editRoom != null : "fx:id=\"editRoom\" was not injected: check your FXML file 'roomDetail-view.fxml'.";
-        assert roomDetailViewNumberLabel != null : "fx:id=\"eventDetailViewNumberLabel\" was not injected: check your FXML file 'roomDetail-view.fxml'.";
-        assert roomDetailImageView != null : "fx:id=\"roomDetailImageView\" was not injected: check your FXML file 'roomDetail-view.fxml'.";
-        assert roomDetailLocationLabel != null : "fx:id=\"roomDetailLocationLabel\" was not injected: check your FXML file 'roomDetail-view.fxml'.";
-        assert roomDetailMembersLabel != null : "fx:id=\"roomDetailMembersLabel\" was not injected: check your FXML file 'roomDetail-view.fxml'.";
-        assert roomDetailTitleLabel != null : "fx:id=\"roomDetailTitleLabel\" was not injected: check your FXML file 'roomDetail-view.fxml'.";
 
         Optional<Room> optionalRoom = model.getDataholder().getRooms().stream().filter(room -> room == model.getSelectedRoomProperty()).findAny();
 
         if (optionalRoom.isPresent()){
-            Room r = optionalRoom.get();
+            room = optionalRoom.get();
 
-            roomDetailViewNumberLabel.setText("R" + r.getRoomID());
-            roomDetailTitleLabel.setText(r.getDescription());
-            roomDetailLocationLabel.setText(r.getLocation().getDescription());
-            roomDetailMembersLabel.setText(String.valueOf(r.getMaxPersons()));
-            if(r.getPhoto() != null){
-                roomDetailImageView.setImage(new Image(new ByteArrayInputStream(r.getPhoto())));
+            numberLabel.setText("R" + room.getRoomID());
+            titleLabel.setText(room.getDescription());
+            locationLabel.setText(room.getLocation().getDescription());
+            membersLabel.setText(String.valueOf(room.getMaxPersons()));
+
+            if(room.getPhoto() != null){
+                imageView.setImage(new Image(new ByteArrayInputStream(room.getPhoto())));
             }
 
         }
 
-        editAuthorization();
+        updateAuthorization();
 
     }
 
 
 
-    private void editAuthorization() {
+
+    private void updateAuthorization() {
         if(model.getAuthorization().equals("admin")){
-        editRoom.setVisible(true);
-        deleteRoom.setVisible(true);
+        updateButton.setVisible(true);
+        deleteButton.setVisible(true);
         }
     }
 
 
     @FXML
-    private void onRoomDeleteButtonClicked(MouseEvent mouseEvent) throws IOException {
+    private void onDeleteButtonClicked(ActionEvent event)  throws IOException {
         showNewView(Constants.PATH_TO_ROOM_ON_DELETE_VIEW);
-
-        Stage detailStage = (Stage) roomDetailViewNumberLabel.getScene().getWindow();
-        detailStage.close();
+        closeStage(numberLabel);
     }
 
     @FXML
-    private void onRoomEditButtonClicked(MouseEvent mouseEvent) throws IOException {
+    private void onUpdateButtonClicked(ActionEvent event) throws IOException {
         showNewView(Constants.PATH_TO_ROOM_UPDATE_VIEW);
-
-        Stage detailStage = (Stage) editRoom.getScene().getWindow();
-        detailStage.close();
+        closeStage(numberLabel);
     }
+
+
 }

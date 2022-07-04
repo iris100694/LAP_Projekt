@@ -1,0 +1,57 @@
+package com.lap.roomplaningsystem.converter;
+
+import com.lap.roomplaningsystem.controller.BaseController;
+import com.lap.roomplaningsystem.model.Course;
+import com.lap.roomplaningsystem.model.Location;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import javafx.scene.control.ComboBox;
+import javafx.util.StringConverter;
+
+public class LocationConverter implements ConverterInterface<Location> {
+
+    private ObservableList<Location> locationList;
+
+
+    public LocationConverter() {
+        this.locationList = BaseController.model.getDataholder().getLocations();
+
+//        locationList.addListener(new ListChangeListener<Location>() {
+//            @Override
+//            public void onChanged(Change<? extends Location> change) {
+//                updateList(locationList);
+//            }
+//        });
+    }
+
+    @Override
+    public void updateList(ObservableList<Location> list) {
+        this.locationList = list;
+    }
+
+    @Override
+    public void setConverter(ComboBox<Location> box) {
+
+        box.setConverter(new StringConverter<Location>() {
+            @Override
+            public String toString(Location location) {
+                return location == null ? "Standort" : location.getDescription();
+            }
+
+            @Override
+            public Location fromString(String s) {
+                return matchByString(s);
+            }
+        });
+    }
+
+    @Override
+    public Location matchByString(String s) {
+        for(Location l : locationList){
+            if(l.getDescription().equals(s)){
+                return l;
+            }
+        }
+        return null;
+    }
+}

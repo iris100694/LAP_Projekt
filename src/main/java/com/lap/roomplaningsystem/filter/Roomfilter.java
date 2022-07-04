@@ -3,13 +3,18 @@ package com.lap.roomplaningsystem.filter;
 import com.lap.roomplaningsystem.filterBoxes.FilterBox;
 import com.lap.roomplaningsystem.filterBoxes.FilterCheckBox;
 import com.lap.roomplaningsystem.model.Room;
-import com.lap.roomplaningsystem.repository.JDBC.RoomRepositoryJDBC;
+import com.lap.roomplaningsystem.model.RoomEquipment;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.util.Callback;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
+
+import static com.lap.roomplaningsystem.controller.BaseController.model;
 
 public class Roomfilter {
 
@@ -21,6 +26,7 @@ public class Roomfilter {
     private String location = "";
     private String equipment = "";
     private boolean image;
+    private FilteredList<Room> filteredList;
 
     ObservableList<FilterBox> filterBoxes= FXCollections.observableArrayList(new Callback<FilterBox, Observable[]>() {
         @Override
@@ -33,28 +39,94 @@ public class Roomfilter {
     public Roomfilter() {
     }
 
-    public Optional<ObservableList<Room>> filterValue(RoomRepositoryJDBC roomRepositoryJDBC, String id, String newValue) throws Exception {
+    public FilteredList<Room> filterValue (String id, String newValue) {
         switch (id) {
-            case "roomID": {setId(newValue); break;}
-            case "roomDescription": {setDescription(newValue); break;}
-            case "roomSize": {setSize(newValue); break;}
-            case "roomLocation": {setLocation(newValue); break;}
-            case "roomEquipment": {setEquipment(newValue); break;}
+            case "roomID": {
+                setId(newValue);
+                break;
+            }
+            case "roomDescription": {
+                setDescription(newValue);
+                break;
+            }
+            case "roomSize": {
+                setSize(newValue);
+                break;
+            }
+            case "roomLocation": {
+                setLocation(newValue);
+                break;
+            }
+            case "roomEquipment": {
+                setEquipment(newValue);
+                break;
+            }
         }
 
-        return roomRepositoryJDBC.filter(roomRepositoryJDBC.createFilterStatement(this.getId(), this.getDescription(), this.getSize(), this.getLocation(), this.getEquipment(), this.isImage()), isBlank(this.getEquipment()));
+        return filter();
     }
 
-    public Optional<ObservableList<Room>> getTableByFilterState(RoomRepositoryJDBC roomRepositoryJDBC) throws Exception {
-        return roomRepositoryJDBC.filter(roomRepositoryJDBC.createFilterStatement(this.getId(), this.getDescription(), this.getSize(), this.getLocation(), this.getEquipment(), this.isImage()), isBlank(this.getEquipment()));
+    public FilteredList<Room> filter() {
+
+        FilteredList<Room> filteredList = new FilteredList<>(model.getDataholder().getRooms());
+        filteredList.setPredicate(createPredicates());
+
+        this.filteredList = filteredList;
+
+        return filteredList;
     }
 
-    public Optional<ObservableList<Room>> filterValueWithImage(RoomRepositoryJDBC roomRepositoryJDBC, boolean checkImage) throws Exception {
 
-        setImage(checkImage);
 
-        return roomRepositoryJDBC.filter(roomRepositoryJDBC.createFilterStatement(this.getId(), this.getDescription(), this.getSize(), this.getLocation(), this.getEquipment(), this.isImage()), isBlank(this.getEquipment()));
+    private Predicate<Room> createPredicates() {
+
+        List<Predicate<Room>> predicateList = new ArrayList<>();
+
+
+        if(!isBlank(id)){
+            predicateList.add(r -> String.valueOf(r.getRoomID()).equals(id));
+        }
+
+        if(!isBlank(description)){
+            predicateList.add(r -> r.getDescription().equals(description));
+        }
+
+        if(!isBlank(size)){
+            predicateList.add(r -> String.valueOf(r.getMaxPersons()).equals(size));
+        }
+
+        if(!isBlank(location)){
+            predicateList.add(r -> r.getLocation().getDescription().equals(location));
+        }
+
+        if(!isBlank(equipment)){
+            List<RoomEquipment> list = filterEquipment();
+            predicateList.add(r -> list.stream().anyMatch(re -> r.getRoomID() == re.getRoom().getRoomID()));
+        }
+
+        if(image){
+            predicateList.add(r -> r.getPhoto() != null);
+        }
+
+
+        return predicateList.stream().reduce(r -> true, Predicate::and);
+
     }
+
+    private List<RoomEquipment> filterEquipment() {
+        return model.getDataholder().getRoomEquipments().stream().filter(re -> re.getEquipment().getDescription().equals(equipment)).toList();
+    }
+
+//    public Optional<ObservableList<Room>> getTableByFilterState(RoomRepositoryJDBC roomRepositoryJDBC) throws Exception {
+//        return roomRepositoryJDBC.filter(roomRepositoryJDBC.createFilterStatement(this.getId(), this.getDescription(), this.getSize(), this.getLocation(), this.getEquipment(), this.isImage()), isBlank(this.getEquipment()));
+//    }
+//
+//    public Optional<ObservableList<Room>> filterValueWithImage(RoomRepositoryJDBC roomRepositoryJDBC, boolean checkImage) throws Exception {
+//
+//        setImage(checkImage);
+//
+//        return roomRepositoryJDBC.filter(roomRepositoryJDBC.createFilterStatement(this.getId(), this.getDescription(), this.getSize(), this.getLocation(), this.getEquipment(), this.isImage()), isBlank(this.getEquipment()));
+//    }
 
     private boolean isBlank(String s){
         return s.equals("");
@@ -127,4 +199,13 @@ public class Roomfilter {
     public void setImage(boolean image) {
         this.image = image;
     }
+
+    public FilteredList<Room> getFilteredList() {
+        return filteredList;
+    }
+
+    public void setFilteredList(FilteredList<Room> filteredList) {
+        this.filteredList = filteredList;
+    }
 }
+

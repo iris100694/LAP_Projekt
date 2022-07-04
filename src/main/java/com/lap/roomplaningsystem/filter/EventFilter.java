@@ -2,13 +2,19 @@ package com.lap.roomplaningsystem.filter;
 
 import com.lap.roomplaningsystem.filterBoxes.FilterBox;
 import com.lap.roomplaningsystem.model.Event;
+import com.lap.roomplaningsystem.model.Room;
 import com.lap.roomplaningsystem.repository.JDBC.EventRepositoryJDBC;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.util.Callback;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class EventFilter {
 
@@ -25,7 +31,12 @@ public class EventFilter {
         }
     });
 
-    public Optional<ObservableList<Event>> filterValue(EventRepositoryJDBC eventRepositoryJDBC, String id, String newValue) throws Exception {
+    public FilteredList<Event> getFilteredList(ObservableList<Event> events){
+        return filter(events);
+    }
+
+
+    public FilteredList<Event> setFilterValue(ObservableList<Event> events, String id, String newValue){
 
         switch(id){
             case "eventID": {setId(newValue); break;}
@@ -35,12 +46,51 @@ public class EventFilter {
             case "eventEnd": {setEnd(newValue); break;}
         }
 
-
-        return eventRepositoryJDBC.filter(eventRepositoryJDBC.createFilterStatement(this.getId(), this.getDescription(), this.getDate(), this.getStart(), this.getEnd()));
+        return filter(events);
     }
 
-    public Optional<ObservableList<Event>> getTableByFilterState(EventRepositoryJDBC eventRepositoryJDBC) throws Exception {
-        return eventRepositoryJDBC.filter(eventRepositoryJDBC.createFilterStatement(this.getId(), this.getDescription(), this.getDate(), this.getStart(), this.getEnd()));
+
+    private FilteredList<Event> filter(ObservableList<Event> events) {
+
+        FilteredList<Event> filteredList = new FilteredList<>(events);
+        filteredList.setPredicate(createPredicates());
+
+        return filteredList;
+    }
+
+
+    public Predicate<Event> createPredicates(){
+
+        List<Predicate<Event>> predicateList = new ArrayList<>();
+
+
+        if(!isBlank(id)){
+            predicateList.add(e -> String.valueOf(e.getEventID()).equals(id));
+        }
+
+        if(!isBlank(description)){
+            predicateList.add(e -> (e.getCourse().getProgram().getDescription()).equals(description));
+        }
+
+        if(!isBlank(date)){
+            predicateList.add(e -> e.getDate().toString().equals(date));
+        }
+
+        if(!isBlank(start)){
+            predicateList.add(e -> e.getStartTime().toString().equals(start));
+        }
+
+        if(!isBlank(end)){
+            predicateList.add(e -> e.getEndTime().toString().equals(end));
+        }
+
+
+
+        return predicateList.stream().reduce(r -> true, Predicate::and);
+    }
+
+    private boolean isBlank(String s) {
+        return s.equals("");
     }
 
 

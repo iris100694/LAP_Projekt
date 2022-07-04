@@ -31,7 +31,7 @@ public class FilterComboBox {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
                 if(newValue.equals("")){
-//                    comboBox.setPlaceholder(new Text(defaultValue));
+//                    comboBox.setPromptText(defaultValue);
                 }
             }
         });

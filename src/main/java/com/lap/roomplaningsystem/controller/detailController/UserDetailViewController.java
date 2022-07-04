@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.User;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -20,132 +21,98 @@ import javafx.stage.Stage;
 public class UserDetailViewController extends BaseController {
 
     @FXML
-    private ResourceBundle resources;
+    private Label activLabel;
 
     @FXML
-    private URL location;
+    private Label authorizationLabel;
 
     @FXML
-    private Button deleteUser;
+    private Label firstnameLabel;
 
     @FXML
-    private Button editUser;
+    private ImageView imageView;
 
     @FXML
-    private Label userDetailViewActivLabel;
+    private Label lastnameLabel;
 
     @FXML
-    private Label userDetailViewAuthorizationLabel;
+    private Label mailLabel;
 
     @FXML
-    private Label userDetailViewFirstnameLabel;
+    private Label mailVisableLabel;
 
     @FXML
-    private ImageView userDetailViewImageView;
+    private Label numberLabel;
 
     @FXML
-    private Label userDetailViewLastnameLabel;
+    private Label phoneLabel;
 
     @FXML
-    private Label userDetailViewMailLabel;
+    private Label phoneVisableLabel;
 
     @FXML
-    private Label userDetailViewMailVisableLabel;
+    private Label photoVisableLabel;
 
     @FXML
-    private Label userDetailViewNumberLabel;
+    private Label textLabel;
 
     @FXML
-    private Label userDetailViewPhoneLabel;
+    private Label textVisableLabel;
 
     @FXML
-    private Label userDetailViewPhoneVisableLabel;
+    private Label titleLabel;
 
     @FXML
-    private Label userDetailViewPhotoVisableLabel;
+    private Label coachLabel;
 
     @FXML
-    private Label userDetailViewTextLabel;
+    private Label usernameLabel;
 
-    @FXML
-    private Label userDetailViewTextVisableLabel;
-
-    @FXML
-    private Label userDetailViewTitleLabel;
-
-    @FXML
-    private Label userDetailViewTrainerLabel;
-
-    @FXML
-    private Label userDetailViewUsernameLabel;
+    private User user;
 
 
 
     @FXML
     void initialize() {
-        assert deleteUser != null : "fx:id=\"deleteUser\" was not injected: check your FXML file 'userDetail-view.fxml'.";
-        assert editUser != null : "fx:id=\"editUser\" was not injected: check your FXML file 'userDetail-view.fxml'.";
-        assert userDetailViewActivLabel != null : "fx:id=\"userDetailViewActivLabel\" was not injected: check your FXML file 'userDetail-view.fxml'.";
-        assert userDetailViewAuthorizationLabel != null : "fx:id=\"userDetailViewAuthorizationLabel\" was not injected: check your FXML file 'userDetail-view.fxml'.";
-        assert userDetailViewFirstnameLabel != null : "fx:id=\"userDetailViewFirstnameLabel\" was not injected: check your FXML file 'userDetail-view.fxml'.";
-        assert userDetailViewImageView != null : "fx:id=\"userDetailViewImageView\" was not injected: check your FXML file 'userDetail-view.fxml'.";
-        assert userDetailViewLastnameLabel != null : "fx:id=\"userDetailViewLastnameLabel\" was not injected: check your FXML file 'userDetail-view.fxml'.";
-        assert userDetailViewMailLabel != null : "fx:id=\"userDetailViewMailLabel\" was not injected: check your FXML file 'userDetail-view.fxml'.";
-        assert userDetailViewMailVisableLabel != null : "fx:id=\"userDetailViewMailVisableLabel\" was not injected: check your FXML file 'userDetail-view.fxml'.";
-        assert userDetailViewNumberLabel != null : "fx:id=\"userDetailViewNumberLabel\" was not injected: check your FXML file 'userDetail-view.fxml'.";
-        assert userDetailViewPhoneLabel != null : "fx:id=\"userDetailViewPhoneLabel\" was not injected: check your FXML file 'userDetail-view.fxml'.";
-        assert userDetailViewPhoneVisableLabel != null : "fx:id=\"userDetailViewPhoneVisableLabel\" was not injected: check your FXML file 'userDetail-view.fxml'.";
-        assert userDetailViewPhotoVisableLabel != null : "fx:id=\"userDetailViewPhotoVisableLabel\" was not injected: check your FXML file 'userDetail-view.fxml'.";
-        assert userDetailViewTextLabel != null : "fx:id=\"userDetailViewTextLabel\" was not injected: check your FXML file 'userDetail-view.fxml'.";
-        assert userDetailViewTextVisableLabel != null : "fx:id=\"userDetailViewTextVisableLabel\" was not injected: check your FXML file 'userDetail-view.fxml'.";
-        assert userDetailViewTitleLabel != null : "fx:id=\"userDetailViewTitleLabel\" was not injected: check your FXML file 'userDetail-view.fxml'.";
-        assert userDetailViewTrainerLabel != null : "fx:id=\"userDetailViewTrainerLabel\" was not injected: check your FXML file 'userDetail-view.fxml'.";
-        assert userDetailViewUsernameLabel != null : "fx:id=\"userDetailViewUsernameLabel\" was not injected: check your FXML file 'userDetail-view.fxml'.";
 
         Optional<User> optionalUser = model.getDataholder().getUsers().stream().filter(user -> user == model.getSelectedUserProperty()).findAny();
 
         if(optionalUser.isPresent()) {
-            User u = optionalUser.get();
+            user = optionalUser.get();
 
-            userDetailViewFirstnameLabel.setText(u.getFirstname());
-            userDetailViewLastnameLabel.setText(u.getLastname());
-            userDetailViewTitleLabel.setText(u.getTitle());
-            userDetailViewActivLabel.setText(u.isActive() ? "aktiv" : "inaktiv");
-            userDetailViewAuthorizationLabel.setText(u.getAuthorization() == "admin" ? "Administator" : "Trainer");
-            userDetailViewUsernameLabel.setText(u.getUsername());
-            userDetailViewTrainerLabel.setText(u.isTrainer() ? "ja" : "nein");
-            userDetailViewTextLabel.setText(u.getText());
-            userDetailViewTextVisableLabel.setText(u.isTextVisable() ? "ja" : "nein");
-            userDetailViewPhoneLabel.setText(u.getPhone());
-            userDetailViewPhoneVisableLabel.setText(u.isPhoneVisable() ? "ja" : "nein");
-            userDetailViewMailLabel.setText(u.getEmail());
-            userDetailViewMailVisableLabel.setText(u.isEmailVisable() ? "ja" : "nein");
-            userDetailViewPhotoVisableLabel.setText(u.isPhotoVisable() ? "ja" : "nein");
+            firstnameLabel.setText(user.getFirstname());
+            lastnameLabel.setText(user.getLastname());
+            titleLabel.setText(user.getTitle());
+            activLabel.setText(user.isActive() ? "aktiv" : "inaktiv");
+            authorizationLabel.setText(user.getAuthorization() == "admin" ? "Administator" : "Trainer");
+            usernameLabel.setText(user.getUsername());
+            coachLabel.setText(user.isTrainer() ? "ja" : "nein");
+            textLabel.setText(user.getText());
+            textVisableLabel.setText(user.isTextVisable() ? "ja" : "nein");
+            phoneLabel.setText(user.getPhone());
+            phoneVisableLabel.setText(user.isPhoneVisable() ? "ja" : "nein");
+            mailLabel.setText(user.getEmail());
+            mailVisableLabel.setText(user.isEmailVisable() ? "ja" : "nein");
+            photoVisableLabel.setText(user.isPhotoVisable() ? "ja" : "nein");
 
-            if (u.getPhoto() != null) {
-                userDetailViewImageView.setImage(new Image(new ByteArrayInputStream(u.getPhoto())));
+            if (user.getPhoto() != null) {
+                imageView.setImage(new Image(new ByteArrayInputStream(user.getPhoto())));
             }
         }
-
-
     }
 
 
     @FXML
-    void onActivButtonClicked(MouseEvent event) throws IOException {
+    void  onActivButtonClicked(ActionEvent event) throws IOException {
         showNewView(Constants.PATH_TO_USER_ON_ACTIV_VIEW);
-
-        Stage detailStage = (Stage) userDetailViewNumberLabel.getScene().getWindow();
-        detailStage.close();
+        closeStage(numberLabel);
 
     }
 
     @FXML
-    void onUserEditButtonClicked(MouseEvent event) throws IOException {
+    void onUpdateButtonClicked(MouseEvent event) throws IOException {
         showNewView(Constants.PATH_TO_USER_UPDATE_VIEW);
-
-        Stage detailStage = (Stage) editUser.getScene().getWindow();
-        detailStage.close();
+        closeStage(numberLabel);
     }
 
 

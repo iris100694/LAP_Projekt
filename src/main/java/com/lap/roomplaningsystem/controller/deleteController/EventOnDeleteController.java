@@ -9,6 +9,7 @@ import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.Dataholder;
 import com.lap.roomplaningsystem.model.Event;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -17,85 +18,67 @@ import javafx.stage.Stage;
 public class EventOnDeleteController extends BaseController {
 
     @FXML
-    private ResourceBundle resources;
+    private Label dateLabel;
 
     @FXML
-    private URL location;
+    private Label descriptionLabel;
 
     @FXML
-    private Label deleteLabel;
-
-   @FXML
-    private Label eventDateLabel;
+    private Label endLabel;
 
     @FXML
-    private Label eventEndLabel;
+    private Label locationLabel;
 
     @FXML
-    private Label eventStartLabel;
+    private Label roomLabel;
 
     @FXML
-    private Label eventLocationLabel;
+    private Label startLabel;
 
     @FXML
-    private Label eventRoomLabel;
+    private Label numberLabel;
 
-
+    private Event event;
 
 
     @FXML
     void initialize() {
-        assert deleteLabel != null : "fx:id=\"deleteLabel\" was not injected: check your FXML file 'eventDetailOnDelete-view.fxml'.";
-        assert eventDateLabel != null : "fx:id=\"eventDateLabel\" was not injected: check your FXML file 'eventDetailOnDelete-view.fxml'.";
-        assert eventEndLabel != null : "fx:id=\"eventEndLabel\" was not injected: check your FXML file 'eventDetailOnDelete-view.fxml'.";
-        assert eventStartLabel != null : "fx:id=\"eventStartLabel\" was not injected: check your FXML file 'eventDetailOnDelete-view.fxml'.";
 
 
         Optional<Event> optionalEvent = model.getDataholder().getEvents().stream().filter(e -> e == model.getSelectedEventProperty()).findAny();
 
         if(optionalEvent.isPresent()){
-            deleteLabel.setText("V" + String.valueOf(optionalEvent.get().getEventID()) + "  " + optionalEvent.get().getCourse().getTitle() + "  " + optionalEvent.get().getCourse().getProgram().getDescription());
-            eventDateLabel.setText(String.valueOf(optionalEvent.get().getDate()));
-            eventStartLabel.setText(String.valueOf(optionalEvent.get().getStartTime()));
-            eventEndLabel.setText(String.valueOf(optionalEvent.get().getEndTime()));
-            eventRoomLabel.setText(optionalEvent.get().getRoom().getDescription());
-            eventLocationLabel.setText(optionalEvent.get().getRoom().getLocation().getDescription());
+            event = optionalEvent.get();
+
+            numberLabel.setText("V" + String.valueOf(event.getEventID()) + "  " + event.getCourse().getTitle() + "  " + event.getCourse().getProgram().getDescription());
+            dateLabel.setText(String.valueOf(event.getDate()));
+            startLabel.setText(String.valueOf(event.getStartTime()));
+            endLabel.setText(String.valueOf(event.getEndTime()));
+            roomLabel.setText(event.getRoom().getDescription());
+            locationLabel.setText(event.getRoom().getLocation().getDescription());
         }
 
-
     }
 
 
     @FXML
-    void onNoButtonClicked(MouseEvent event) {
-        Stage stage = (Stage) deleteLabel.getScene().getWindow();
-        stage.close();
-
+    void onNoButtonClicked(ActionEvent event) {
+        closeStage(numberLabel);
     }
 
     @FXML
-    void onYesButtonClicked(MouseEvent event) {
-        Optional <Event> optionalEvent = model.getDataholder().getEvents().stream().filter(e -> e == model.getSelectedEventProperty()).findAny();
+    void onYesButtonClicked(ActionEvent event) throws SQLException {
         model.setSelectedEventProperty(null);
 
-        optionalEvent.ifPresent(e -> {
-            try {
-                boolean isDeleted = Dataholder.eventRepositoryJDBC.delete(e);
+        if(deleteEventByJDBC()){
+            model.getDataholder().deleteEvent(this.event);
+        }
 
-                if(isDeleted){
-                    model.getDataholder().deleteEvent(e);
+        closeStage(numberLabel);
 
-                }
+    }
 
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-
-            Stage stage = (Stage) deleteLabel.getScene().getWindow();
-            stage.close();
-
-        });
-
-
+    private boolean deleteEventByJDBC() throws SQLException {
+        return Dataholder.eventRepositoryJDBC.delete(event);
     }
 }

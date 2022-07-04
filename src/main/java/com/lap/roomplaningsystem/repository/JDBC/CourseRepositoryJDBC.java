@@ -19,6 +19,9 @@ public class CourseRepositoryJDBC extends Repository implements CourseRepository
         CallableStatement stmt = connection.prepareCall(query);
         ResultSet resultSet = stmt.executeQuery();
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return createCourses(resultSet);
     }
 
@@ -47,6 +50,9 @@ public class CourseRepositoryJDBC extends Repository implements CourseRepository
             course = new Course(courseID, program, description, members, startDate, endDate);
         }
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return course;
     }
 
@@ -71,14 +77,29 @@ public class CourseRepositoryJDBC extends Repository implements CourseRepository
 
         int isUpdated = stmt.executeUpdate();
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return isUpdated != 0;
 
 
     }
 
     @Override
-    public void delete(Course course) throws SQLException {
+    public boolean delete(Course course) throws SQLException {
+        Connection connection = connect();
 
+        String query = "DELETE FROM course WHERE COURSEID = ?";
+
+        PreparedStatement stmt = connection.prepareStatement(query);
+        stmt.setInt(1, course.getCourseID());
+
+        int isDeleted = stmt.executeUpdate();
+
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
+        return isDeleted != 0;
     }
 
 

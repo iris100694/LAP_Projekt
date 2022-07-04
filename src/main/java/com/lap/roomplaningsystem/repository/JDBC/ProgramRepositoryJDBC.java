@@ -19,6 +19,9 @@ public class ProgramRepositoryJDBC extends Repository implements ProgramReposito
         CallableStatement stmt = connection.prepareCall(query);
         ResultSet resultSet = stmt.executeQuery();
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return createPrograms(resultSet);
     }
 
@@ -44,6 +47,9 @@ public class ProgramRepositoryJDBC extends Repository implements ProgramReposito
             program = new Program(programID, description);
         }
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return program;
 
 
@@ -66,6 +72,9 @@ public class ProgramRepositoryJDBC extends Repository implements ProgramReposito
 
         int isUpdated = stmt.executeUpdate();
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return isUpdated != 0;
 
     }
@@ -81,6 +90,9 @@ public class ProgramRepositoryJDBC extends Repository implements ProgramReposito
         stmt.setInt(1, program.getProgramID());
 
         int isDeleted = stmt.executeUpdate();
+
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
 
         return isDeleted != 0;
     }

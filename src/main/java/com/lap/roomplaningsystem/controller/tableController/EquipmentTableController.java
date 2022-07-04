@@ -7,9 +7,12 @@ import java.util.ResourceBundle;
 import com.lap.roomplaningsystem.app.Constants;
 import com.lap.roomplaningsystem.controller.BaseController;
 import com.lap.roomplaningsystem.model.Equipment;
+import com.lap.roomplaningsystem.model.Room;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -18,43 +21,40 @@ import javafx.scene.control.TableView;
 public class EquipmentTableController extends BaseController {
 
     @FXML
-    private ResourceBundle resources;
+    private TableColumn<Equipment, String> descriptionColumn;
 
     @FXML
-    private URL location;
+    private TableColumn<Equipment, String> numberColumn;
 
     @FXML
-    private TableColumn<Equipment, String> equipmentDescriptionColumn;
-
-    @FXML
-    private TableView<Equipment> equipmentTableView;
-
-    @FXML
-    private TableColumn<Equipment, String> equipmentNumberColumn;
-
+    private TableView<Equipment> tableView;
 
 
     @FXML
     void initialize() {
-        assert equipmentDescriptionColumn != null : "fx:id=\"equipmentDescriptionColumn\" was not injected: check your FXML file 'equipmentTable.fxml'.";
-        assert equipmentTableView != null : "fx:id=\"equipmentTableView\" was not injected: check your FXML file 'equipmentTable.fxml'.";
-        assert equipmentNumberColumn != null : "fx:id=\"roomNumberColumn\" was not injected: check your FXML file 'equipmentTable.fxml'.";
+        tableView.setItems(model.getDataholder().getEquipments());
 
-        equipmentTableView.setItems(model.getDataholder().getEquipments());
+        numberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("A" + String.valueOf(dataFeatures.getValue().getEquipmentID())));
+        descriptionColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDescription()));
 
-        equipmentNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("A" + String.valueOf(dataFeatures.getValue().getEquipmentID())));
-        equipmentDescriptionColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDescription()));
-
-        equipmentTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) ->  {
+        tableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) ->  {
             try {
-                if(nv != null){
+                if(nv != null && !model.isDetailView()){
                     model.setSelectedEquipmentProperty(nv);
                     showNewView(Constants.PATH_TO_EQUIPMENT_DETAIL_VIEW);
                 }
 
-
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        });
+
+        model.selectedEquipmentProperty().addListener(new ChangeListener<Equipment>() {
+            @Override
+            public void changed(ObservableValue<? extends Equipment> observableValue, Equipment oldEquipment, Equipment newEquipment) {
+                if(newEquipment == null){
+                    tableView.getSelectionModel().clearSelection();
+                }
             }
         });
     }

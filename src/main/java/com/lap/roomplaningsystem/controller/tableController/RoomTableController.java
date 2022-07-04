@@ -10,6 +10,8 @@ import com.lap.roomplaningsystem.model.Room;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,54 +21,52 @@ import javafx.scene.control.TableView;
 public class RoomTableController extends BaseController {
 
     @FXML
-    private ResourceBundle resources;
+    private TableColumn<Room, String> locationColumn;
 
     @FXML
-    private URL location;
+    private TableColumn<Room, String> numberColumn;
 
     @FXML
-    private TableColumn<Room, String> roomLocationColumn;
+    private TableColumn<Room, Integer> sizeColumn;
 
     @FXML
-    private TableColumn<Room, String> roomNumberColumn;
+    private TableView<Room> tableView;
 
     @FXML
-    private TableColumn<Room, Integer> roomSizeColumn;
-
-    @FXML
-    private TableView<Room> roomTableView;
-
-    @FXML
-    private TableColumn<Room, String> roomTitleColumn;
+    private TableColumn<Room, String> titleColumn;
 
 
 
     @FXML
     void initialize() {
-        assert roomLocationColumn != null : "fx:id=\"roomLocationColumn\" was not injected: check your FXML file 'roomTable.fxml'.";
-        assert roomNumberColumn != null : "fx:id=\"roomNumberColumn\" was not injected: check your FXML file 'roomTable.fxml'.";
-        assert roomSizeColumn != null : "fx:id=\"roomSizeColumn\" was not injected: check your FXML file 'roomTable.fxml'.";
-        assert roomTableView != null : "fx:id=\"roomTableView\" was not injected: check your FXML file 'roomTable.fxml'.";
-        assert roomTitleColumn != null : "fx:id=\"roomTitleColumn\" was not injected: check your FXML file 'roomTable.fxml'.";
 
-        roomTableView.setItems(model.getDataholder().getRooms());
+        tableView.setItems(model.getDataholder().getRooms());
 
-        roomNumberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("R" + String.valueOf(dataFeatures.getValue().getRoomID())));
-        roomTitleColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDescription()));
-        roomSizeColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<Integer>(dataFeatures.getValue().getMaxPersons()));
-        roomLocationColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getLocation().getDescription()));
+        numberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("R" + String.valueOf(dataFeatures.getValue().getRoomID())));
+        titleColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getDescription()));
+        sizeColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<Integer>(dataFeatures.getValue().getMaxPersons()));
+        locationColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getLocation().getDescription()));
 
 
-        roomTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) ->  {
+        tableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) ->  {
 
             try {
-                if(nv != null){
+                if(nv != null && !model.isDetailView()){
                     model.setSelectedRoomProperty(nv);
                     showNewView(Constants.PATH_TO_ROOM_DETAIL_VIEW);
                 }
 
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        });
+
+        model.selectedRoomProperty().addListener(new ChangeListener<Room>() {
+            @Override
+            public void changed(ObservableValue<? extends Room> observableValue, Room oldRoom, Room newRoom) {
+                if(newRoom == null){
+                    tableView.getSelectionModel().clearSelection();
+                }
             }
         });
 

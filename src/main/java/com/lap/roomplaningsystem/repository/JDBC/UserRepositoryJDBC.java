@@ -1,5 +1,7 @@
 package com.lap.roomplaningsystem.repository.JDBC;
 
+import com.lap.roomplaningsystem.app.Constants;
+import com.lap.roomplaningsystem.app.Password;
 import com.lap.roomplaningsystem.model.User;
 import com.lap.roomplaningsystem.repository.Repository;
 import com.lap.roomplaningsystem.repository.interfaces.UserRepository;
@@ -19,14 +21,24 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
 
         Connection connection = connect();
 
-        String query = "{CALL loginStatement(?,?)}";
-        CallableStatement stmt = connection.prepareCall(query);
+        String query = "Select * from users where USERNAME = ? AND ACTIVE = 1";
+        PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setString(1, username);
-        stmt.setString(2, password);
         ResultSet resultSet = stmt.executeQuery();
-        Optional<User> user = createUser(resultSet);
 
-        return user.isPresent()? user.get().isActive()? user : Optional.empty() : Optional.empty();
+        User user = null;
+
+        if(resultSet.next()){
+            if(Password.verify(resultSet.getString("PASSWORD"), password)){
+
+                user = newUser(resultSet);
+            }
+        }
+
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
+        return Optional.of(user);
     }
 
     @Override
@@ -37,6 +49,10 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
         String query = "{CALL userListStatement()}";
         CallableStatement stmt = connection.prepareCall(query);
         ResultSet resultSet = stmt.executeQuery();
+
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return createUsers(resultSet);
     }
 
@@ -49,16 +65,15 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
         CallableStatement stmt = connection.prepareCall(query);
         stmt.setInt(1, id);
         ResultSet resultSet = stmt.executeQuery();
+
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return createUser(resultSet);
     }
 
     @Override
-    public User add(String firstname, String lastname, String title, String username, String authorization, String password, Boolean trainer, Boolean textVisable, String phone, Boolean phoneVisable, String email, Boolean emailVisable, Boolean photoVisable, String text, InputStream inputStream) throws Exception{
-        byte[] photo= new byte[0];
-
-        if (inputStream != null) {
-            photo = inputStream.readAllBytes();
-        }
+    public User add(String firstname, String lastname, String title, String username, String authorization, String password, Boolean trainer, Boolean textVisable, String phone, Boolean phoneVisable, String email, Boolean emailVisable, Boolean photoVisable, String text, byte[] photo) throws Exception{
 
         Connection connection = connect();
 
@@ -83,7 +98,7 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
         stmt.setBoolean(12, phoneVisable);
         stmt.setString(13, email);
         stmt.setBoolean(14, emailVisable);
-        stmt.setBlob(15, inputStream);
+        stmt.setBytes(15, photo);
         stmt.setBoolean(16, photoVisable);
 
         stmt.executeQuery();
@@ -99,6 +114,9 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
                     phone, phoneVisable, email, emailVisable, photo, photoVisable);
         }
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return user;
 
 
@@ -106,64 +124,76 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
 
 
     @Override
-    public boolean update(User user, String password, InputStream inputStream) throws SQLException, IOException {
+    public boolean update(User user, String password) throws SQLException, IOException {
+        System.out.println(password);
+        boolean updatePassword = password != null;
 
         Connection connection = connect();
 
         String query;
 
-        query = inputStream == null ? "UPDATE users SET ACTIVE = ?, TITLE = ?, FIRSTNAME = ?, LASTNAME = ?, USERNAME = ?, PASSWORD = ?, AUTHORIZATION = ?," +
-                    "COACH = ?, TEXT = ?, TEXTVISABLE = ?, PHONE = ?, PHONEVISABLE = ?, EMAIL = ?, EMAILVISABLE = ?, PHOTOVISABLE = ? WHERE USERID = ?" : "UPDATE users SET ACTIVE = ?, " +
-                "TITLE = ?, FIRSTNAME = ?, LASTNAME = ?, USERNAME = ?, PASSWORD = ?, AUTHORIZATION = ?," +
-                    "COACH = ?, TEXT = ?, TEXTVISABLE = ?, PHONE = ?, PHONEVISABLE = ?, EMAIL = ?, EMAILVISABLE = ?, PHOTO = ?, PHOTOVISABLE = ? WHERE USERID = ?";
+        query =  updatePassword ?  Constants.UPDATE_USER_WITHIN_PASSWORD : Constants.UPDATE_USER_WITHOUT_PASSWORD;
 
         PreparedStatement stmt = null;
 
         stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+
         stmt.setBoolean(1, user.isActive());
         stmt.setString(2, user.getTitle());
         stmt.setString(3, user.getFirstname());
         stmt.setString(4, user.getLastname());
         stmt.setString(5, user.getUsername());
-        stmt.setString(6, password);
-        stmt.setString(7, user.getAuthorization());
-        stmt.setBoolean(8, user.isTrainer());
-        stmt.setString(9, user.getText());
-        stmt.setBoolean(10, user.isTextVisable());
-        stmt.setString(11, user.getPhone());
-        stmt.setBoolean(12, user.isPhoneVisable());
-        stmt.setString(13, user.getEmail());
-        stmt.setBoolean(14, user.isEmailVisable());
 
-        if(inputStream != null){
+        if(updatePassword){
+            stmt.setString(6, password);
+            stmt.setString(7, user.getAuthorization());
+            stmt.setBoolean(8, user.isTrainer());
+            stmt.setString(9, user.getText());
+            stmt.setBoolean(10, user.isTextVisable());
+            stmt.setString(11, user.getPhone());
+            stmt.setBoolean(12, user.isPhoneVisable());
+            stmt.setString(13, user.getEmail());
+            stmt.setBoolean(14, user.isEmailVisable());
             stmt.setBytes(15, user.getPhoto());
             stmt.setBoolean(16, user.isPhotoVisable());
             stmt.setInt(17, user.getId());
         } else {
+            stmt.setString(6, user.getAuthorization());
+            stmt.setBoolean(7, user.isTrainer());
+            stmt.setString(8, user.getText());
+            stmt.setBoolean(9, user.isTextVisable());
+            stmt.setString(10, user.getPhone());
+            stmt.setBoolean(11, user.isPhoneVisable());
+            stmt.setString(12, user.getEmail());
+            stmt.setBoolean(13, user.isEmailVisable());
+            stmt.setBytes(14, user.getPhoto());
             stmt.setBoolean(15, user.isPhotoVisable());
             stmt.setInt(16, user.getId());
         }
 
-
-
-
         int isUpdated = stmt.executeUpdate();
+
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
 
         return isUpdated != 0;
 
     }
 
     @Override
-    public boolean inActiv(User u) throws Exception {
+    public boolean deActivateUser(User u) throws Exception {
         Connection connection = connect();
 
         String query = "UPDATE users SET ACTIVE = ? WHERE USERID = ?";
 
         PreparedStatement stmt = connection.prepareStatement(query);
-        stmt.setBoolean(1, false);
+        stmt.setBoolean(1, u.isActive());
         stmt.setInt(2, u.getId());
 
         int isActiv = stmt.executeUpdate();
+
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
 
         return isActiv != 0;
     }
@@ -182,11 +212,14 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
 
         int isEdited = stmt.executeUpdate();
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return isEdited != 0;
     }
 
     @Override
-    public boolean changeProfileImage(User user, InputStream inputStream) throws Exception {
+    public boolean updateProfileImage(User user, InputStream inputStream) throws Exception {
         Connection connection = connect();
 
         String query = "UPDATE users SET PHOTO = ? WHERE USERID = ?";
@@ -198,36 +231,27 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
 
         int isPhotoChanged = stmt.executeUpdate();
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return isPhotoChanged != 0;
     }
 
 
     private Optional<User> createUser(ResultSet resultSet) throws SQLException {
 
-        Optional<User> user = Optional.empty();
+        User user = null;
+
         while (resultSet.next()) {
 
-            user = Optional.of(new User(resultSet.getInt("USERID"),
-                    resultSet.getBoolean("ACTIVE"),
-                    resultSet.getString("TITLE"),
-                    resultSet.getString("FIRSTNAME"),
-                    resultSet.getString("LASTNAME"),
-                    resultSet.getString("USERNAME"),
-                    resultSet.getString("AUTHORIZATION"),
-                    resultSet.getBoolean("COACH"),
-                    resultSet.getString("TEXT"),
-                    resultSet.getBoolean("TEXTVISABLE"),
-                    resultSet.getString("PHONE"),
-                    resultSet.getBoolean("PHONEVISABLE"),
-                    resultSet.getString("EMAIL"),
-                    resultSet.getBoolean("EMAILVISABLE"),
-                    resultSet.getBytes("PHOTO"),
-                    resultSet.getBoolean("PHOTOVISABLE")));
+            user = newUser(resultSet);
 
         }
 
-        return user;
+        return Optional.of(user);
     }
+
+
 
     private Optional<ObservableList<User>> createUsers(ResultSet resultSet) throws SQLException {
 
@@ -235,26 +259,31 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
 
         while (resultSet.next()) {
 
-            User user = new User(resultSet.getInt("USERID"),
-                    resultSet.getBoolean("ACTIVE"),
-                    resultSet.getString("TITLE"),
-                    resultSet.getString("FIRSTNAME"),
-                    resultSet.getString("LASTNAME"),
-                    resultSet.getString("USERNAME"),
-                    resultSet.getString("AUTHORIZATION"),
-                    resultSet.getBoolean("COACH"),
-                    resultSet.getString("TEXT"),
-                    resultSet.getBoolean("TEXTVISABLE"),
-                    resultSet.getString("PHONE"),
-                    resultSet.getBoolean("PHONEVISABLE"),
-                    resultSet.getString("EMAIL"),
-                    resultSet.getBoolean("EMAILVISABLE"),
-                    resultSet.getBytes("PHOTO"),
-                    resultSet.getBoolean("PHOTOVISABLE"));
+            User user = newUser(resultSet);
 
             users.add(user);
         }
 
         return Optional.of(users);
+    }
+
+    private User newUser(ResultSet resultSet) throws SQLException {
+
+        return new User(resultSet.getInt("USERID"),
+                resultSet.getBoolean("ACTIVE"),
+                resultSet.getString("TITLE"),
+                resultSet.getString("FIRSTNAME"),
+                resultSet.getString("LASTNAME"),
+                resultSet.getString("USERNAME"),
+                resultSet.getString("AUTHORIZATION"),
+                resultSet.getBoolean("COACH"),
+                resultSet.getString("TEXT"),
+                resultSet.getBoolean("TEXTVISABLE"),
+                resultSet.getString("PHONE"),
+                resultSet.getBoolean("PHONEVISABLE"),
+                resultSet.getString("EMAIL"),
+                resultSet.getBoolean("EMAILVISABLE"),
+                resultSet.getBytes("PHOTO"),
+                resultSet.getBoolean("PHOTOVISABLE"));
     }
 }

@@ -32,9 +32,10 @@ public class Event {
         return "Event{" +
                 "eventID=" + eventID +
                 ", creator=" + creator +
-                ", room='" + room + '\'' +
-                ", course='" + course + '\'' +
-                ", coach='" + coach + '\'' +
+                ", room=" + room +
+                ", course=" + course +
+                ", coach=" + coach +
+                ", date=" + date +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
                 '}';

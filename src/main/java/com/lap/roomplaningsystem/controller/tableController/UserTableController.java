@@ -11,6 +11,8 @@ import com.lap.roomplaningsystem.model.User;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -18,59 +20,45 @@ import javafx.scene.control.TableView;
 
 public class UserTableController extends BaseController {
 
-    @FXML
-    private ResourceBundle resources;
+
 
     @FXML
-    private URL location;
+    private TableColumn<User, String> authorizationColumn;
 
     @FXML
-    private TableColumn<User, String> userAuthorizationColumn;
+    private TableColumn<User, String> firstnameColumn;
 
     @FXML
-    private TableColumn<User, String> userFirstnameColumn;
+    private TableColumn<User, String> iDColumn;
 
     @FXML
-    private TableColumn<User, String> userIDColumn;
+    private TableColumn<User, String> lastnameColumn;
 
     @FXML
-    private TableColumn<User, String> userLastnameColumn;
+    private TableColumn<User, String> statusColumn;
 
     @FXML
-    private TableColumn<User, String> userStatusColumn;
+    private TableView<User> tableView;
 
     @FXML
-    private TableView<User> userTableView;
-
-    @FXML
-    private TableColumn<User, String> userUsernameColumn;
+    private TableColumn<User, String> usernameColumn;
 
    ;
 
     @FXML
     void initialize() {
-        assert userAuthorizationColumn != null : "fx:id=\"userAuthorizationColumn\" was not injected: check your FXML file 'userTable.fxml'.";
-        assert userFirstnameColumn != null : "fx:id=\"userFirstnameColumn\" was not injected: check your FXML file 'userTable.fxml'.";
-        assert userIDColumn != null : "fx:id=\"userIDColumn\" was not injected: check your FXML file 'userTable.fxml'.";
-        assert userLastnameColumn != null : "fx:id=\"userLastnameColumn\" was not injected: check your FXML file 'userTable.fxml'.";
-        assert userStatusColumn != null : "fx:id=\"userStatusColumn\" was not injected: check your FXML file 'userTable.fxml'.";
-        assert userTableView != null : "fx:id=\"userTableView\" was not injected: check your FXML file 'userTable.fxml'.";
-        assert userUsernameColumn != null : "fx:id=\"userUsernameColumn\" was not injected: check your FXML file 'userTable.fxml'.";
+        tableView.setItems(model.getDataholder().getUsers());
 
-        userTableView.setItems(model.getDataholder().getUsers());
+        iDColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("U" + String.valueOf(dataFeatures.getValue().getId())));
+        firstnameColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getFirstname()));
+        lastnameColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getLastname()));
+        usernameColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getUsername()));
+        authorizationColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().printAuthorization()));
+        statusColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().printActiveState()));
 
-        userIDColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("U" + String.valueOf(dataFeatures.getValue().getId())));
-        userFirstnameColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getFirstname()));
-        userLastnameColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getLastname()));
-        userUsernameColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().getUsername()));
-        userAuthorizationColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().printAuthorization()));
-        userStatusColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().printActiveState()));
-
-
-        userTableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
-
+        tableView.getSelectionModel().selectedItemProperty().addListener((o, ov, nv) -> {
             try {
-                if(nv != null){
+                if(nv != null && !model.isDetailView()){
                     model.setSelectedUserProperty(nv);
                     showNewView(Constants.PATH_TO_USER_DETAIL_VIEW);
                 }
@@ -80,6 +68,14 @@ public class UserTableController extends BaseController {
             }
         });
 
+        model.selectedUserProperty().addListener(new ChangeListener<User>() {
+            @Override
+            public void changed(ObservableValue<? extends User> observableValue, User oldUser, User newUser) {
+                if(newUser == null){
+                    tableView.getSelectionModel().clearSelection();
+                }
+            }
+        });
 
     }
 

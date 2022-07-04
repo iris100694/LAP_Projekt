@@ -16,7 +16,7 @@ public interface CourseRepository extends BaseRepository{
 
     boolean update(Course course) throws SQLException;
 
-    void delete(Course course) throws SQLException;
+    boolean delete(Course course) throws SQLException;
 
 
 }

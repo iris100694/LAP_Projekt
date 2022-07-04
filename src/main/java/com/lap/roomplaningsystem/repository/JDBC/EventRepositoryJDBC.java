@@ -1,6 +1,7 @@
 package com.lap.roomplaningsystem.repository.JDBC;
 
 import com.lap.roomplaningsystem.app.Constants;
+import com.lap.roomplaningsystem.formattor.DateFormattorJDBC;
 import com.lap.roomplaningsystem.model.*;
 import com.lap.roomplaningsystem.repository.Repository;
 import com.lap.roomplaningsystem.repository.interfaces.EventRepository;
@@ -11,7 +12,10 @@ import java.sql.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
+import java.util.Calendar;
 import java.util.Optional;
 
 public class EventRepositoryJDBC extends Repository implements EventRepository {
@@ -28,6 +32,9 @@ public class EventRepositoryJDBC extends Repository implements EventRepository {
 
         CallableStatement stmt = connection.prepareCall(query);
         ResultSet resultSet = stmt.executeQuery();
+
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
 
         return createEvents(resultSet);
 
@@ -62,6 +69,9 @@ public class EventRepositoryJDBC extends Repository implements EventRepository {
             System.out.println(event.toString());
         }
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return event;
     }
 
@@ -90,6 +100,9 @@ public class EventRepositoryJDBC extends Repository implements EventRepository {
 
         int isUpdated = stmt.executeUpdate();
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return isUpdated != 0;
 
     }
@@ -105,54 +118,37 @@ public class EventRepositoryJDBC extends Repository implements EventRepository {
 
         int isDeleted = stmt.executeUpdate();
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return isDeleted != 0;
     }
 
-    @Override
-    public ObservableList<Event> seriesDaily(User creator, Room room, Course course, User coach, LocalDate startDate, LocalDate endDate, String start, String end) {
-//        Calendar calendar = Calendar.getInstance();
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-//        ObservableList<LocalDate> days = null;
-//        ObservableList<Event> events = null;
-//
-//        for(int i = 1; startDate.isBefore(endDate) || startDate.toString().equals(endDate.toString()); i++){
-//            assert false;
-//            LocalDate day = startDate.plusDays(i);
-//            if(!isWeekend(day)){
-//                days.add(day);
-//            }
-//        }
-//
-//        for(LocalDate d : days){
-//            LocalDateTime finalStartDate = LocalDateTime.parse(d.toString() + " " + start, formatter);
-//            LocalDateTime finalEndDare = LocalDateTime.parse(d.toString() + " " + end, formatter);
-//
-//            Event event = Dataholder.eventRepositoryJDBC.add(model.getUser(),roomComboBox.getValue(),courseComboBox.getValue(),
-//                    coachComboBox.getValue(), singleDateDatePicker.getValue(), start, end);
-//        };
+    //series Events
 
 
-
-
-
-
-
-
-
-        return null;
-    }
 
     @Override
-    public ObservableList<Event> seriesWeekly(User creator, Room room, Course course, User coach, LocalDate startDate, LocalDate endDate, String startTime, String endTime) {
-        return null;
-    }
+    public ObservableList<Event> compileEvents(User creator, Room room, Course course, User coach, ObservableList<LocalDate> days, LocalTime start, LocalTime end) throws Exception{
+        ObservableList<Event> events = FXCollections.observableArrayList();
 
-    @Override
-    public ObservableList<Event> seriesMonthly(User creator, Room room, Course course, User coach, LocalDate startDate, LocalDate endDate, String startTime, String endTime) {
-        return null;
+        for(LocalDate d : days){
+            LocalDateTime startDate = DateFormattorJDBC.format(d, start);
+            LocalDateTime endDate = DateFormattorJDBC.format(d, end);
+
+            Event event = add(creator,room,course, coach, d, startDate, endDate);
+
+            if(event != null){
+                events.add(event);
+            }
+        }
+
+
+        return events;
     }
 
 
+    //Filter Events
     @Override
     public Optional<ObservableList<Event>> filter(String filter) throws Exception{
 
@@ -164,36 +160,40 @@ public class EventRepositoryJDBC extends Repository implements EventRepository {
         PreparedStatement stmt = connection.prepareStatement(query);
         ResultSet resultSet = stmt.executeQuery();
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return createEvents(resultSet);
     }
 
-    public String createFilterStatement(String id, String description, String date, String start, String end) {
-        String stmt = "";
 
-        if (!isBlank(id)) {
-            stmt = stmt + "WHERE events.ROOMID = " + id;
-        }
+//    public String createFilterStatement(String id, String description, String date, String start, String end) {
+//        String stmt = "";
+//
+//        if (!isBlank(id)) {
+//            stmt = stmt + "WHERE events.ROOMID = " + id;
+//        }
+//
+//        if (!isBlank(description)) {
+//            stmt = isBlank(stmt) ? stmt + "WHERE program.DESCRIPTION = \"" + description + "\"" : stmt + " AND program.DESCRIPTION = \"" + description + "\"";
+//        }
+//
+//        if (!isBlank(date)) {
+//            stmt = isBlank(stmt) ? stmt + "WHERE events.START LIKE \"" + date + "%\"" : stmt + " AND events.START LIKE \"" + date + "%\"";
+//        }
+//
+//        if (!isBlank(start)) {
+//            stmt = isBlank(stmt) ? stmt + "WHERE events.START LIKE \"%" + start + "\"": stmt + " AND events.START LIKE \"%" + start + "\"";
+//        }
+//
+//        if (!isBlank(end)) {
+//            stmt = isBlank(stmt) ? stmt + "WHERE events.END LIKE \"%" + end +"\"": stmt + " AND events.END LIKE \"%" + end + "\"";
+//        }
+//
+//        return stmt;
+//    }
 
-        if (!isBlank(description)) {
-            stmt = isBlank(stmt) ? stmt + "WHERE program.DESCRIPTION = \"" + description + "\"" : stmt + " AND program.DESCRIPTION = \"" + description + "\"";
-        }
-
-        if (!isBlank(date)) {
-            stmt = isBlank(stmt) ? stmt + "WHERE events.START LIKE \"" + date + "%\"" : stmt + " AND events.START LIKE \"" + date + "%\"";
-        }
-
-        if (!isBlank(start)) {
-            stmt = isBlank(stmt) ? stmt + "WHERE events.START LIKE \"%" + start + "\"": stmt + " AND events.START LIKE \"%" + start + "\"";
-        }
-
-        if (!isBlank(end)) {
-            stmt = isBlank(stmt) ? stmt + "WHERE events.END LIKE \"%" + end +"\"": stmt + " AND events.END LIKE \"%" + end + "\"";
-        }
-
-        return stmt;
-    }
-
-
+    //Create Events
     private Optional<ObservableList<Event>> createEvents(ResultSet resultSet) throws Exception{
         ObservableList<Event> observableListEvents = FXCollections.observableArrayList();
 
@@ -234,10 +234,6 @@ public class EventRepositoryJDBC extends Repository implements EventRepository {
     }
 
 
-    public static boolean isWeekend(final LocalDate ld)
-    {
-        DayOfWeek day = DayOfWeek.of(ld.get(ChronoField.DAY_OF_WEEK));
-        return day == DayOfWeek.SUNDAY || day == DayOfWeek.SATURDAY;
-    }
+
 
 }

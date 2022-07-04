@@ -14,9 +14,9 @@ public interface RoomRepository {
 
     Optional<ObservableList<Room>> filter(String stmt, boolean equipment) throws Exception;
 
-    Room add(String description, Location location, String maxPersons, InputStream inputStream) throws SQLException;
+    Room add(String description, Location location, int maxPersons, byte[] photo) throws SQLException;
 
-    boolean update(Room room, InputStream inputStream) throws Exception;
+    boolean update(Room room) throws Exception;
 
     boolean delete(Room room) throws SQLException;
 

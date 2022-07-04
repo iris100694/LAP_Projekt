@@ -19,6 +19,9 @@ public class LocationRepositoryJDBC extends Repository implements LocationReposi
         CallableStatement stmt = connection.prepareCall(query);
         ResultSet resultSet = stmt.executeQuery();
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return createLocation(resultSet);
     }
 
@@ -47,6 +50,9 @@ public class LocationRepositoryJDBC extends Repository implements LocationReposi
             location = new Location(locationID, description, adress, postCode, city);
         }
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return location;
 
     }
@@ -72,6 +78,9 @@ public class LocationRepositoryJDBC extends Repository implements LocationReposi
 
         int isUpdated = stmt.executeUpdate();
 
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+
         return isUpdated != 0;
 
     }
@@ -87,6 +96,9 @@ public class LocationRepositoryJDBC extends Repository implements LocationReposi
         stmt.setInt(1, location.getLocationID());
 
         int isDeleted = stmt.executeUpdate();
+
+        connection.close();
+        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
 
         return isDeleted != 0;
 
