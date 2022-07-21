@@ -84,7 +84,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.lap.roomplaningsystem/com.lap.roomplaningsystem.RoomplaningsystemApplication</mainClass>
+                            <mainClass>com.lap.roomplaningsystem/com.lap.roomplanningsystem.RoomplanningsystemApplication</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

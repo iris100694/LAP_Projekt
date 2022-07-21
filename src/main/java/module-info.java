@@ -8,18 +8,18 @@ module com.lap.roomplaningsystem {
     requires spring.security.crypto;
 
 
-    opens com.lap.roomplaningsystem to javafx.fxml;
-    exports com.lap.roomplaningsystem;
-    exports com.lap.roomplaningsystem.controller;
-    exports com.lap.roomplaningsystem.controller.tableController;
-    opens com.lap.roomplaningsystem.controller to javafx.fxml;
-    opens com.lap.roomplaningsystem.controller.tableController to javafx.fxml;
-    exports com.lap.roomplaningsystem.controller.detailController;
-    opens com.lap.roomplaningsystem.controller.detailController to javafx.fxml;
-    exports com.lap.roomplaningsystem.controller.updateController;
-    opens com.lap.roomplaningsystem.controller.updateController to javafx.fxml;
-    exports com.lap.roomplaningsystem.controller.deleteController;
-    opens com.lap.roomplaningsystem.controller.deleteController to javafx.fxml;
-    exports com.lap.roomplaningsystem.controller.addController;
-    opens com.lap.roomplaningsystem.controller.addController to javafx.fxml;
+    opens com.lap.roomplanningsystem to javafx.fxml;
+    exports com.lap.roomplanningsystem;
+    exports com.lap.roomplanningsystem.controller;
+    exports com.lap.roomplanningsystem.controller.tableController;
+    opens com.lap.roomplanningsystem.controller to javafx.fxml;
+    opens com.lap.roomplanningsystem.controller.tableController to javafx.fxml;
+    exports com.lap.roomplanningsystem.controller.detailController;
+    opens com.lap.roomplanningsystem.controller.detailController to javafx.fxml;
+    exports com.lap.roomplanningsystem.controller.updateController;
+    opens com.lap.roomplanningsystem.controller.updateController to javafx.fxml;
+    exports com.lap.roomplanningsystem.controller.deleteController;
+    opens com.lap.roomplanningsystem.controller.deleteController to javafx.fxml;
+    exports com.lap.roomplanningsystem.controller.addController;
+    opens com.lap.roomplanningsystem.controller.addController to javafx.fxml;
 }
