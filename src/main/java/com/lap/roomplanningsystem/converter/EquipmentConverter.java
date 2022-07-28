@@ -13,18 +13,8 @@ public class EquipmentConverter implements ConverterInterface<Equipment> {
     public EquipmentConverter() {
         this.equipmentList = BaseController.model.getDataholder().getEquipments();
 
-//        equipmentList.addListener(new ListChangeListener<Equipment>() {
-//            @Override
-//            public void onChanged(Change<? extends Equipment> change) {
-//                updateList(equipmentList);
-//            }
-//        });
     }
 
-    @Override
-    public void updateList(ObservableList<Equipment> list) {
-        this.equipmentList = list;
-    }
 
     @Override
     public void setConverter(ComboBox<Equipment> box) {

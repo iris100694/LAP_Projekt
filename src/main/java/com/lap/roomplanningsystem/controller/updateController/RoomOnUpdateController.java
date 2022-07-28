@@ -79,12 +79,13 @@ public class RoomOnUpdateController extends BaseController {
     @FXML
     void onUpdateImageButtonClicked(ActionEvent event) throws IOException {
         File file = fileChooser.showOpenDialog(imageView.getScene().getWindow());
+        fileChooser.setTitle(Constants.UPDATE_ROOM_IMAGE);
         try{
             inputStream = new FileInputStream(file);
             imageView.setImage(new Image(inputStream));
             photo = Files.newInputStream(Path.of(file.getAbsolutePath())).readAllBytes();
         } catch (Exception e){
-            System.out.println("Kein Bild ausgewählt!");
+            System.out.println(Constants.NO_IMAGE_SELECTED);
         }
     }
 
@@ -122,7 +123,7 @@ public class RoomOnUpdateController extends BaseController {
             Integer.parseInt(maxPersonsInput.getText());
             return true;
         } catch (Exception e){
-            errorLabel.setText("Bitte für maximale Personenzahl eine ganze Zahl eingeben!");
+            errorLabel.setText(Constants.ROOMSIZE_NOT_A_NUMBER);
             return false;
         }
     }
@@ -132,7 +133,7 @@ public class RoomOnUpdateController extends BaseController {
         boolean explicit = rooms.stream().noneMatch(r-> r.getDescription().equals(descriptionInput.getText()));
 
         if(!explicit){
-            errorLabel.setText("Raumbezeichung bereits vergeben!");
+            errorLabel.setText(Constants.ROOM_DESCRIPTION_NOT_ALLOWED);
         }
 
         return explicit;
@@ -142,7 +143,7 @@ public class RoomOnUpdateController extends BaseController {
         boolean empty = isBlank(descriptionInput.getText())  || isBlank(maxPersonsInput.getText());
 
         if(empty){
-            errorLabel.setText("Bitte Felder ausfüllen!");
+            errorLabel.setText(Constants.EMPTY_FIELDS);
         }
 
         return empty;

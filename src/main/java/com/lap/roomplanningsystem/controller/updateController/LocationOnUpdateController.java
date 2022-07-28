@@ -92,7 +92,7 @@ public class LocationOnUpdateController extends BaseController {
         boolean empty = isBlank(descriptionInput.getText()) || isBlank(adressInput.getText()) || isBlank(cityInput.getText()) || isBlank(postCodeInput.getText());
 
         if(empty){
-            errorLabel.setText("Bitte Felder ausfüllen!");
+            errorLabel.setText(Constants.EMPTY_FIELDS);
         }
 
         return empty;
@@ -103,7 +103,7 @@ public class LocationOnUpdateController extends BaseController {
         boolean explicit = locations.stream().noneMatch(l-> l.getDescription().equals(descriptionInput.getText()));
 
         if(!explicit){
-            errorLabel.setText("Standortbezeichnung bereits vergeben!");
+            errorLabel.setText(Constants.LOCATION_DESCRIPTION_NOT_ALLOWED);
         }
 
         return explicit;

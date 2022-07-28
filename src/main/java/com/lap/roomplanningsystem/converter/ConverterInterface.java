@@ -6,6 +6,6 @@ import javafx.scene.control.ComboBox;
 public interface ConverterInterface<T>  {
 
     void setConverter(ComboBox<T> box);
-    void updateList(ObservableList<T> list);
+
     T matchByString(String s);
 }

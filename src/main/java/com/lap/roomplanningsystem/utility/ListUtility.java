@@ -1,5 +1,6 @@
 package com.lap.roomplanningsystem.utility;
 
+import com.lap.roomplanningsystem.app.Constants;
 import com.lap.roomplanningsystem.controller.BaseController;
 import com.lap.roomplanningsystem.model.*;
 import com.lap.roomplanningsystem.validation.EventValidator;
@@ -8,6 +9,8 @@ import javafx.collections.ObservableList;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ListUtility {
@@ -147,5 +150,19 @@ public class ListUtility {
         items.add("Raumausstattung");
 
         return items;
+    }
+
+    public static HashMap<String, ObservableList<String>> roomRequestList(Location location) {
+        HashMap<String, ObservableList<String>> requestLists= new HashMap<>();
+        requestLists.put("rooms", FXCollections.observableArrayList());
+        requestLists.put("sizes",FXCollections.observableArrayList());
+        ObservableList<Room> roomList = availableRoomAtLocation(location);
+
+        for (Room room : roomList){
+            requestLists.get("rooms").add(room.getDescription());
+            requestLists.get("sizes").add(String.valueOf(room.getMaxPersons()));
+        }
+
+        return requestLists;
     }
 }

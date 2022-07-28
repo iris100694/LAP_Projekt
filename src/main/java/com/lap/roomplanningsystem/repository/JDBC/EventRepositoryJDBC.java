@@ -20,7 +20,6 @@ public class EventRepositoryJDBC extends Repository implements EventRepository {
 
     @Override
     public Optional<ObservableList<Event>> readAll() throws Exception{
-        //select events.EVENTID, events.CREATORID, rooms.DISCRIPTION AS "ROOM", course.TITLE AS "COURSE", program.DESCRIPTION AS "PROGRAM", users.LASTNAME AS "COACH", events.START, events.END FROM events LEFT JOIN rooms ON events.ROOMID = rooms.ROOMID LEFT JOIN course ON events.COURSEID = course.COURSEID INNER JOIN program ON course.PROGRAMID = program.PROGRAMID LEFT JOIN users ON events.COACHID = users.USERID;
 
         Connection connection = connect();
 
@@ -162,32 +161,6 @@ public class EventRepositoryJDBC extends Repository implements EventRepository {
         return createEvents(resultSet);
     }
 
-
-//    public String createFilterStatement(String id, String description, String date, String start, String end) {
-//        String stmt = "";
-//
-//        if (!isBlank(id)) {
-//            stmt = stmt + "WHERE events.ROOMID = " + id;
-//        }
-//
-//        if (!isBlank(description)) {
-//            stmt = isBlank(stmt) ? stmt + "WHERE program.DESCRIPTION = \"" + description + "\"" : stmt + " AND program.DESCRIPTION = \"" + description + "\"";
-//        }
-//
-//        if (!isBlank(date)) {
-//            stmt = isBlank(stmt) ? stmt + "WHERE events.START LIKE \"" + date + "%\"" : stmt + " AND events.START LIKE \"" + date + "%\"";
-//        }
-//
-//        if (!isBlank(start)) {
-//            stmt = isBlank(stmt) ? stmt + "WHERE events.START LIKE \"%" + start + "\"": stmt + " AND events.START LIKE \"%" + start + "\"";
-//        }
-//
-//        if (!isBlank(end)) {
-//            stmt = isBlank(stmt) ? stmt + "WHERE events.END LIKE \"%" + end +"\"": stmt + " AND events.END LIKE \"%" + end + "\"";
-//        }
-//
-//        return stmt;
-//    }
 
     //Create Events
     private Optional<ObservableList<Event>> createEvents(ResultSet resultSet) throws Exception{

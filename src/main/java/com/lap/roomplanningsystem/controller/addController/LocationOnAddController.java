@@ -2,6 +2,7 @@ package com.lap.roomplanningsystem.controller.addController;
 
 
 
+import com.lap.roomplanningsystem.app.Constants;
 import com.lap.roomplanningsystem.controller.BaseController;
 import com.lap.roomplanningsystem.model.Dataholder;
 import com.lap.roomplanningsystem.model.Location;
@@ -33,7 +34,6 @@ public class LocationOnAddController extends BaseController {
 
     @FXML
     void initialize() {
-
     }
 
 
@@ -61,7 +61,7 @@ public class LocationOnAddController extends BaseController {
         boolean empty = isBlank(descriptionInput.getText()) || isBlank(adressInput.getText()) || isBlank(cityInput.getText()) || isBlank(postCodeInput.getText());
 
         if(empty){
-            errorLabel.setText("Bitte Felder ausfüllen!");
+            errorLabel.setText(Constants.EMPTY_FIELDS);
         }
 
         return empty;
@@ -71,7 +71,7 @@ public class LocationOnAddController extends BaseController {
         boolean explicit = model.getDataholder().getLocations().stream().noneMatch(l-> l.getDescription().equals(descriptionInput.getText()));
 
         if(!explicit){
-            errorLabel.setText("Standortbezeichnung bereits vergeben!");
+            errorLabel.setText(Constants.LOCATION_DESCRIPTION_NOT_ALLOWED);
         }
 
         return explicit;

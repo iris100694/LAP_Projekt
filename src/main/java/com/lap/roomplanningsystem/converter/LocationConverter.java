@@ -14,18 +14,9 @@ public class LocationConverter implements ConverterInterface<Location> {
     public LocationConverter() {
         this.locationList = BaseController.model.getDataholder().getLocations();
 
-//        locationList.addListener(new ListChangeListener<Location>() {
-//            @Override
-//            public void onChanged(Change<? extends Location> change) {
-//                updateList(locationList);
-//            }
-//        });
     }
 
-    @Override
-    public void updateList(ObservableList<Location> list) {
-        this.locationList = list;
-    }
+
 
     @Override
     public void setConverter(ComboBox<Location> box) {

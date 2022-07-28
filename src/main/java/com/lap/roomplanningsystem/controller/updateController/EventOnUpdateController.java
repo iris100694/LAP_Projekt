@@ -112,7 +112,7 @@ public class EventOnUpdateController extends BaseController {
 
     @FXML
     void onSaveButtonClicked(ActionEvent event) throws Exception {
-        EventValidator eventValidator = new EventValidator(model.getDataholder().getEvents());
+        EventValidator eventValidator = new EventValidator();
         eventValidator.setUpdateEvent(this.event);
 
         if(validateFields() && eventValidator.validSingle(roomComboBox.getValue(), courseComboBox.getValue(), coachComboBox.getValue(), datePicker.getValue(), startComboBox.getValue(),endComboBox.getValue())){
@@ -141,6 +141,8 @@ public class EventOnUpdateController extends BaseController {
 //                    model.getCalendarView().
                 }
             }
+        } else {
+            errorLabel.setText(eventValidator.getErrString());
         }
     }
 
@@ -154,7 +156,7 @@ public class EventOnUpdateController extends BaseController {
                 datePicker.getValue() == null || startComboBox.getValue() == null || endComboBox.getValue() == null || coachComboBox.getValue() == null;
 
         if(empty){
-            errorLabel.setText("Bitte Felder ausfüllen!");
+            errorLabel.setText(Constants.EMPTY_FIELDS_AND_BOXES);
         }
 
         return empty;
@@ -165,11 +167,11 @@ public class EventOnUpdateController extends BaseController {
             if(DateValidator.validTime(startComboBox.getValue(), endComboBox.getValue())){
                 return true;
             } else {
-                errorLabel.setText("Endzeit darf nicht vor und zur gleichen Startzeit gewählt werden!");
+                errorLabel.setText(Constants.ENDTIME_BEFORE_STARTTIME);
                 return false;
             }
         } else{
-            errorLabel.setText("Datum darf nicht in der Vergangenheit gewählt werden!");
+            errorLabel.setText(Constants.DATE_IN_PAST);
             return false;
         }
 

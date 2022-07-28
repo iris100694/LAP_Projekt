@@ -1,5 +1,6 @@
 package com.lap.roomplanningsystem.controller;
 
+import com.lap.roomplanningsystem.app.Constants;
 import com.lap.roomplanningsystem.app.Password;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -38,10 +39,10 @@ public class PasswordViewController extends BaseController{
     }
 
     private boolean validatePassword() {
-        boolean valid = !Password.validate(passwordInput.getText());
+        boolean valid = Password.validate(passwordInput.getText());
 
         if(!valid){
-            errorLabel.setText("Passwort entspricht nicht den Anforderungen!");
+            errorLabel.setText(Constants.NOT_AVAILABLE_PASSWORD);
         }
 
         return valid;
@@ -52,7 +53,7 @@ public class PasswordViewController extends BaseController{
         boolean replicate = passwordInput.getText().equals(passwordInput2.getText());
 
         if(!replicate){
-            errorLabel.setText("Bitte das Passwort wiederholen");
+            errorLabel.setText(Constants.REPEAT_PASSWORD);
         }
 
         return replicate;
@@ -62,7 +63,7 @@ public class PasswordViewController extends BaseController{
         boolean empty = isBlank(passwordInput.getText()) || isBlank(passwordInput2.getText());
 
         if(empty){
-            errorLabel.setText("Bitte Felder ausfüllen!");
+            errorLabel.setText(Constants.EMPTY_FIELDS);
         }
 
         return empty;

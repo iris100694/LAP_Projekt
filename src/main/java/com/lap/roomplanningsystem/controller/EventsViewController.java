@@ -70,7 +70,7 @@ public class EventsViewController extends BaseController{
     @FXML
     void initialize() throws SQLException {
         if(model.getUser() != null){
-            isLooged();
+            isLogged();
         }
 
         eventTable.setItems(model.getDataholder().getEvents());
@@ -104,7 +104,7 @@ public class EventsViewController extends BaseController{
         initFilter();
     }
 
-    private void isLooged() {
+    private void isLogged() {
         loginButton.setText("Logout");
         loginButton.setOnAction(this::onLogoutButtonClicked);
         setProfilImage(profilImage);

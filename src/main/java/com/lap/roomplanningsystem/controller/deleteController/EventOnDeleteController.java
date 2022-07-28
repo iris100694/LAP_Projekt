@@ -45,7 +45,8 @@ public class EventOnDeleteController extends BaseController {
         if(optionalEvent.isPresent()){
             event = optionalEvent.get();
 
-            numberLabel.setText("V" + String.valueOf(event.getEventID()) + "  " + event.getCourse().getTitle() + "  " + event.getCourse().getProgram().getDescription());
+            numberLabel.setText("V" + event.getEventID());
+            descriptionLabel.setText(event.getCourse().getTitle() + "  " + event.getCourse().getProgram().getDescription());
             dateLabel.setText(String.valueOf(event.getDate()));
             startLabel.setText(String.valueOf(event.getStartTime()));
             endLabel.setText(String.valueOf(event.getEndTime()));

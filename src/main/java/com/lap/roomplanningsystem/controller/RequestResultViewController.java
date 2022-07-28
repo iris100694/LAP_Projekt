@@ -48,7 +48,7 @@ public class RequestResultViewController extends BaseController{
 
         tableView.setItems(resultUtility.getResults());
 
-        numberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("V" +dataFeatures.getValue().room().getRoomID()));
+        numberColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>("R" +dataFeatures.getValue().room().getRoomID()));
         descriptionColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().room().getDescription()));
         sizeColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<Integer>(dataFeatures.getValue().room().getMaxPersons()));
         locationColumn.setCellValueFactory((dataFeatures) -> new SimpleObjectProperty<String>(dataFeatures.getValue().room().getLocation().getDescription()));

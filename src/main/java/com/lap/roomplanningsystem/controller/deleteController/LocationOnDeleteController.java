@@ -24,7 +24,8 @@ public class LocationOnDeleteController extends BaseController {
     private Label postCodeLabel;
 
     private Location location;
-
+    @FXML
+    private Label numberLabel;
 
 
     @FXML
@@ -34,7 +35,8 @@ public class LocationOnDeleteController extends BaseController {
         if(optionalLocation.isPresent()){
             location = optionalLocation.get();
 
-            descriptionLabel.setText("S" + location.getLocationID() + " " + location.getDescription());
+            numberLabel.setText("S" + location.getLocationID());
+            descriptionLabel.setText(location.getDescription());
             adressLabel.setText(location.getAdress());
             postCodeLabel.setText(location.getPostCode());
             cityLabel.setText(location.getCity());

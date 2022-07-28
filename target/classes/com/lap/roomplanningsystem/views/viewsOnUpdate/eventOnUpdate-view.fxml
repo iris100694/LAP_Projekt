@@ -18,7 +18,7 @@
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0" />
   </columnConstraints>
   <rowConstraints>
       <RowConstraints minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
@@ -117,7 +117,7 @@
             <Insets />
          </GridPane.margin>
       </Label>
-      <DatePicker fx:id="datePicker" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      <DatePicker fx:id="datePicker" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
       <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSaveButtonClicked" styleClass="custom-button" text="Speichern" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="9">
          <font>
             <Font name="Century Gothic" size="12.0" />
@@ -126,12 +126,12 @@
             <Insets bottom="6.0" left="12.0" right="12.0" top="6.0" />
          </padding>
       </Button>
-      <Label fx:id="errorLabel" textFill="#eb2828" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="9">
+      <Label fx:id="errorLabel" textFill="#eb2828" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.rowIndex="9">
          <GridPane.margin>
             <Insets right="20.0" />
          </GridPane.margin>
          <font>
-            <Font name="Century Gothic" size="13.0" />
+            <Font name="Century Gothic" size="10.0" />
          </font>
       </Label>
       <ComboBox fx:id="locationComboBox" prefHeight="33.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />

@@ -46,12 +46,11 @@ public class HomeViewController extends BaseController {
             @Override
             public void changed(ObservableValue<? extends Event> observableValue, Event oldEvent, Event newEvent) {
                 //Entry created
-
-                accurateEntry(newEvent, model.getNewEntry());
-                model.setNewEntry(null);
-                model.setAddEntry(false);
-
-                //TODO: find a Method to show new and deleted Events customized
+                if(model.isAddEntry()){
+                    accurateEntry(newEvent, model.getNewEntry());
+                    model.setNewEntry(null);
+                    model.setAddEntry(false);
+                }
             }
         });
 
@@ -60,6 +59,7 @@ public class HomeViewController extends BaseController {
             public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldRemoveState, Boolean newRemoveState) {
                 if(newRemoveState){
                     calendar.removeEntry(model.getNewEntry());
+                    model.setAddEntry(false);
                     model.setRemoveEntry(false);
 
                 }
@@ -90,9 +90,7 @@ public class HomeViewController extends BaseController {
     }
 
     private void initCalendar(){
-//        model.setCalendarView(calendarView);
         ObservableList<Event> events = model.getDataholder().getEvents();
-//        Calendar calendar = calendarView.getCalendarSources().get(0).getCalendars().get(0);
 
         //Handle Authorization
         if(model.getAuthorization().equals("standard")){
@@ -108,18 +106,31 @@ public class HomeViewController extends BaseController {
             });
         }
 
+        handleCalendarEvents();
+        handleDetailViews();
 
+    }
 
+    private void handleDetailViews() {
+        calendarView.setEntryDetailsPopOverContentCallback(param -> {
+            Entry<?> entry = param.getEntry();
+            Event event = (Event) entry.getUserObject();
+            model.setSelectedEventProperty(event);
+            model.setShowInCalendar(true);
+            return loadFXMLRootNode(model.getAuthorization().equals("standard")? Constants.PATH_TO_EVENT_DETAIL_VIEW: Constants.PATH_TO_EVENT_ON_UPDATE_VIEW);
+        });
+    }
+
+    private void handleCalendarEvents() {
         // Calendarevents ADD, DELETE
         calendar.addEventHandler(new EventHandler<CalendarEvent>() {
             @Override
             public void handle(CalendarEvent calendarEvent) {
                 if(calendarEvent.isEntryAdded()){
-                    System.out.println("Ausgabe: "+calendarEvent.getEntry());
                     try {
                         if (!model.isAddEntry()){
-                            model.setAddEntry(true);
                             model.setNewEntry(calendarEvent.getEntry());
+                            model.setAddEntry(true);
 
                             if(!model.isDetailView() && !model.isLogout()){
                                 showNewView(Constants.PATH_TO_EVENT_ON_ADD_VIEW);
@@ -149,18 +160,7 @@ public class HomeViewController extends BaseController {
             }
         });
 
-        calendarView.setEntryDetailsPopOverContentCallback(param -> {
-            Entry<?> entry = param.getEntry();
-            Event event = (Event) entry.getUserObject();
-            model.setSelectedEventProperty(event);
-            model.setShowInCalendar(true);
-            return loadFXMLRootNode(model.getAuthorization().equals("standard")? Constants.PATH_TO_EVENT_DETAIL_VIEW: Constants.PATH_TO_EVENT_ON_UPDATE_VIEW);
-        });
-
-
-
     }
-
 
 
     private Entry<Event> createEntry(Event event) {

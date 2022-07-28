@@ -69,7 +69,7 @@ public class ProgramOnUpdateController extends BaseController {
         boolean explicit = programs.stream().noneMatch(p-> p.getDescription().equals(descriptionInput.getText()));
 
         if(!explicit){
-            errorLabel.setText("Programmbezeichung bereits vergeben!");
+            errorLabel.setText(Constants.PROGRAMM_DESCRIPTION_NOT_ALLOWED);
         }
 
         return explicit;
@@ -77,7 +77,7 @@ public class ProgramOnUpdateController extends BaseController {
 
     private boolean emptyFields() {
         if(isBlank(descriptionInput.getText())){
-            errorLabel.setText("Bitte Feld ausfüllen!");
+            errorLabel.setText(Constants.EMPTY_FIELDS);
         }
 
         return isBlank(descriptionInput.getText());

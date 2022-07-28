@@ -145,12 +145,12 @@ public class UserOnUpdateController extends BaseController {
             imageView.setImage(new Image(inputStream));
             photo = Files.newInputStream(Path.of(file.getAbsolutePath())).readAllBytes();
         } catch (Exception e){
-            System.out.println("Kein Bild ausgewählt!");
+            System.out.println(Constants.NO_IMAGE_SELECTED);
         }
     }
 
     @FXML
-    void onChangePasswordButtonClicked(MouseEvent event) throws IOException {
+    void onChangePasswordButtonClicked(ActionEvent event) throws IOException {
         showNewView(Constants.PATH_TO_CREATE_PASSWORD_VIEW);
     }
 
@@ -213,7 +213,7 @@ public class UserOnUpdateController extends BaseController {
         boolean explicit = users.stream().noneMatch(r-> r.getUsername().equals(usernameInput.getText()));
 
         if(!explicit){
-            errorLabel.setText("Username bereits vergeben!");
+            errorLabel.setText(Constants.USERNAME_NOT_ALLOWED);
         }
 
         return explicit;
@@ -225,7 +225,7 @@ public class UserOnUpdateController extends BaseController {
                 authorizationCombobox.getValue() == null;
 
         if(empty){
-            errorLabel.setText("Bitte Pflichtfelder ausfüllen!");
+            errorLabel.setText(Constants.EMPTY_OBLIGATORY_FIELDS);
         }
 
         return empty;

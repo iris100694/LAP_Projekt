@@ -74,7 +74,7 @@ public class EquipmentOnUpdateController extends BaseController {
         boolean empty = isBlank(descriptionInput.getText());
 
         if(empty){
-            errorLabel.setText("Bitte Feld ausfüllen!");
+            errorLabel.setText(Constants.EMPTY_FIELDS);
         }
 
         return empty;
@@ -85,7 +85,7 @@ public class EquipmentOnUpdateController extends BaseController {
         boolean explicit = equipments.stream().noneMatch(e-> e.getDescription().equals(descriptionInput.getText()));
 
         if(!explicit){
-            errorLabel.setText("Ausstattungsbezeichnung bereits vergeben!");
+            errorLabel.setText(Constants.EQUIPMENT_DESCRIPTION_NOT_ALLOWED);
         }
 
         return explicit;

@@ -4,6 +4,7 @@ package com.lap.roomplanningsystem.controller.addController;
 import java.sql.Date;
 
 
+import com.lap.roomplanningsystem.app.Constants;
 import com.lap.roomplanningsystem.controller.BaseController;
 import com.lap.roomplanningsystem.converter.ProgramConverter;
 
@@ -75,7 +76,7 @@ public class CourseOnAddController extends BaseController {
         boolean empty = isBlank(descriptionInput.getText()) || isBlank(membersInput.getText()) || startDatePicker.getValue() == null || programComboBox.getValue() == null;
 
         if(empty){
-            errorLabel.setText("Bitte Felder und Auswahlbox ausfüllen!");
+            errorLabel.setText(Constants.EMPTY_FIELDS_AND_BOXES);
         }
 
         return empty;
@@ -85,7 +86,7 @@ public class CourseOnAddController extends BaseController {
         boolean explicit = model.getDataholder().getCourses().stream().noneMatch(c-> c.getTitle().equals(descriptionInput.getText()));
 
         if(!explicit){
-            errorLabel.setText("Kursbezeichnung bereits vergeben!");
+            errorLabel.setText(Constants.COURSE_DESCRIPTION_NOT_ALLOWED);
         }
 
         return explicit;
@@ -95,7 +96,7 @@ public class CourseOnAddController extends BaseController {
         boolean valid = IntegerUtility.getInt(membersInput.getText()) != null;
 
         if(!valid){
-            errorLabel.setText("Keine korrekte Teilnehmerzahl ausgefüllt!");
+            errorLabel.setText(Constants.MEMBERS_NOT_A_NUMBER);
         }
 
         return valid;
@@ -105,7 +106,7 @@ public class CourseOnAddController extends BaseController {
         boolean valid = !endDatePicker.getValue().isBefore(startDatePicker.getValue());
 
         if(!valid){
-            errorLabel.setText("Endatum darf nicht vor dem Startdatum gewählt werden!");
+            errorLabel.setText(Constants.ENDDATE_BEFORE_STARTDATE);
         }
 
         return valid;

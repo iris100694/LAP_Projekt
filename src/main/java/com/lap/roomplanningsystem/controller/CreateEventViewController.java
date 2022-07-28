@@ -213,7 +213,7 @@ public class CreateEventViewController extends BaseController{
                 courseComboBox.getValue() == null || coachComboBox.getValue() == null;
 
         if(empty){
-            errorLabel.setText("Bitte Felder und Auswahlbox ausfüllen!");
+            errorLabel.setText(Constants.EMPTY_FIELDS_AND_BOXES);
         }
 
         return empty;
@@ -225,7 +225,7 @@ public class CreateEventViewController extends BaseController{
                 seriesStartTimeComboBox.getValue() == null || seriesEndDatePicker.getValue() == null;
 
         if(empty) {
-            errorLabel.setText("Bitte Felder und Auswahlbox ausfüllen!");
+            errorLabel.setText(Constants.EMPTY_FIELDS_AND_BOXES);
         }
 
         return empty;
@@ -240,11 +240,11 @@ public class CreateEventViewController extends BaseController{
             if(DateValidator.validTime(singleStartTimeComboBox.getValue(), singleEndTimeComboBox.getValue())){
                 return true;
             } else {
-                errorLabel.setText("Endzeit darf nicht vor und zur gleichen Startzeit gewählt werden!");
+                errorLabel.setText(Constants.ENDTIME_BEFORE_STARTTIME);
                 return false;
             }
         } else{
-            errorLabel.setText("Datum darf nicht in der Vergangenheit gewählt werden!");
+            errorLabel.setText(Constants.DATE_IN_PAST);
             return false;
         }
 
@@ -256,15 +256,15 @@ public class CreateEventViewController extends BaseController{
                 if(DateValidator.validTime(seriesStartTimeComboBox.getValue(), seriesEndTimeComboBox.getValue())){
                     return true;
                 } else {
-                    errorLabel.setText("Endzeit darf nicht vor und zur gleichen Startzeit gewählt werden!");
+                    errorLabel.setText(Constants.ENDTIME_BEFORE_STARTTIME);
                     return false;
                 }
             } else{
-                errorLabel.setText("Enddatum darf nicht vor dem Stardatum gewählt werden!");
+                errorLabel.setText(Constants.ENDDATE_BEFORE_STARTDATE);
                 return false;
             }
         } else {
-            errorLabel.setText("Datum darf nicht in der Vergangenheit gewählt werden!");
+            errorLabel.setText(Constants.DATE_IN_PAST);
             return false;
         }
     }
@@ -273,7 +273,7 @@ public class CreateEventViewController extends BaseController{
         boolean valid = courseComboBox.getValue().getMembers() <= roomComboBox.getValue().getMaxPersons();
 
         if(!valid){
-            errorLabel.setText("Teilnehmerzahl größer als maximale Plätze im Raum!");
+            errorLabel.setText(Constants.OVERSIZED_MEMBERS);
             return false;
         }
         return valid;
@@ -288,7 +288,7 @@ public class CreateEventViewController extends BaseController{
     }
 
     public void executeSingle() throws Exception {
-        EventValidator eventValidator = new EventValidator(model.getDataholder().getEvents());
+        EventValidator eventValidator = new EventValidator();
 
         if(DateValidator.oneTime(singleDatePicker.getValue())){
             if(eventValidator.validSingle(roomComboBox.getValue(),courseComboBox.getValue(), coachComboBox.getValue(), singleDatePicker.getValue(), singleStartTimeComboBox.getValue(), singleEndTimeComboBox.getValue())){
@@ -302,13 +302,13 @@ public class CreateEventViewController extends BaseController{
                 if(event != null){
                     model.getDataholder().addEvent(event);
                     errorLabel.setText("");
-                    resultLabel.setText("Veranstaltung erfolgreich erfasst!");
+                    resultLabel.setText(Constants.EVENT_IS_BOOKED);
                 }
             } else {
                 errorLabel.setText(eventValidator.getErrString());
             }
         } else {
-            errorLabel.setText("kein buchbarer Tag (buchbare Tage: Wochentage ausgenommen Feiertage)!");
+            errorLabel.setText(Constants.DAY_IS_NOT_ALLOWED);
         }
 
     }
@@ -342,7 +342,7 @@ public class CreateEventViewController extends BaseController{
             if(validEvents.size() > 0){
                 model.getDataholder().addEvents(validEvents);
                 model.setBookedEvents(validEvents);
-                resultLabel.setText(validEvents.size() + " Veranstaltung(en) erfolgreich erfasst!");
+                resultLabel.setText(validEvents.size() + Constants.SERIES_EVENT_IS_BOOKED);
                 return true;
             }
 
@@ -365,7 +365,7 @@ public class CreateEventViewController extends BaseController{
 
 
     private EventValidator handleDates(String serie) {
-        EventValidator eventValidator = new EventValidator(model.getDataholder().getEvents());
+        EventValidator eventValidator = new EventValidator();
 
         boolean validEvents = switch (serie){
             case "täglich" -> eventValidator.validSeries(roomComboBox.getValue(), courseComboBox.getValue(), coachComboBox.getValue(), DateValidator.daily(seriesStartDatePicker.getValue(), seriesEndDatePicker.getValue()),seriesStartTimeComboBox.getValue(), seriesEndTimeComboBox.getValue());

@@ -71,7 +71,7 @@ public class ProfilViewController extends BaseController{
             lastnameLabel.setText(user.getLastname());
             titleLabel.setText(!user.getTitle().equals("") ? user.getTitle() : "ohne");
             usernameLabel.setText(user.getUsername());
-            authorizationLabel.setText(user.getAuthorization().equals("admin") ? "Administrator" : "Trianer");
+            authorizationLabel.setText(user.getAuthorization().equals("admin") ? "Administrator" : "Trainer");
             phoneLabel.setText(user.isPhoneVisable()? user.getPhone() : "nicht sichtbar");
             emailLabel.setText(user.isEmailVisable()? user.getEmail() : "nicht sichtbar");
             textLabel.setText(user.isTextVisable()? user.getText() : "nicht sichtbar");
@@ -106,12 +106,10 @@ public class ProfilViewController extends BaseController{
             if (isChanged) {
                 imageView.setImage(new Image(new ByteArrayInputStream(bytes)));
             } else {
-                errorLabel.setText("Foto konnte nicht aktualisiert werden! (max. Größe: 16 Mb)");
+                errorLabel.setText(Constants.OVERSIZED_IMAGE);
             }
-
-
         } catch (Exception e){
-            errorLabel.setText("Kein Bild ausgewählt!");
+            errorLabel.setText(Constants.NO_IMAGE_SELECTED);
         }
 
     }
@@ -119,7 +117,6 @@ public class ProfilViewController extends BaseController{
     private boolean updateProfilImageBYJDBC() throws Exception {
         return Dataholder.userRepositoryJDBC.updateProfileImage(user, new ByteArrayInputStream(bytes));
     }
-
 
 }
 

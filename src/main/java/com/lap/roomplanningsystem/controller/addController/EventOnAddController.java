@@ -1,5 +1,6 @@
 package com.lap.roomplanningsystem.controller.addController;
 
+import com.lap.roomplanningsystem.app.Constants;
 import com.lap.roomplanningsystem.controller.BaseController;
 import com.lap.roomplanningsystem.converter.CourseConverter;
 import com.lap.roomplanningsystem.converter.LocationConverter;
@@ -102,7 +103,7 @@ public class EventOnAddController extends BaseController {
     @FXML
     void onSaveButtonClicked(ActionEvent actionEvent) throws Exception {
         errorLabel.setText("");
-        EventValidator eventValidator = new EventValidator(model.getDataholder().getEvents());
+        EventValidator eventValidator = new EventValidator();
 
         if(validateFields() && eventValidator.validSingle(roomComboBox.getValue(), courseComboBox.getValue(), coachComboBox.getValue(),datePicker.getValue(), startComboBox.getValue(),endComboBox.getValue())){
 
@@ -133,7 +134,7 @@ public class EventOnAddController extends BaseController {
                 datePicker.getValue() == null || startComboBox.getValue() == null || endComboBox.getValue() == null || coachComboBox.getValue() == null;
 
         if(empty){
-            errorLabel.setText("Bitte Felder ausfüllen!");
+            errorLabel.setText(Constants.EMPTY_FIELDS_AND_BOXES);
         }
         return empty;
     }
@@ -143,11 +144,11 @@ public class EventOnAddController extends BaseController {
             if(DateValidator.validTime(startComboBox.getValue(), endComboBox.getValue())){
                 return true;
             } else {
-                errorLabel.setText("Endzeit darf nicht vor und zur gleichen Startzeit gewählt werden!");
+                errorLabel.setText(Constants.ENDTIME_BEFORE_STARTTIME);
                 return false;
             }
         } else{
-            errorLabel.setText("Datum darf nicht in der Vergangenheit gewählt werden!");
+            errorLabel.setText(Constants.ENDDATE_BEFORE_STARTDATE);
             return false;
         }
 
@@ -157,7 +158,7 @@ public class EventOnAddController extends BaseController {
         boolean valid = courseComboBox.getValue().getMembers() <= roomComboBox.getValue().getMaxPersons();
 
         if(!valid){
-            errorLabel.setText("Teilnehmerzahl größer als maximale Plätze im Raum!");
+            errorLabel.setText(Constants.OVERSIZED_MEMBERS);
             return false;
         }
         return valid;

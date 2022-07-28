@@ -1,5 +1,6 @@
 package com.lap.roomplanningsystem.controller.addController;
 
+import com.lap.roomplanningsystem.app.Constants;
 import com.lap.roomplanningsystem.controller.BaseController;
 import com.lap.roomplanningsystem.model.Dataholder;
 import com.lap.roomplanningsystem.model.Program;
@@ -43,7 +44,7 @@ public class ProgramOnAddController extends BaseController {
         boolean explicit = model.getDataholder().getPrograms().stream().noneMatch(p-> p.getDescription().equals(descriptionInput.getText()));
 
         if(!explicit){
-            errorLabel.setText("Programmbezeichung bereits vergeben!");
+            errorLabel.setText(Constants.PROGRAMM_DESCRIPTION_NOT_ALLOWED);
         }
 
         return explicit;
@@ -51,7 +52,7 @@ public class ProgramOnAddController extends BaseController {
 
     private boolean emptyFields() {
         if(isBlank(descriptionInput.getText())){
-            errorLabel.setText("Bitte Feld ausfüllen!");
+            errorLabel.setText(Constants.EMPTY_FIELDS);
         }
 
         return isBlank(descriptionInput.getText());

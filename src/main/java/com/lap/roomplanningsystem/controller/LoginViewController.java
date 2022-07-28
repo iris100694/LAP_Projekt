@@ -67,12 +67,12 @@ public class LoginViewController extends BaseController{
             boolean loginResult = model.validateLogin(textFieldUsername.getText(), textFieldPassword.getText());
 
             if(!loginResult){
-                errorLabel.setText("Bitte Username und Passwort korrekt eingeben!");
+                errorLabel.setText(Constants.NO_CORRECT_LOGINDATA);
             } else {
                 model.setPathToView(Constants.PATH_TO_HOME_VIEW);
             }
         } else {
-            errorLabel.setText("Bitte Username und Passwort eingeben!");
+            errorLabel.setText(Constants.MISSING_LOGINDATA);
         }
     }
 

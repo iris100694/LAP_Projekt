@@ -114,36 +114,6 @@ public class RoomRepositoryJDBC extends Repository implements RoomRepository {
         return isDeleted != 0;
     }
 
-    public String createFilterStatement(String id, String description, String size, String location, String equipment, boolean image) {
-        String stmt = "";
-
-        if (!isBlank(id)) {
-            stmt = stmt + " WHERE rooms.ROOMID = " + id;
-        }
-
-        if (!isBlank(description)) {
-            stmt = isBlank(stmt) ? stmt + " WHERE rooms.DESCRIPTION = \"" + description + "\"" : stmt + " AND rooms.DESCRIPTION = \"" + description + "\"";
-        }
-
-        if (!isBlank(size)) {
-            stmt = isBlank(stmt) ? stmt + " WHERE rooms.MAXPERSONS = " + size : stmt + " AND rooms.MAXPERSONS = " + size;
-        }
-
-        if (!isBlank(location)) {
-            stmt = isBlank(stmt) ? stmt + " WHERE locations.DESCRIPTION = \"" + location + "\"" : stmt + " AND locations.DESCRIPTION = \"" + location + "\"";
-        }
-
-        if (!isBlank(equipment)) {
-            stmt = isBlank(stmt) ? stmt + " WHERE equipment.DESCRIPTION = \"" + equipment + "\"" : stmt + " AND equipment.DESCRIPTION = \"" + equipment + "\"";
-        }
-
-        if(image){
-            stmt = isBlank(stmt) ? stmt + " WHERE rooms.PHOTO IS NOT NULL" : stmt + " AND rooms.PHOTO IS NOT NULL";
-        }
-
-        return stmt;
-    }
-
 
 
 

@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import com.lap.roomplanningsystem.app.Constants;
 import com.lap.roomplanningsystem.app.Password;
 import com.lap.roomplanningsystem.controller.BaseController;
 import com.lap.roomplanningsystem.converter.BooleanConverter;
@@ -118,7 +119,7 @@ public class UserOnAddController extends BaseController {
     }
 
     private void initFileChooser() {
-        fileChooser.setTitle("Raumbild hinzufügen");
+        fileChooser.setTitle(Constants.ADD_USER_IMAGE);
         FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter("JPG files (*.jpg)", "*.JPG");
         FileChooser.ExtensionFilter extFilterPNG = new FileChooser.ExtensionFilter("PNG files (*.png)", "*.PNG");
         fileChooser.getExtensionFilters().addAll(extFilterJPG, extFilterPNG);
@@ -133,7 +134,7 @@ public class UserOnAddController extends BaseController {
             imageView.setImage(new Image(inputStream));
             photo = Files.newInputStream(Path.of(file.getAbsolutePath())).readAllBytes();
         } catch (Exception e){
-            System.out.println("Kein Bild ausgewählt!");
+            System.out.println(Constants.NO_IMAGE_SELECTED);
         }
     }
 
@@ -159,7 +160,7 @@ public class UserOnAddController extends BaseController {
         boolean explicit = model.getDataholder().getUsers().stream().noneMatch(u-> u.getUsername().equals(usernameInput.getText()));
 
         if(!explicit){
-            errorLabel.setText("Username bereits vergeben!");
+            errorLabel.setText(Constants.USERNAME_NOT_ALLOWED);
         }
 
         return explicit;
@@ -169,17 +170,17 @@ public class UserOnAddController extends BaseController {
         boolean replicate = passwordInput.getText().equals(password2Input.getText());
 
         if(!replicate){
-            errorLabel.setText("Bitte das Passwort wiederholen");
+            errorLabel.setText(Constants.REPEAT_PASSWORD);
         }
 
         return replicate;
     }
 
     private boolean validatePassword() {
-        boolean valid = !Password.validate(passwordInput.getText());
+        boolean valid = Password.validate(passwordInput.getText());
 
         if(!valid){
-            errorLabel.setText("Passwort entspricht nicht den Anforderungen!");
+            errorLabel.setText(Constants.NOT_AVAILABLE_PASSWORD);
         }
 
         return valid;
@@ -190,7 +191,7 @@ public class UserOnAddController extends BaseController {
                  isBlank(passwordInput.getText()) || isBlank(password2Input.getText()) || authorizationCombobox.getValue() == null;
 
         if(empty){
-            errorLabel.setText("Bitte Pflichtfelder ausfüllen!");
+            errorLabel.setText(Constants.EMPTY_OBLIGATORY_FIELDS);
         }
 
         return empty;
@@ -199,7 +200,7 @@ public class UserOnAddController extends BaseController {
     private User addUserByJDBC() throws Exception {
         String authorize = authorizationCombobox.getValue().equals("Administrator") ? "admin" : "coach";
         return Dataholder.userRepositoryJDBC.add(firstnameInput.getText(), lastnameInput.getText(), titleInput.getText(), usernameInput.getText(),
-                authorize, passwordInput.getText(), coachComboBox.getValue(), textVisableComboBox.getValue(),
+                authorize, Password.hash(passwordInput.getText()), coachComboBox.getValue(), textVisableComboBox.getValue(),
                 phoneInput.getText(), phoneVisableComboBox.getValue(), emailInput.getText(), emailVisableComboBox.getValue(),
                 photoVisableComboBox.getValue(), textInput.getText(),photo);
     }

@@ -15,7 +15,7 @@
   <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="150.0" />
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="90.0" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="80.0" />
   </columnConstraints>
   <rowConstraints>
@@ -148,7 +148,7 @@
             <Font name="Century Gothic" size="14.0" />
          </font>
       </Label>
-      <Label fx:id="numberLabel" textFill="#eb2828" GridPane.columnIndex="1" GridPane.rowIndex="2">
+      <Label fx:id="numberLabel" textFill="#eb2828" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2">
          <font>
             <Font name="Century Gothic" size="14.0" />
          </font>

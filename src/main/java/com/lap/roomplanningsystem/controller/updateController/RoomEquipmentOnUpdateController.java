@@ -14,6 +14,7 @@ import com.lap.roomplanningsystem.utility.ListUtility;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -89,7 +90,7 @@ public class RoomEquipmentOnUpdateController extends BaseController {
     }
 
     @FXML
-    void onSaveButtonClicked(MouseEvent event) throws Exception {
+    void onSaveButtonClicked(ActionEvent event) throws Exception {
         roomEquipment.setRoom(roomComboBox.getValue());
         roomEquipment.setEquipment(equipmentComboBox.getValue());
 

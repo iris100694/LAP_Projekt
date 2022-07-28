@@ -5,9 +5,12 @@ import java.sql.SQLException;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Optional;
 
 
 import com.lap.roomplanningsystem.app.Constants;
+import com.lap.roomplanningsystem.converter.LocationConverter;
 import com.lap.roomplanningsystem.validation.DateValidator;
 import com.lap.roomplanningsystem.validation.RequestValidator;
 import com.lap.roomplanningsystem.filterBoxes.FilterComboBox;
@@ -15,6 +18,7 @@ import com.lap.roomplanningsystem.filterBoxes.FilterComboBox;
 import com.lap.roomplanningsystem.model.*;
 
 import com.lap.roomplanningsystem.utility.ListUtility;
+import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -81,7 +85,14 @@ public class RequestViewController extends BaseController{
         startTimeComboBox.setItems(timeList);
         endTimeComboBox.setItems(timeList);
 
+        setBoxListener();
 
+
+
+
+    }
+
+    private void setBoxListener() {
         locationComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String location, String newLocation) {
@@ -97,15 +108,16 @@ public class RequestViewController extends BaseController{
                     requestValidator.setRoomDisable(false);
                     sizeComboBox.setDisable(false);
 
-                    try {
-                        ArrayList<ObservableList<String>> roomList = Dataholder.roomRepositoryJDBC.listsForRoomRequest(Constants.CALL_LISTS_FOR_REQUEST_ROOMS, newLocation);
-                        roomComboBox.setItems(roomList.get(0));
-                        sizeComboBox.setItems(roomList.get(1));
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+                    HashMap<String, ObservableList<String>> roomList;
+                    Optional<Location> l = model.getDataholder().getLocations().stream().filter(listItem -> listItem.getDescription().equals(newLocation)).findAny();
+                    if(l.isPresent()){
+                        roomList = ListUtility.roomRequestList(l.get());
+                        roomComboBox.setItems(roomList.get("rooms"));
+                        sizeComboBox.setItems(roomList.get("sizes"));
+                    } else {
+                        roomComboBox.setPromptText("Raum");
+                        sizeComboBox.setPromptText("Raumgröße");
                     }
-                    roomComboBox.setPromptText("Raum");
-                    sizeComboBox.setPromptText("Raumgröße");
                 }
             }
         });
@@ -135,7 +147,6 @@ public class RequestViewController extends BaseController{
                 }
             }
         });
-
     }
 
     @FXML
@@ -173,7 +184,7 @@ public class RequestViewController extends BaseController{
         boolean valid = startTimeComboBox.getValue() != null && (endTimeComboBox.getValue() == null);
 
         if(valid){
-            errorLabel.setText("Bitte Endzeit angeben!");
+            errorLabel.setText(Constants.MISSING_ENDTIME);
         }
         return valid;
 
@@ -186,7 +197,7 @@ public class RequestViewController extends BaseController{
                     if(DateValidator.validTime(startTimeComboBox.getValue(), endTimeComboBox.getValue())){
                         return true;
                     } else {
-                        errorLabel.setText("Endzeit darf nicht vor und zur gleichen Startzeit gewählt werden!");
+                        errorLabel.setText(Constants.ENDTIME_BEFORE_STARTTIME);
                         return false;
                     }
                 } else{
@@ -194,7 +205,7 @@ public class RequestViewController extends BaseController{
                 }
 
             } else{
-                errorLabel.setText("Datum darf nicht in der Vergangenheit gewählt werden!");
+                errorLabel.setText(Constants.DATE_IN_PAST);
                 return false;
             }
         } else {

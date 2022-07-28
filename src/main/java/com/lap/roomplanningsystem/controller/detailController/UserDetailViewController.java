@@ -2,6 +2,7 @@ package com.lap.roomplanningsystem.controller.detailController;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 
 import com.lap.roomplanningsystem.app.Constants;
@@ -75,12 +76,13 @@ public class UserDetailViewController extends BaseController {
 
         if(optionalUser.isPresent()) {
             user = optionalUser.get();
+            System.out.println("User aktiv:" + user.isActive());
 
             firstnameLabel.setText(user.getFirstname());
             lastnameLabel.setText(user.getLastname());
             titleLabel.setText(user.getTitle());
             activLabel.setText(user.isActive() ? "aktiv" : "inaktiv");
-            authorizationLabel.setText(user.getAuthorization() == "admin" ? "Administator" : "Trainer");
+            authorizationLabel.setText(user.getAuthorization().equals("admin") ? "Administator" : "Trainer");
             usernameLabel.setText(user.getUsername());
             coachLabel.setText(user.isTrainer() ? "ja" : "nein");
             textLabel.setText(user.getText());
@@ -106,7 +108,7 @@ public class UserDetailViewController extends BaseController {
     }
 
     @FXML
-    void onUpdateButtonClicked(MouseEvent event) throws IOException {
+    void onUpdateButtonClicked(ActionEvent event) throws IOException {
         showNewView(Constants.PATH_TO_USER_UPDATE_VIEW);
         closeStage(numberLabel);
     }

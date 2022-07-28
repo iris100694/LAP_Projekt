@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 
+import com.lap.roomplanningsystem.app.Constants;
 import com.lap.roomplanningsystem.controller.BaseController;
 import com.lap.roomplanningsystem.converter.LocationConverter;
 
@@ -58,7 +59,7 @@ public class RoomOnAddController extends BaseController {
     }
 
     private void initFileChooser() {
-        fileChooser.setTitle("Raumbild hinzufügen");
+        fileChooser.setTitle(Constants.ADD_ROOM_IMAGE);
         FileChooser.ExtensionFilter extFilterJPG = new FileChooser.ExtensionFilter("JPG files (*.jpg)", "*.JPG");
         FileChooser.ExtensionFilter extFilterPNG = new FileChooser.ExtensionFilter("PNG files (*.png)", "*.PNG");
         fileChooser.getExtensionFilters().addAll(extFilterJPG, extFilterPNG);
@@ -74,7 +75,7 @@ public class RoomOnAddController extends BaseController {
             imageView.setImage(new Image(inputStream));
             photo = Files.newInputStream(Path.of(file.getAbsolutePath())).readAllBytes();
         } catch (Exception e){
-            System.out.println("Kein Bild ausgewählt!");
+            System.out.println(Constants.NO_IMAGE_SELECTED);
         }
     }
 
@@ -102,7 +103,7 @@ public class RoomOnAddController extends BaseController {
             Integer.parseInt(maxPersons.getText());
             return true;
         } catch (Exception e){
-            errorLabel.setText("Bitte für maximale Personenzahl eine ganze Zahl eingeben!");
+            errorLabel.setText(Constants.ROOMSIZE_NOT_A_NUMBER);
             return false;
         }
     }
@@ -111,7 +112,7 @@ public class RoomOnAddController extends BaseController {
         boolean explicit = model.getDataholder().getRooms().stream().noneMatch(r-> r.getDescription().equals(descriptionInput.getText()));
 
         if(!explicit){
-            errorLabel.setText("Raumbezeichung bereits vergeben!");
+            errorLabel.setText(Constants.ROOM_DESCRIPTION_NOT_ALLOWED);
         }
 
         return explicit;
@@ -121,7 +122,7 @@ public class RoomOnAddController extends BaseController {
         boolean empty = isBlank(descriptionInput.getText())  || isBlank(maxPersons.getText());
 
         if(empty){
-            errorLabel.setText("Bitte Felder ausfüllen!");
+            errorLabel.setText(Constants.EMPTY_FIELDS);
         }
 
         return empty;

@@ -83,8 +83,49 @@ public class Constants {
 
 
     //Error Strings
-    public static final String ROOM_NOT_AVAILABLE = "Dieser Raum ist nicht verfügbar!";
     public static final String EVENT_EXIST = "Veranstaltung für Kurs bereits gebucht!";
+
+    public static final String ROOM_NOT_AVAILABLE = "Dieser Raum ist nicht verfügbar!";
     public static final String TRAINER_NOT_AVAILABLE = "Dieser Trainer ist nicht verfügbar!";
+
+    public static final String EMPTY_FIELDS_AND_BOXES= "Bitte Felder und Auswahlbox ausfüllen!";
+    public static final String EMPTY_FIELDS= "Bitte Feld ausfüllen!";
+    public static final String EMPTY_OBLIGATORY_FIELDS="Bitte Pflichtfelder ausfüllen!";
+
+    public static final String ENDTIME_BEFORE_STARTTIME = "Endzeit darf nicht vor und zur gleichen Startzeit gewählt werden!";
+    public static final String DATE_IN_PAST ="Datum darf nicht in der Vergangenheit gewählt werden!";
+    public static final String ENDDATE_BEFORE_STARTDATE ="Enddatum darf nicht vor dem Stardatum gewählt werden!";
+    public static final String DAY_IS_NOT_ALLOWED= "kein buchbarer Tag (buchbare Tage: Wochentage ausgenommen Feiertage)!";
+    public static final String MISSING_ENDTIME="Bitte Endzeit angeben!";
+
+    public static final String OVERSIZED_MEMBERS ="Teilnehmerzahl größer als maximale Plätze im Raum!";
+    public static final String OVERSIZED_IMAGE="Foto konnte nicht aktualisiert werden! (max. Größe: 16 Mb)";
+
+    public static final String EVENT_IS_BOOKED ="Veranstaltung erfolgreich erfasst!";
+    public static final String SERIES_EVENT_IS_BOOKED=" Veranstaltung(en) erfolgreich erfasst!";
+
+    public static final String COURSE_DESCRIPTION_NOT_ALLOWED = "Kursbezeichnung bereits vergeben!";
+    public static final String EQUIPMENT_DESCRIPTION_NOT_ALLOWED = "Ausstattungsbezeichnung bereits vergeben!";
+    public static final String LOCATION_DESCRIPTION_NOT_ALLOWED = "Standortbezeichnung bereits vergeben!";
+    public static final String PROGRAMM_DESCRIPTION_NOT_ALLOWED ="Programmbezeichung bereits vergeben!";
+    public static final String ROOM_DESCRIPTION_NOT_ALLOWED ="Raumbezeichung bereits vergeben!";
+    public static final String USERNAME_NOT_ALLOWED ="Username bereits vergeben!";
+
+    public static final String MEMBERS_NOT_A_NUMBER = "Keine korrekte Teilnehmerzahl ausgefüllt!";
+    public static final String ROOMSIZE_NOT_A_NUMBER = "Bitte für maximale Personenzahl eine ganze Zahl eingeben!";
+
+    public static final String ADD_ROOM_IMAGE = "Raumbild hinzufügen";
+    public static final String ADD_USER_IMAGE = "Profilbild hinzufügen";
+    public static final String NO_IMAGE_SELECTED ="Kein Bild ausgewählt!";
+    public static final String UPDATE_ROOM_IMAGE = "Raumbild ändern";
+
+    public static final String REPEAT_PASSWORD = "Bitte das Passwort wiederholen";
+    public static final String NOT_AVAILABLE_PASSWORD="Passwort entspricht nicht den Anforderungen!";
+
+    public static final String NO_CORRECT_LOGINDATA= "Bitte Username und Passwort korrekt eingeben!";
+    public static final String MISSING_LOGINDATA="Bitte Username und Passwort eingeben!";
+
+
+
 
 }

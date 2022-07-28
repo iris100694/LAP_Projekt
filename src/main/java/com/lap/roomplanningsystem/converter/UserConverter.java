@@ -13,16 +13,6 @@ public class UserConverter implements ConverterInterface<User>{
     public UserConverter() {
         this.userList = BaseController.model.getDataholder().getUsers();
 
-//        userList.addListener(new ListChangeListener<User>() {
-//            @Override
-//            public void onChanged(Change<? extends User> change) {
-//                updateList(userList);
-//            }
-//        });
-    }
-
-    public void updateList(ObservableList<User> list) {
-        this.userList = list;
     }
 
 

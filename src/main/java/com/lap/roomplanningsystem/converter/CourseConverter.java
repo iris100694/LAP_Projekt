@@ -14,17 +14,6 @@ public class CourseConverter implements ConverterInterface<Course>{
     public CourseConverter() {
         this.courseList = BaseController.model.getDataholder().getCourses();
 
-//        courseList.addListener(new ListChangeListener<Course>() {
-//            @Override
-//            public void onChanged(Change<? extends Course> change) {
-//                updateList(courseList);
-//            }
-//        });
-    }
-
-    @Override
-    public void updateList(ObservableList<Course> list) {
-        this.courseList = list;
     }
 
     @Override

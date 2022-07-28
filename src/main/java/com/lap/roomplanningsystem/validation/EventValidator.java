@@ -27,16 +27,8 @@ public class EventValidator {
     private User selectedCoach;
 
 
-    public EventValidator(ObservableList<Event> eventList) {
-        this.events = eventList;
-
-        BaseController.model.getDataholder().getEvents().addListener(new ListChangeListener<Event>() {
-            @Override
-            public void onChanged(Change<? extends Event> change){
-//                events = BaseController.model.getDataholder().getEvents();
-                System.out.println(events.size());
-            }
-        });
+    public EventValidator() {
+        this.events = BaseController.model.getDataholder().getEvents();
     }
 
 
@@ -82,7 +74,7 @@ public class EventValidator {
             if(verify && !isValidTime(event.getStartTime(), event.getEndTime()) && isCourseRegistered(event)){
                 setErrString(Constants.EVENT_EXIST);
                 return false;
-            } else if(sameCoach(event) && !isValidTime(event.getStartTime(), event.getEndTime())){
+            } else if(verify && sameCoach(event) && !isValidTime(event.getStartTime(), event.getEndTime())){
                 setErrString(Constants.TRAINER_NOT_AVAILABLE);
                 return false;
             }

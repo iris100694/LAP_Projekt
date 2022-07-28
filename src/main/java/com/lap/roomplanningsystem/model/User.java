@@ -1,5 +1,7 @@
 package com.lap.roomplanningsystem.model;
 
+import java.util.Arrays;
+
 public class User {
     private int id;
     private boolean active;
@@ -45,6 +47,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", active=" + active +
                 ", title='" + title + '\'' +
                 ", firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +
@@ -57,7 +60,7 @@ public class User {
                 ", phoneVisable=" + phoneVisable +
                 ", email='" + email + '\'' +
                 ", emailVisable=" + emailVisable +
-                ", photo='" + photo + '\'' +
+                ", photo=" + Arrays.toString(photo) +
                 ", photoVisable=" + photoVisable +
                 '}';
     }

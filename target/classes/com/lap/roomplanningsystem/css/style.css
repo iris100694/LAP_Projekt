@@ -1,8 +1,7 @@
 /*Menu Items*/
 
-.clicked{
-    -fx-background-color: rgba(47, 59, 80);
-}
+
+
 .clicked:hover{
     -fx-background-color: rgba(47, 59, 80);
 }
@@ -182,7 +181,7 @@
 .custom-button2 {
     -fx-padding: 6px 15px 5px 10px;
     -fx-background-radius: 30px;
-    -fx-background-color: transparent
+    -fx-background-color: transparent;
     -fx-font-family: "Century Gothic";
     -fx-border-color: #c60001;
     -fx-text-fill: #c60001;
@@ -254,21 +253,21 @@
 .date-picker .text-field{
     -fx-border-radius: 20px 0px 0px 20px;
     -fx-background-radius: 20px 0px 0px 20px;
-    -fx-border-color: transparent
+    -fx-border-color: transparent;
 }
 
 .date-picker .text-field{
     -fx-border-radius: 20px 0px 0px 20px;
     -fx-background-radius: 20px 0px 0px 20px;
-    -fx-border-color: transparent
+    -fx-border-color: transparent;
 }
 
-.date-picker .cell:hover {
+/*.date-picker .cell:hover {
 	-fx-background-color: -fx-light-grey-color;
 }
 .date-picker .cell:focused {
 	-fx-background-color: -fx-light-grey-color;
-}
+}*/
 .date-picker .selected {
 	-fx-background-color: #303C52;
 	-fx-text-fill: white;

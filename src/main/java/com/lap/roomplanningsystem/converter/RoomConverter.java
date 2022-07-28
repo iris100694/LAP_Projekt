@@ -16,17 +16,9 @@ public class RoomConverter implements ConverterInterface<Room>{
         this.box = box;
 
 
-//        roomList.addListener(new ListChangeListener<Room>() {
-//            @Override
-//            public void onChanged(Change<? extends Room> change) {
-//                updateList(roomList);
-//            }
-//        });
     }
 
-    public void updateList(ObservableList<Room> list) {
-        this.roomList = list;
-    }
+
 
 
     @Override

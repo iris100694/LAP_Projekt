@@ -49,6 +49,9 @@ public class MainController extends BaseController{
                     if(model.getNewEntry() != null){
                         model.setRemoveEntry(true);
                     }
+
+                    System.out.println("remove in Main");
+
                     model.setDetailView(false);
                 }
             }

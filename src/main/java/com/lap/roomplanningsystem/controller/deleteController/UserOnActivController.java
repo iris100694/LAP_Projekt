@@ -48,6 +48,8 @@ public class UserOnActivController extends BaseController {
     void onYesButtonClicked(ActionEvent event) throws Exception {
         model.setSelectedUserProperty(null);
 
+        user.setActive(false);
+
         if(deActivateUserByJDBC()){
             int index = model.getDataholder().getUsers().indexOf(user);
             model.getDataholder().updateUser(index, user);

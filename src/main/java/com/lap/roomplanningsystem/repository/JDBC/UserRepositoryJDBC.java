@@ -28,17 +28,17 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
 
         User user = null;
 
-        if(resultSet.next()){
-            if(Password.verify(resultSet.getString("PASSWORD"), password)){
+        if (resultSet.next()) {
+            if (Password.verify(resultSet.getString("PASSWORD"), password)) {
 
                 user = newUser(resultSet);
             }
         }
 
         connection.close();
-        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+        System.out.println(connection.isClosed() ? "Connection closed" : "Connection not closed");
 
-        return Optional.of(user);
+        return user != null? Optional.of(user): Optional.empty();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
         ResultSet resultSet = stmt.executeQuery();
 
         connection.close();
-        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+        System.out.println(connection.isClosed() ? "Connection closed" : "Connection not closed");
 
         return createUsers(resultSet);
     }
@@ -67,13 +67,13 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
         ResultSet resultSet = stmt.executeQuery();
 
         connection.close();
-        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+        System.out.println(connection.isClosed() ? "Connection closed" : "Connection not closed");
 
         return createUser(resultSet);
     }
 
     @Override
-    public User add(String firstname, String lastname, String title, String username, String authorization, String password, Boolean trainer, Boolean textVisable, String phone, Boolean phoneVisable, String email, Boolean emailVisable, Boolean photoVisable, String text, byte[] photo) throws Exception{
+    public User add(String firstname, String lastname, String title, String username, String authorization, String password, Boolean trainer, Boolean textVisable, String phone, Boolean phoneVisable, String email, Boolean emailVisable, Boolean photoVisable, String text, byte[] photo) throws Exception {
 
         Connection connection = connect();
 
@@ -107,15 +107,15 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
 
         User user = null;
 
-        while(resultSet.next()){
+        while (resultSet.next()) {
 
-            int userID  = resultSet.getInt(1);
+            int userID = resultSet.getInt(1);
             user = new User(userID, true, title, firstname, lastname, username, authorization, trainer, text, textVisable,
                     phone, phoneVisable, email, emailVisable, photo, photoVisable);
         }
 
         connection.close();
-        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+        System.out.println(connection.isClosed() ? "Connection closed" : "Connection not closed");
 
         return user;
 
@@ -132,7 +132,7 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
 
         String query;
 
-        query =  updatePassword ?  Constants.UPDATE_USER_WITHIN_PASSWORD : Constants.UPDATE_USER_WITHOUT_PASSWORD;
+        query = updatePassword ? Constants.UPDATE_USER_WITHIN_PASSWORD : Constants.UPDATE_USER_WITHOUT_PASSWORD;
 
         PreparedStatement stmt = null;
 
@@ -144,7 +144,7 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
         stmt.setString(4, user.getLastname());
         stmt.setString(5, user.getUsername());
 
-        if(updatePassword){
+        if (updatePassword) {
             stmt.setString(6, password);
             stmt.setString(7, user.getAuthorization());
             stmt.setBoolean(8, user.isTrainer());
@@ -174,7 +174,7 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
         int isUpdated = stmt.executeUpdate();
 
         connection.close();
-        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+        System.out.println(connection.isClosed() ? "Connection closed" : "Connection not closed");
 
         return isUpdated != 0;
 
@@ -193,7 +193,7 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
         int isActiv = stmt.executeUpdate();
 
         connection.close();
-        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+        System.out.println(connection.isClosed() ? "Connection closed" : "Connection not closed");
 
         return isActiv != 0;
     }
@@ -213,7 +213,7 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
         int isEdited = stmt.executeUpdate();
 
         connection.close();
-        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+        System.out.println(connection.isClosed() ? "Connection closed" : "Connection not closed");
 
         return isEdited != 0;
     }
@@ -232,7 +232,7 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
         int isPhotoChanged = stmt.executeUpdate();
 
         connection.close();
-        System.out.println(connection.isClosed() ? "Connection closed": "Connection not closed");
+        System.out.println(connection.isClosed() ? "Connection closed" : "Connection not closed");
 
         return isPhotoChanged != 0;
     }
@@ -250,7 +250,6 @@ public class UserRepositoryJDBC extends Repository implements UserRepository {
 
         return Optional.of(user);
     }
-
 
 
     private Optional<ObservableList<User>> createUsers(ResultSet resultSet) throws SQLException {

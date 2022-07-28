@@ -14,18 +14,8 @@ public class ProgramConverter implements ConverterInterface<Program>{
     public ProgramConverter() {
         this.programList = BaseController.model.getDataholder().getPrograms();
 
-//        programList.addListener(new ListChangeListener<Program>() {
-//            @Override
-//            public void onChanged(Change<? extends Program> change) {
-//                updateList(programList);
-//            }
-//        });
     }
 
-    @Override
-    public void updateList(ObservableList<Program> list) {
-        this.programList = list;
-    }
 
 
     @Override

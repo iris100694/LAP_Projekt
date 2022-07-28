@@ -200,7 +200,7 @@
          </font></TextArea>
       <Label fx:id="errorLabel" textFill="#eb2828" GridPane.columnSpan="3" GridPane.rowIndex="18">
          <font>
-            <Font name="Century Gothic" size="12.0" />
+            <Font name="Century Gothic" size="10.0" />
          </font>
       </Label>
       <Label text="Passwort*:" GridPane.rowIndex="6">
@@ -213,8 +213,8 @@
             <Font name="Century Gothic" size="14.0" />
          </font>
       </Label>
-      <PasswordField fx:id="passwordInput" maxWidth="-Infinity" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="6" />
-      <PasswordField maxWidth="-Infinity" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+      <PasswordField fx:id="passwordInput" accessibleText="Hello" maxWidth="-Infinity" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+      <PasswordField fx:id="password2Input" maxWidth="-Infinity" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7" />
    </children>
    <padding>
       <Insets bottom="30.0" left="30.0" right="30.0" top="20.0" />

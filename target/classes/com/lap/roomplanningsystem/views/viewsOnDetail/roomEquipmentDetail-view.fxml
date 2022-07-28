@@ -40,7 +40,7 @@
                   <Insets right="10.0" />
                </HBox.margin>
             </ImageView>
-            <Label prefHeight="46.0" prefWidth="328.0" text="Raumausstattung">
+            <Label prefHeight="46.0" prefWidth="213.0" text="Raumausstattung">
                <font>
                   <Font name="Century Gothic" size="24.0" />
                </font>
